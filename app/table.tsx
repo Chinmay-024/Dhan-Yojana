@@ -15,25 +15,23 @@ interface User {
   email: string;
 }
 
-export default async function UsersTable({ users }: { users: User[] }) {
+export default  function UsersTable({ users }: { users: User[] }) {
   return (
     <Table>
       <TableHead>
         <TableRow>
+          <TableHeaderCell>Date</TableHeaderCell>
           <TableHeaderCell>Name</TableHeaderCell>
-          <TableHeaderCell>Username</TableHeaderCell>
-          <TableHeaderCell>Email</TableHeaderCell>
+          <TableHeaderCell>Amount</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {users.map((user) => (
           <TableRow key={user.id}>
+            <TableCell>2nd Apr 2020</TableCell>
             <TableCell>{user.name}</TableCell>
             <TableCell>
-              <Text>{user.username}</Text>
-            </TableCell>
-            <TableCell>
-              <Text>{user.email}</Text>
+               You owe 20
             </TableCell>
           </TableRow>
         ))}
