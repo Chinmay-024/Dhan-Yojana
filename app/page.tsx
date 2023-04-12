@@ -1,18 +1,12 @@
 import { Card, Title, Text, Flex } from '@tremor/react';
-import { queryBuilder } from '../lib/planetscale';
 import Search from './search';
-import UsersTable from './table';
 import style from './page.module.css';
 
 
 export const dynamic = 'force-dynamic';
-export default function IndexPage({
-  searchParams
-}: {
-  searchParams: { q: string };
-}) {
-  const search = searchParams.q ?? '';
 
+export default async function IndexPage() {
+  
   return (
     <>
       <style>
