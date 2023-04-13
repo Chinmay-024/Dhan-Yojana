@@ -137,7 +137,7 @@ export default function Groups() {
               data={item.data}
               valueFormatter={dataFormatter}
               showAnimation={true}
-              color="gray"
+              color="cyan"
             />
           </Card>
         ))}
