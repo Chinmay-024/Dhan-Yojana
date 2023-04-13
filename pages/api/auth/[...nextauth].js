@@ -10,10 +10,10 @@ const sequelize = new Sequelize({
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
   host: 'localhost',
-  port: 3306,
+  port: 3306
 });
 
-export default NextAuth({
+export const authOptions = {
   providers: [
     // OAuth authentication providers...
     // AppleProvider({
@@ -35,6 +35,7 @@ export default NextAuth({
     // }),
   ],
   adapter: SequelizeAdapter(sequelize),
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
@@ -42,4 +43,6 @@ export default NextAuth({
       return session;
     }
   }
-});
+};
+
+export default NextAuth(authOptions);
