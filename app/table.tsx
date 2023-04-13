@@ -1,15 +1,5 @@
 'use client';
-// import {
-//   Table,
-//   TableHead,
-//   TableRow,
-//   TableHeaderCell,
-//   TableBody,
-//   TableCell,
-//   Text
-// } from '@tremor/react';
-// import { useState, useEffect } from 'react';
-// import CustomTablePagination from './TablePaginations';
+
 interface User {
   id: number;
   name: string;
@@ -17,59 +7,6 @@ interface User {
   email: string;
 }
 
-// export default  function UsersTable({ users }: { users: User[] }) {
-
-//   const [page, setPage] = useState(0);
-//   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-//   const handleChangePage = (newPage) => {
-//     setPage(newPage);
-//   };
-
-//   const handleChangeRowsPerPage = (newRowsPerPage) => {
-//     setRowsPerPage(newRowsPerPage);
-//     setPage(0);
-//   };
-
-//   useEffect(() => {
-//     setPage(0);
-//   }, [users]);
-
-//   const startIndex = page * rowsPerPage;
-//   const endIndex = startIndex + rowsPerPage;
-//   const slicedData = users.slice(startIndex, endIndex);
-//   return (
-//     <Table className="mt-6">
-//       <TableHead>
-//         <TableRow>
-//           <TableHeaderCell>Date</TableHeaderCell>
-//           <TableHeaderCell>Name</TableHeaderCell>
-//           <TableHeaderCell>Amount</TableHeaderCell>
-//         </TableRow>
-//       </TableHead>
-//       <TableBody>
-//         {slicedData.map((user) => (
-//           <TableRow key={user.id}>
-//             <TableCell>2nd Apr 2020</TableCell>
-//             <TableCell>{user.name}</TableCell>
-//             <TableCell>
-//                You owe 20
-//             </TableCell>
-//           </TableRow>
-//         ))}
-//       </TableBody>
-
-//       <CustomTablePagination
-//         count={users.length}
-//         rowsPerPageOptions={[5, 10, 25]}
-//         rowsPerPage={rowsPerPage}
-//         page={page}
-//         onChangePage={handleChangePage}
-//         onChangeRowsPerPage={handleChangeRowsPerPage}
-//       />
-//     </Table>
-//   );
-// }
 import { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
 
@@ -77,12 +14,15 @@ export default  function UsersTable({ users }: { users: User[] }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number): void => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    // Convert the value of the input field to a number using the unary plus operator (+)
     setRowsPerPage(+event.target.value);
+
+    // Set the page number to 0 to ensure that the first page is displayed when the number of rows per page changes
     setPage(0);
   };
 
@@ -91,7 +31,7 @@ export default  function UsersTable({ users }: { users: User[] }) {
   const currentUsers = users.slice(start, end);
 
   return (
-    <TableContainer style={{visibility:'overflow'}}>
+    <TableContainer >
       <Table>
         <TableHead>
           <TableRow>

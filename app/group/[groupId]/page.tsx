@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link";
 import {
   Card,
   Metric,
@@ -11,11 +12,12 @@ import {
   DonutChart,
   LineChart
 } from '@tremor/react';
-import { useSearchParams } from 'next/navigation';
-import { usePathname } from 'next/navigation';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import {Button} from '@mui/material';
 import Chart from './chart';
 import UsersTable from '../../table';
 import styles from './page.module.css';
+import { useRouter } from "next/navigation";
 const website = [
   { name: '/home', value: 1230 },
   { name: '/contact', value: 751 },
@@ -93,15 +95,17 @@ const categories: {
 ];
 
 export default function PlaygroundPage() {
-  const searchParams = useSearchParams();
-  // const groupId= searchParams.get('groupId');
-  const pathname = usePathname();
-  console.log('pathname', pathname);
-  // console.log('searchparma : =>',searchParams.get('groupId'))
-  console.log('parameter: ');
-  const valueFormatter = (number: number) =>
-    `$ ${Intl.NumberFormat('us').format(number).toString()}`;
+  const router = useRouter();
 
+
+  const handleClick = () => {
+    const query = { groupId: 'test' };
+    const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
+    // Redirect to new page with query parameters
+    window.location.href = href;
+  };
+
+    
   const users = [
     { id: 1, email: 'john.doe@example.com', name: 'John Doe', username: 'johndoe' },
     { id: 2, email: 'jane.doe@example.com', name: 'Jane Doe', username: 'janedoe' },
@@ -113,6 +117,8 @@ export default function PlaygroundPage() {
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
       <Metric>Group</Metric>
+
+<Button variant="contained" onClick={handleClick} style={{marginTop:"1.5rem"}} endIcon={<PaymentsIcon />}>ADD EXPENSE</Button>
       <Chart />
       <Flex justifyContent="center" alignItems="baseline">
         <Card className="mt-6 overflow-y-auto h-80 ">

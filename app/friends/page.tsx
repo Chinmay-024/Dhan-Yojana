@@ -1,14 +1,31 @@
+'use client';
+
 import { Card, Title, Text } from '@tremor/react';
 import Search from '../search';
 import UsersTable from '../table';
 import { Pagination } from '@mui/material';
-export const dynamic = 'force-dynamic';
+
+import PaymentsIcon from '@mui/icons-material/Payments';
+import {Button} from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 export default async function IndexPage({
   searchParams
 }: {
   searchParams: { q: string };
 }) {
+
+  const router = useRouter();
+
+
+  const handleClick = () => {
+    // const query = { groupId: 'test' };
+    // const href = `/newexpense?${new URLSearchParams(query).toString()}`;
+    // // Redirect to new page with query parameters
+    // window.location.href = href;
+
+    router.replace('/newexpense');
+  };
 
   const search = searchParams.q ?? '';
   const users = [
@@ -33,6 +50,7 @@ export default async function IndexPage({
         A list of users retrieved from a MySQL database (PlanetScale).
       </Text>
       <Search />
+      <Button variant="outlined" onClick={handleClick} style={{marginTop:"1.5rem"}} endIcon={<PaymentsIcon />}>ADD EXPENSE</Button>
       <Card className="mt-6 overflow-y-auto h-80">
         <UsersTable users={users} />
       </Card>
