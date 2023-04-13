@@ -1,8 +1,10 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
+import AppleProvider from 'next-auth/providers/apple';
 import SequelizeAdapter from '@next-auth/sequelize-adapter';
 import { Sequelize } from 'sequelize';
-// import EmailProvider from 'next-auth/providers/email'
+import EmailProvider from 'next-auth/providers/email'
 
 const sequelize = new Sequelize({
   dialect: 'mysql',
@@ -16,23 +18,23 @@ const sequelize = new Sequelize({
 export default NextAuth({
   providers: [
     // OAuth authentication providers...
-    // AppleProvider({
-    //   clientId: process.env.APPLE_ID,
-    //   clientSecret: process.env.APPLE_SECRET
-    // }),
-    // FacebookProvider({
-    //   clientId: process.env.FACEBOOK_ID,
-    //   clientSecret: process.env.FACEBOOK_SECRET
-    // }),
+    AppleProvider({
+      clientId: process.env.APPLE_ID,
+      clientSecret: process.env.APPLE_SECRET
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_ID,
+      clientSecret: process.env.FACEBOOK_SECRET
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET
-    })
+    }),
     // Passwordless / email sign in
-    // EmailProvider({
-    //   server: process.env.MAIL_SERVER,
-    //   from: 'NextAuth.js <no-reply@example.com>'
-    // }),
+    EmailProvider({
+      server: process.env.MAIL_SERVER,
+      from: 'NextAuth.js <no-reply@example.com>'
+    })
   ],
   adapter: SequelizeAdapter(sequelize),
   callbacks: {
