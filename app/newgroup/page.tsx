@@ -11,8 +11,7 @@ import {
   ListItem,
   DropdownItem,
   Dropdown,
-  Text,
-  Subtitle
+  Text
 } from '@tremor/react';
 import { Card } from '@tremor/react';
 
@@ -38,6 +37,7 @@ const NewGroup = () => {
   const [error1, setError1] = useState<boolean>(false);
   const [error2, setError2] = useState<boolean>(false);
   const [error3, setError3] = useState<boolean>(false);
+  const [error4, setError4] = useState<boolean>(false);
   const [addedUser, setAddedUser] = useState<
     Array<{ email: string; name: string }>
   >([]);
@@ -60,6 +60,16 @@ const NewGroup = () => {
     // })
   };
 
+  const removeUserHandler = (event : any) => {
+      const email = event.target.parentElement.parentElement.parentElement.nextSibling.firstChild.innerHTML;
+      setAddedUser((prevState) => {
+        const newState = prevState.filter(user => {
+          user.email!==email
+        });
+        return newState;
+      });
+  };
+
   const titleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
@@ -75,10 +85,14 @@ const NewGroup = () => {
     if (
       title.trim().length !== 0 &&
       description.trim().length !== 0 &&
-      image.trim().length !== 0
+      image.trim().length !== 0 &&
+      addedUser.length!==0
     ) {
       return;
     }
+    if(addedUser.length===0){
+      setError4(true);
+    } 
     if (title.trim().length === 0) {
       setError1(true);
     }
@@ -143,7 +157,7 @@ const NewGroup = () => {
             </Flex>
           </form>
         </Card>
-        <Card className="max-w-xs">
+        <Card className="max-w-xs" style={{'border':`${error4?'1px solid red':''}`}}>
           <Card className="max-w-xs">
             <Title>Add users</Title>
             <Dropdown
@@ -156,17 +170,36 @@ const NewGroup = () => {
               ))}
             </Dropdown>
           </Card>
-          <Card>
-            <Title className='text-center'>Added</Title>
+          <Card >
+            <Title className="text-center">Added</Title>
             <List>
               {addedUser.map((user, i) => (
-                <ListItem key={i + 1} className="mx-auto" >
-                  <div className='flex flex-col items-center justify-center'>
+                <ListItem key={i + 1} className="block">
+                  <div className="flex flex-col items-center justify-center">
                     <div>
-                      <Text>{user.name}</Text>
+                      <Flex>
+                        <Text color="stone">{user.name}</Text>
+                        <span onClick={removeUserHandler}>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1"
+                            stroke="currentColor"
+                            className="w-4 h-4 ml-2"
+                            color="red"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </span>
+                      </Flex>
                     </div>
                     <div>
-                      <Subtitle>{user.email}</Subtitle>
+                      <Text color="gray">{user.email}</Text>
                     </div>
                   </div>
                 </ListItem>

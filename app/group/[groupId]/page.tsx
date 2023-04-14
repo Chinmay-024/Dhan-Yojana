@@ -18,6 +18,8 @@ import Chart from './chart';
 import UsersTable from '../../table';
 import styles from './page.module.css';
 import { useRouter } from "next/navigation";
+
+
 const website = [
   { name: '/home', value: 1230 },
   { name: '/contact', value: 751 },
@@ -118,7 +120,8 @@ export default function PlaygroundPage() {
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
       <Metric>Group</Metric>
 
-<Button variant="contained" onClick={handleClick} style={{marginTop:"1.5rem"}} endIcon={<PaymentsIcon />}>ADD EXPENSE</Button>
+    <Button variant="contained" onClick={handleClick} style={{marginTop:"1.5rem"}} endIcon={<PaymentsIcon />}>ADD EXPENSE</Button>
+
       <Chart />
       <Flex justifyContent="center" alignItems="baseline">
         <Card className="mt-6 overflow-y-auto h-80 ">
