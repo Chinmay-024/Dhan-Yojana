@@ -39,26 +39,31 @@ const app = [
 
 const data = [
   {
+    groupId: 1,
     category: 'Website',
     stat: '10,234',
     data: website
   },
   {
+    groupId: 2,
     category: 'Online Shop',
     stat: '12,543',
     data: shop
   },
   {
+    groupId: 3,
     category: 'Mobile App',
     stat: '2,543',
     data: app
   },
   {
+    groupId: 4,
     category: 'Mobile App',
     stat: '2,543',
     data: app
   },
   {
+    groupId: 5,
     category: 'Mobile App',
     stat: '2,543',
     data: app
@@ -69,16 +74,19 @@ const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
 const categories: {
+  groupId: number;
   title: string;
   metric: string;
   metricPrev: string;
 }[] = [
   {
+    groupId: 1,
     title: 'Sales',
     metric: '$ 12,699',
     metricPrev: '$ 9,456'
   },
   {
+    groupId: 2,
     title: 'Profit',
     metric: '$ 40,598',
     metricPrev: '$ 45,564'
@@ -93,77 +101,102 @@ export default function Groups() {
 
   const clickHandler = () => {
     router.replace('/newgroup');
-  }  
+  };
   return (
     <>
-    <Flex className='mt-8' alignItems="end" justifyContent='center'>
-            <Button
-              className='mt-1'
-              size="xl"
-              color='green'
-              variant="secondary"
-              onClick={clickHandler}
-            >
-              Create Group
-            </Button>
-          </Flex>
-    <main className="p-4 md:p-10 mx-auto max-w-7xl">
-      <Grid className="gap-6" numColsSm={2} numColsLg={2}>
-        {categories.map((item) => (
-          <Card key={item.title}>
-            <Flex alignItems="start">
-              <Metric>{item.title}</Metric>
-              <Metric>{item.metric}</Metric>
-            </Flex>
-
-            <Text className="truncate">from {item.metricPrev}</Text>
-          </Card>
-        ))}
-        {/* <Card className='bg-transparent '> */}
-          
-        {/* </Card> */}
-      </Grid>
-      <Grid className="mt-8 gap-6" numColsSm={2} numColsLg={3}>
-        {data.map((item) => (
+      <main className="p-4 md:p-10 mx-auto max-w-7xl">
+        <Flex
+          alignItems="end"
+          justifyContent="center"
+          style={{ marginBottom: '1.5rem' }}
+        >
+          <Button
+            className="mt-1"
+            color="emerald"
+            size="xl"
+            // variant="secondary"
+            onClick={clickHandler}
+          >
+            Create Group
+          </Button>
+        </Flex>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap'
+          }}
+        >
           <Card
-            key={item.category}
-            className={styles.card}
-            onClick={() => {
-              router.push(`/group/${item.category}`);
+            decoration="top"
+            decorationColor="emerald"
+            style={{
+              marginRight: '1rem',
+              minWidth: '20rem',
+              maxWidth: '35rem'
             }}
           >
-            <Metric>{item.category}</Metric>
+            <Flex alignItems="start">
+              <Text>Total Amount</Text>
+            </Flex>
             <Flex
-              className="space-y-6"
-              justifyContent="between"
+              className="space-x-3 truncate"
+              justifyContent="start"
               alignItems="baseline"
             >
-              <Title style={{ color: '#ef4444' }}>Money Owed</Title>
-              <Bold style={{ color: '#ef4444' }}>{item.stat}</Bold>
+              <Metric>₹ 5000</Metric>
             </Flex>
-            <Flex justifyContent="between" alignItems="baseline">
-              <Title style={{ color: '#22c55e' }}>Money You Owe</Title>
-              <Bold style={{ color: '#22c55e' }}>{item.stat}</Bold>
-            </Flex>
-            <Flex className="mt-4">
-              <Text>
-                <Bold>Category</Bold>
-              </Text>
-              <Text>
-                <Bold>Amount</Bold>
-              </Text>
-            </Flex>
-            <DonutChart
-              className="mt-6"
-              category="value"
-              index="name"
-              data={item.data}
-              valueFormatter={dataFormatter}
-            />
           </Card>
-        ))}
-      </Grid>
-    </main>
+          <Card
+            decoration="top"
+            decorationColor="emerald"
+            style={{ minWidth: '20rem', maxWidth: '35rem' }}
+          >
+            <Flex alignItems="start">
+              <Text>This Month</Text>
+            </Flex>
+            <Flex
+              className="space-x-3 truncate"
+              justifyContent="start"
+              alignItems="baseline"
+            >
+              <Metric>₹ 5000</Metric>
+            </Flex>
+          </Card>
+        </div>
+        <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={3}>
+          {data.map((item) => (
+            <Card
+              key={item.category}
+              className={styles.card}
+              onClick={() => {
+                router.push(
+                  `/group/id=${item.groupId}?groupId=${item.groupId}`
+                );
+              }}
+            >
+              <Metric>{item.category}</Metric>
+              <Flex
+                className="space-y-6"
+                justifyContent="between"
+                alignItems="baseline"
+              >
+                <Text style={{ color: '#50C878' }}>Money Owed</Text>
+                <Bold style={{ color: '#50C878' }}>{item.stat}</Bold>
+              </Flex>
+              <DonutChart
+                className="mt-6"
+                category="value"
+                index="name"
+                data={item.data}
+                colors={['emerald', 'green', 'teal']}
+                valueFormatter={dataFormatter}
+              />
+            </Card>
+          ))}
+        </Grid>
+      </main>
     </>
   );
 }

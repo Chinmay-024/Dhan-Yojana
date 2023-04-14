@@ -1,127 +1,371 @@
 'use client';
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/router";
-import { Button, FormControl, TextField } from "@mui/material";
-import PaymentsIcon from "@mui/icons-material/Payments";
-// import { Card } from "@tremor/react";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  InputLabel,
+  MenuItem,
+  TextField,
+  Typography,
+  FormControl,
+  FormHelperText
+} from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import Card from '@mui/material/Card';
+import { Button } from '@tremor/react';
+import { BanknotesIcon } from '@heroicons/react/24/outline';
 
-interface Group {
-  name: string;
-  members: Member[];
-}
-
-interface Member {
-  id: number;
+interface Friend {
+  email: string;
   name: string;
 }
 
-function GroupPage() {
-  // mock data for the group and its members
-  const group: Group = {
-    name: "My Group",
-    members: [
-      { id: 11, name: "John" },
-      { id: 12, name: "Jane" },
-      { id: 13, name: "Bob" },
-      { id: 14, name: "John" },
-      { id: 15, name: "Jane" },
-      { id: 16, name: "Bob" },
-    ],
+interface UserD {
+  email: string;
+  name: string;
+  amount: number;
+  owned: boolean;
+}
+
+const friends: Friend[] = [
+  { email: '11', name: 'John' },
+  { email: '12', name: 'Jane' },
+  { email: '13', name: 'Bob' },
+  { email: '14', name: 'Alice' }
+];
+
+const ExpenseForm = () => {
+  const router = useRouter();
+
+  const [selectedPayers, setSelectedPayers] = useState<Friend[]>([]);
+  const [selectedOwers, setSelectedOwers] = useState<Friend[]>([]);
+
+  const [title, setTitle] = useState('');
+  const [type, setType] = useState('');
+  const [currency, setCurrency] = useState('');
+  const [amountsP, setAmountsP] = useState<{ [key: string]: number }>({});
+  const [amountsO, setAmountsO] = useState<{ [key: string]: number }>({});
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [errorP, setErrorP] = useState('');
+  const [errorO, setErrorO] = useState('');
+
+  useEffect(() => {
+    // Initialize state only on the client-side
+    setTitle('');
+    setType('');
+    setAmountsO({});
+    setAmountsP({});
+    setCurrency('');
+    setTotalAmount(0);
+    setErrorP('');
+    setErrorO('');
+  }, []);
+
+  const handlePayerSelect = (event: SelectChangeEvent) => {
+    const friendId = event.target.value as string;
+    const friend = friends.find((f) => f.email === friendId);
+
+    setSelectedPayers((prevSelectedPayers) => {
+      // Only add the friend if it's not already selected
+      if (friend && !prevSelectedPayers.some((f) => f.email === friend.email)) {
+        setErrorP('');
+        return [...prevSelectedPayers, friend];
+      }
+      setErrorP(`${friend?.name} is already added to Payer`);
+      return prevSelectedPayers;
+    });
+    setAmountsP((prevAmounts) => {
+      return { ...prevAmounts, [friendId]: 0 };
+    });
   };
 
-  // state to hold the amount values for each member
-  const [amounts, setAmounts] = useState<{ [key: number]: number }>({});
-  const titleInputRef = useRef<HTMLInputElement>(null);
-  const amountInputRef = useRef<HTMLInputElement>(null);
+  const handleOwerSelect = (event: SelectChangeEvent) => {
+    const friendId = event.target.value as string;
+    const friend = friends.find((f) => f.email === friendId);
 
-  // function to handle form submission
+    setSelectedOwers((prevSelectedOwers) => {
+      // Only add the friend if it's not already selected
+      if (friend && !prevSelectedOwers.some((f) => f.email === friend.email)) {
+        setErrorO('');
+        return [...prevSelectedOwers, friend];
+      }
+      setErrorO(`${friend?.name} is already added to Ower`);
+      return prevSelectedOwers;
+    });
+    setAmountsO((prevAmounts) => {
+      return { ...prevAmounts, [friendId]: 0 };
+    });
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const enteredTitle = titleInputRef.current?.value;
-    const enteredAmount = amountInputRef.current?.value;
-
-    const expenseData = {
-      title: enteredTitle,
-      amount: enteredAmount,
-    };
-
-    // calculate the sum of all amounts
-    const totalAmount = Object.values(amounts).reduce(
-      (acc, curr) => acc + curr,
-      0
-    );
+    var totalOwe = 0;
+    selectedOwers.forEach((o) => {
+      totalOwe += amountsO[o.email];
+    });
+    console.log(totalOwe);
+    var totalPay = 0;
+    selectedPayers.forEach((o) => {
+      totalPay += amountsP[o.email];
+    });
+    console.log(totalPay);
 
     // check if the sum of all amounts is equal to the total amount
-    if (totalAmount !== parseFloat(enteredAmount)) {
-      alert("Sum of all amounts should be equal to the total amount");
+    if (totalOwe !== parseFloat(totalAmount.toString())) {
+      alert('Sum of all OWED amounts should be equal to the total amount');
+      return;
+    }
+    if (totalPay !== parseFloat(totalAmount.toString())) {
+      alert('Sum of all PAID amounts should be equal to the total amount');
       return;
     }
 
-    console.log(expenseData);
-    console.log(amounts);
-    // send the amounts data to the server here
-    setAmounts({});
+    const users: {
+      [key: string]: {
+        email: string;
+        name: string;
+        amount: number;
+        owned: boolean;
+      };
+    } = {};
+
+    selectedPayers.forEach((friend) => {
+      if (amountsP[friend.email] == 0) return;
+      users[friend.email] = {
+        email: friend.email,
+        name: friend.name,
+        amount: amountsP[friend.email] || 0,
+        owned: true
+      };
+    });
+
+    selectedOwers.forEach((friend) => {
+      if (amountsO[friend.email] == 0) return;
+      if (amountsP[friend.email]) {
+        users[friend.email] = {
+          email: friend.email,
+          name: friend.name,
+          amount: amountsP[friend.email] - amountsO[friend.email] || 0,
+          owned: true
+        };
+        if (users[friend.email].amount < 0) {
+          users[friend.email].amount *= -1;
+          users[friend.email].owned = false;
+        }
+      } else {
+        users[friend.email] = {
+          email: friend.email,
+          name: friend.name,
+          amount: amountsO[friend.email] || 0,
+          owned: false
+        };
+      }
+    });
+
+    const userData: UserD[] = [];
+    for (const key in users) {
+      const user = users[key];
+      userData.push(user);
+    }
+    console.log(userData);
+    setTitle('');
+    setType('');
+    setAmountsO({});
+    setAmountsP({});
+    setCurrency('');
+    setTotalAmount(0);
+    setErrorP('');
+    setErrorO('');
+    // router.replace('/');
   };
 
   return (
-    <main
-      className="p-4 md:p-10 mx-auto max-w-7xl"
-      style={{ margin: "auto" }}
-    >
-        <Card sx={{ maxWidth: '50rem' }} style={{ margin: "auto", textAlign: "center" ,padding:"1rem"}}>
-        <h2 className={`text-4xl`}>{group.name}</h2>
-
-        <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
-            <div style={{display:"flex", justifyContent:"center",flexWrap: "wrap"}}>
-          <FormControl>
-            <TextField
-              id="standard-basic"
-              label="Title"
-              required
-              variant="standard"
-              inputRef={titleInputRef}
-              style={{ marginTop: "1rem" }}
-            />
-            <TextField
-              id="standard-basic"
-              label="Total Amount"
-              required
-              type="number"
-              variant="standard"
-              inputRef={amountInputRef}
-              style={{ marginTop: "1rem" }}
-            />
-          </FormControl>
-          <div style={{ textAlign: "center" }}>
-            <ul>
-                {group.members.map((member) => (
-                <li key={member.id} style={{display:'flex', justifyContent:"center"}}>
-                    <span style={{marginTop:'2.3rem', marginRight:'1rem', marginLeft: '2rem'}}>{member.name}</span>
-                    <TextField id="standard-basic" label="Amount" variant="standard"  style={{marginTop:'1rem'}}
-                    type="number"
-                    value={amounts[member.id] || ""}
-                    onChange={(event) =>
-                        setAmounts({
-                        ...amounts,
-                        [member.id]: parseFloat(event.target.value) || 0,
+    <main className="p-4 md:p-10 mx-auto max-w-7xl" style={{ margin: 'auto' }}>
+      <Card
+        sx={{ maxWidth: '50rem' }}
+        style={{ margin: 'auto', textAlign: 'center', padding: '1rem' }}
+      >
+        <Typography
+          variant="h4"
+          component="h2"
+          style={{ marginBottom: '1rem' }}
+        >
+          ADD EXPENSE
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
+            }}
+          >
+            <FormControl>
+              <TextField
+                label="Title"
+                value={title}
+                required
+                onChange={(event) => setTitle(event.target.value)}
+                margin="normal"
+              />
+              <FormControl style={{ marginTop: '1rem' }}>
+                <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={type}
+                  required
+                  label="Type"
+                  onChange={(event) => setType(event.target.value as string)}
+                >
+                  <MenuItem value={'Food'}>Food</MenuItem>
+                  <MenuItem value={'Housing'}>Housing</MenuItem>
+                  <MenuItem value={'Transportation'}>Transportation</MenuItem>
+                  <MenuItem value={'Clothing'}>Clothing</MenuItem>
+                  <MenuItem value={'Medical'}>Medical</MenuItem>
+                  <MenuItem value={'Miscellaneous'}>Miscellaneous</MenuItem>
+                </Select>
+              </FormControl>
+              <div>
+                <FormControl fullWidth style={{ marginTop: '1.5rem' }}>
+                  <InputLabel id="demo-simple-select-label">
+                    Select Payers
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    defaultValue={'Select Payers'}
+                    label="Select Payers"
+                    onChange={handlePayerSelect}
+                    error={!!errorP}
+                  >
+                    {friends.map((friend) => (
+                      <MenuItem key={friend.email} value={friend.email}>
+                        {friend.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>{errorP}</FormHelperText>
+                </FormControl>
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                {selectedPayers.map((friend, index) => (
+                  <div key={friend.email}>
+                    <Typography variant="body1">{friend.name}</Typography>
+                    <TextField
+                      type="number"
+                      label="Amount"
+                      value={amountsP[friend.email] || ''}
+                      onChange={(event) =>
+                        setAmountsP({
+                          ...amountsP,
+                          [friend.email]: parseFloat(event.target.value) || 0
                         })
-                    }
+                      }
+                      margin="normal"
                     />
-                </li>
+                  </div>
                 ))}
-                </ul>
-            </div>
+              </div>
+            </FormControl>
+            <FormControl style={{ marginLeft: '1rem' }}>
+              <FormControl fullWidth>
+                <TextField
+                  label="Total Amount"
+                  variant="outlined"
+                  required
+                  value={totalAmount}
+                  onChange={(e) =>
+                    setTotalAmount(parseInt(e.target.value) || 0)
+                  }
+                  margin="normal"
+                />
+
+                <FormControl style={{ marginTop: '1rem' }}>
+                  <InputLabel id="demo-simple-select-label">
+                    Currency
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={currency}
+                    required
+                    label="Currency"
+                    onChange={(event) =>
+                      setCurrency(event.target.value as string)
+                    }
+                  >
+                    <MenuItem value={'US dollar (USD)'}>
+                      US dollar (USD)
+                    </MenuItem>
+                    <MenuItem value={'Euro (EUR)'}>Euro (EUR)</MenuItem>
+                    <MenuItem value={'Japanese yen (JPY)'}>
+                      Japanese yen (JPY)
+                    </MenuItem>
+                    <MenuItem value={'Pound sterling (GBP)'}>
+                      Pound sterling (GBP)
+                    </MenuItem>
+                    <MenuItem value={'Indian Rupee (INR)'}>
+                      Indian Rupee (INR)
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl style={{ marginTop: '1.5rem' }}>
+                  <InputLabel id="demo-simple-select-label">
+                    Select Owers
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    defaultValue={'Select Owers'}
+                    label="Select Owers"
+                    onChange={handleOwerSelect}
+                    error={!!errorO}
+                  >
+                    {friends.map((friend) => (
+                      <MenuItem key={friend.email} value={friend.email}>
+                        {friend.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>{errorO}</FormHelperText>
+                </FormControl>
+              </FormControl>
+              <div style={{ marginTop: '1rem' }}>
+                {selectedOwers.map((friend, index) => (
+                  <div key={friend.email}>
+                    <Typography variant="body1">{friend.name}</Typography>
+                    <TextField
+                      type="number"
+                      label="Amount"
+                      value={amountsO[friend.email] || ''}
+                      onChange={(event) =>
+                        setAmountsO({
+                          ...amountsO,
+                          [friend.email]: parseFloat(event.target.value) || 0
+                        })
+                      }
+                      margin="normal"
+                    />
+                  </div>
+                ))}
+              </div>
+            </FormControl>
           </div>
-          <FormControl >
-            <div></div>
-            <Button variant="outlined" type="submit" style={{marginTop:"1.5rem"}} endIcon={<PaymentsIcon />}>Submit</Button>
-          </FormControl>
+          <Button
+            type="submit"
+            icon={BanknotesIcon}
+            size="xl"
+            style={{ marginTop: '1.5rem' }}
+            color="emerald"
+          >
+            Submit
+          </Button>
         </form>
-      </Card> 
+      </Card>
     </main>
   );
-}
+};
 
-export default GroupPage;
+export default ExpenseForm;

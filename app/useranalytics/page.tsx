@@ -11,14 +11,16 @@ import {
   BarList,
   Bold,
   DonutChart,
-  LineChart
+  LineChart,
+  Button
 } from '@tremor/react';
-import { Button } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import Chart from './chart';
-import UsersTable from '../../table';
+// import UsersTable from '../table';
 import styles from './page.module.css';
 import { useRouter, usePathname } from 'next/navigation';
+import UsersTable from '../table';
+import { NoSsr } from '@mui/material';
 const website = [
   { name: '/home', value: 1230 },
   { name: '/contact', value: 751 },
@@ -96,15 +98,10 @@ const categories: {
 ];
 
 export default function PlaygroundPage() {
-  const searchParams = useSearchParams();
-
-  console.log(searchParams!!.get('groupId'));
+  const router = useRouter();
 
   const handleClick = () => {
-    const query = { groupId: 'test' };
-    const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
-    // Redirect to new page with query parameters
-    window.location.href = href;
+    router.push('/newexpense');
   };
 
   const users = [
@@ -146,24 +143,26 @@ export default function PlaygroundPage() {
     }
   ];
   return (
-    <main className="p-4 md:p-10 mx-auto max-w-7xl">
-      <Metric>Group</Metric>
-      <Button
-        icon={BanknotesIcon}
-        size="xl"
-        onClick={handleClick}
-        style={{ marginTop: '1.5rem' }}
-        color="emerald"
-      >
-        ADD EXPENSE
-      </Button>
-      <Chart />
-      <Flex justifyContent="center" alignItems="baseline">
-        <Card className="mt-6 overflow-y-auto h-80 ">
-          <Title className="mb-4">Expense List</Title>
-          <UsersTable users={users} />
-        </Card>
-      </Flex>
-    </main>
+    <NoSsr>
+      <main className="p-4 md:p-10 mx-auto max-w-7xl">
+        <Metric>ANALYTICS</Metric>
+        <Button
+          icon={BanknotesIcon}
+          size="xl"
+          onClick={handleClick}
+          style={{ marginTop: '1.5rem' }}
+          color="emerald"
+        >
+          ADD EXPENSE
+        </Button>
+        <Chart />
+        <Flex justifyContent="center" alignItems="baseline">
+          <Card className="mt-6 overflow-y-auto h-80 ">
+            <Title className="mb-4">Expense List</Title>
+            <UsersTable users={users} />
+          </Card>
+        </Flex>
+      </main>
+    </NoSsr>
   );
 }
