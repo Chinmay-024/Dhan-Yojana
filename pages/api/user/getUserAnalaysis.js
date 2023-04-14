@@ -6,6 +6,7 @@ async function handler(req, res) {
     try {
       const session = await getServerSession(req, res, authOptions);
       //   const userId = session.user.id;
+      //TODO change this
       const userId = 'd0ab040d-c015-4c34-a187-c99898d8e9dc';
       //find the user payments details month wise
       const payments = [];

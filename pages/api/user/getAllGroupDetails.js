@@ -11,7 +11,7 @@ async function handler(req, res) {
       //Find the groups that the user is involved in and get the payment details for each group
 
       const querySql =
-        'SELECT groupTable.title,groupTable.image,groupTable.description,groupTable.groupId FROM userInvolvedGroup JOIN groupTable ON userInvolvedGroup.groupId = groupTable.groupId WHERE userInvolvedGroup.userId = ?';
+        'SELECT groupTable.groupId,groupTable.title,groupTable.image,groupTable.description,groupTable.groupId FROM userInvolvedGroup JOIN groupTable ON userInvolvedGroup.groupId = groupTable.groupId WHERE userInvolvedGroup.userId = ?';
       // 'SELECT groupTable.title,groupTable.image,groupTable.description,payments.totalAmount,payments.type,payments.currency FROM userInvolvedGroup JOIN groupTable ON userInvolvedGroup.groupId = groupTable.groupId JOIN payments ON groupTable.groupId = payments.groupId WHERE userInvolvedGroup.userId = ?';
       const valueParams = [userId];
       const data = await query({ query: querySql, values: valueParams });
