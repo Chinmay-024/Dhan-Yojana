@@ -358,7 +358,7 @@ const ExpenseForm = () => {
             icon={BanknotesIcon}
             size="xl"
             style={{ marginTop: '1.5rem' }}
-            color="gray"
+            color="emerald"
           >
             Submit
           </Button>

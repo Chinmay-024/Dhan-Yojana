@@ -1,6 +1,6 @@
-"use client";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+'use client';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import {
   Card,
   Metric,
@@ -11,67 +11,67 @@ import {
   BarList,
   Bold,
   DonutChart,
-  LineChart,
-} from "@tremor/react";
-import { Button } from "@tremor/react";
-import { BanknotesIcon } from "@heroicons/react/24/outline";
-import Chart from "./chart";
-import UsersTable from "../../table";
-import styles from "./page.module.css";
-import { useRouter, usePathname } from "next/navigation";
+  LineChart
+} from '@tremor/react';
+import { Button } from '@tremor/react';
+import { BanknotesIcon } from '@heroicons/react/24/outline';
+import Chart from './chart';
+import UsersTable from '../../table';
+import styles from './page.module.css';
+import { useRouter, usePathname } from 'next/navigation';
 const website = [
-  { name: "/home", value: 1230 },
-  { name: "/contact", value: 751 },
-  { name: "/gallery", value: 471 },
-  { name: "/august-discount-offer", value: 280 },
-  { name: "/case-studies", value: 78 },
+  { name: '/home', value: 1230 },
+  { name: '/contact', value: 751 },
+  { name: '/gallery', value: 471 },
+  { name: '/august-discount-offer', value: 280 },
+  { name: '/case-studies', value: 78 }
 ];
 
 const shop = [
-  { name: "/home", value: 453 },
-  { name: "/imprint", value: 351 },
-  { name: "/shop", value: 271 },
-  { name: "/pricing", value: 191 },
+  { name: '/home', value: 453 },
+  { name: '/imprint', value: 351 },
+  { name: '/shop', value: 271 },
+  { name: '/pricing', value: 191 }
 ];
 
 const app = [
-  { name: "/shop", value: 789 },
-  { name: "/product-features", value: 676 },
-  { name: "/about", value: 564 },
-  { name: "/login", value: 234 },
-  { name: "/downloads", value: 191 },
+  { name: '/shop', value: 789 },
+  { name: '/product-features', value: 676 },
+  { name: '/about', value: 564 },
+  { name: '/login', value: 234 },
+  { name: '/downloads', value: 191 }
 ];
 
 const data = [
   {
-    category: "Website",
-    stat: "10,234",
-    data: website,
+    category: 'Website',
+    stat: '10,234',
+    data: website
   },
   {
-    category: "Online Shop",
-    stat: "12,543",
-    data: shop,
+    category: 'Online Shop',
+    stat: '12,543',
+    data: shop
   },
   {
-    category: "Mobile App",
-    stat: "2,543",
-    data: app,
+    category: 'Mobile App',
+    stat: '2,543',
+    data: app
   },
   {
-    category: "Mobile App",
-    stat: "2,543",
-    data: app,
+    category: 'Mobile App',
+    stat: '2,543',
+    data: app
   },
   {
-    category: "Mobile App",
-    stat: "2,543",
-    data: app,
-  },
+    category: 'Mobile App',
+    stat: '2,543',
+    data: app
+  }
 ];
 
 const dataFormatter = (number: number) =>
-  Intl.NumberFormat("us").format(number).toString();
+  Intl.NumberFormat('us').format(number).toString();
 
 const categories: {
   title: string;
@@ -79,29 +79,29 @@ const categories: {
   metricPrev: string;
 }[] = [
   {
-    title: "Sales",
-    metric: "$ 12,699",
-    metricPrev: "$ 9,456",
+    title: 'Sales',
+    metric: '$ 12,699',
+    metricPrev: '$ 9,456'
   },
   {
-    title: "Profit",
-    metric: "$ 40,598",
-    metricPrev: "$ 45,564",
+    title: 'Profit',
+    metric: '$ 40,598',
+    metricPrev: '$ 45,564'
   },
   {
-    title: "Customers",
-    metric: "1,072",
-    metricPrev: "856",
-  },
+    title: 'Customers',
+    metric: '1,072',
+    metricPrev: '856'
+  }
 ];
 
 export default function PlaygroundPage() {
   const searchParams = useSearchParams();
 
-  console.log(searchParams!!.get("groupId"));
+  console.log(searchParams!!.get('groupId'));
 
   const handleClick = () => {
-    const query = { groupId: "test" };
+    const query = { groupId: 'test' };
     const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
     // Redirect to new page with query parameters
     window.location.href = href;
@@ -110,40 +110,40 @@ export default function PlaygroundPage() {
   const users = [
     {
       id: 1,
-      email: "john.doe@example.com",
-      name: "John Doe",
-      username: "johndoe",
+      email: 'john.doe@example.com',
+      name: 'John Doe',
+      username: 'johndoe'
     },
     {
       id: 2,
-      email: "jane.doe@example.com",
-      name: "Jane Doe",
-      username: "janedoe",
+      email: 'jane.doe@example.com',
+      name: 'Jane Doe',
+      username: 'janedoe'
     },
     {
       id: 3,
-      email: "bob.smith@example.com",
-      name: "Bob Smith",
-      username: "bobsmith",
+      email: 'bob.smith@example.com',
+      name: 'Bob Smith',
+      username: 'bobsmith'
     },
     {
       id: 1,
-      email: "john.doe@example.com",
-      name: "John Doe",
-      username: "johndoe",
+      email: 'john.doe@example.com',
+      name: 'John Doe',
+      username: 'johndoe'
     },
     {
       id: 2,
-      email: "jane.doe@example.com",
-      name: "Jane Doe",
-      username: "janedoe",
+      email: 'jane.doe@example.com',
+      name: 'Jane Doe',
+      username: 'janedoe'
     },
     {
       id: 3,
-      email: "bob.smith@example.com",
-      name: "Bob Smith",
-      username: "bobsmith",
-    },
+      email: 'bob.smith@example.com',
+      name: 'Bob Smith',
+      username: 'bobsmith'
+    }
   ];
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
@@ -152,8 +152,8 @@ export default function PlaygroundPage() {
         icon={BanknotesIcon}
         size="xl"
         onClick={handleClick}
-        style={{ marginTop: "1.5rem" }}
-        color="gray"
+        style={{ marginTop: '1.5rem' }}
+        color="emerald"
       >
         ADD EXPENSE
       </Button>
