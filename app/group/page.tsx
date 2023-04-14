@@ -8,7 +8,8 @@ import {
   Title,
   BarList,
   Bold,
-  DonutChart
+  DonutChart,
+  Button
 } from '@tremor/react';
 import { useRouter } from 'next/navigation';
 import Chart from './chart';
@@ -81,11 +82,6 @@ const categories: {
     title: 'Profit',
     metric: '$ 40,598',
     metricPrev: '$ 45,564'
-  },
-  {
-    title: 'Customers',
-    metric: '1,072',
-    metricPrev: '856'
   }
 ];
 
@@ -94,23 +90,48 @@ export default function Groups() {
   console.log(data[0]);
   const valueFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
+
+  const clickHandler = () => {
+    router.replace('/newgroup');
+  }  
   return (
+    <>
+    <Flex className='mt-8' alignItems="end" justifyContent='center'>
+            <Button
+              className='mt-1'
+              size="xl"
+              color='green'
+              variant="secondary"
+              onClick={clickHandler}
+            >
+              Create Group
+            </Button>
+          </Flex>
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
-      <Grid className="gap-6" numColsSm={2} numColsLg={3}>
+      <Grid className="gap-6" numColsSm={2} numColsLg={2}>
         {categories.map((item) => (
           <Card key={item.title}>
             <Flex alignItems="start">
               <Metric>{item.title}</Metric>
-            < Metric>{item.metric}</Metric>
+              <Metric>{item.metric}</Metric>
             </Flex>
-          
-              <Text className="truncate">from {item.metricPrev}</Text>
+
+            <Text className="truncate">from {item.metricPrev}</Text>
           </Card>
         ))}
+        {/* <Card className='bg-transparent '> */}
+          
+        {/* </Card> */}
       </Grid>
       <Grid className="mt-8 gap-6" numColsSm={2} numColsLg={3}>
         {data.map((item) => (
-          <Card key={item.category} className={styles.card} onClick={()=>{router.push(`/group/${item.category}`)}}>
+          <Card
+            key={item.category}
+            className={styles.card}
+            onClick={() => {
+              router.push(`/group/${item.category}`);
+            }}
+          >
             <Metric>{item.category}</Metric>
             <Flex
               className="space-y-6"
@@ -132,16 +153,17 @@ export default function Groups() {
                 <Bold>Amount</Bold>
               </Text>
             </Flex>
-            <BarList
-              className="mt-2"
+            <DonutChart
+              className="mt-6"
+              category="value"
+              index="name"
               data={item.data}
               valueFormatter={dataFormatter}
-              showAnimation={true}
-              color="cyan"
             />
           </Card>
         ))}
       </Grid>
     </main>
+    </>
   );
 }
