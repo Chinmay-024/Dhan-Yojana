@@ -11,7 +11,7 @@ const sequelize = new Sequelize({
   database: process.env.DATABASE_NAME,
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
-  host: 'localhost',
+  host: process.env.DATABASE_HOST,
   port: 3306
 });
 
@@ -29,7 +29,7 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET
-    }),
+    })
     // Passwordless / email sign in
     // EmailProvider({
     //   server: process.env.MAIL_SERVER,
