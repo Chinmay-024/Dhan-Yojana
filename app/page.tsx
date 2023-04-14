@@ -1,11 +1,14 @@
+'use client';
+
 import { Card, Title, Text, Flex } from '@tremor/react';
 import Search from './search';
 import style from './page.module.css';
 import gif from './qwe.gif';
 import Image from 'next/image';
+import { NoSsr } from '@mui/material';
 export default async function IndexPage() {
   return (
-    <>
+    <NoSsr>
       <style>
         @import
         url('https://fonts.googleapis.com/css2?family=Passion+One:wght@700&family=Roboto:wght@100&display=swap');
@@ -78,6 +81,6 @@ export default async function IndexPage() {
           </Card>
         </Flex>
       </main>
-    </>
+    </NoSsr>
   );
 }

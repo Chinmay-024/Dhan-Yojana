@@ -1,5 +1,3 @@
-'use client';
-
 interface User {
   id: number;
   name: string;
@@ -7,7 +5,10 @@ interface User {
   email: string;
 }
 
-import { useState } from 'react';
+interface Props {
+  users: User[];
+}
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,36 +16,35 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination
-} from '@mui/material';
-import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
+  TablePagination,
+} from "@mui/material";
+import * as React from "react";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
 
-export default function UsersTable({ users }: { users: User[] }) {
+export default function UsersTable({ users }: Props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
+    event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
-  ): void => {
+  ) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: any): void => {
-    // Convert the value of the input field to a number using the unary plus operator (+)
-    setRowsPerPage(+event.target.value);
-
-    // Set the page number to 0 to ensure that the first page is displayed when the number of rows per page changes
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
@@ -53,7 +53,7 @@ export default function UsersTable({ users }: { users: User[] }) {
   const currentUsers = users.slice(start, end);
 
   const theme = useTheme();
-  
+
   return (
     <TableContainer>
       <Table>
@@ -64,9 +64,31 @@ export default function UsersTable({ users }: { users: User[] }) {
               {/* <TableCell>{user.email}</TableCell> */}
               {/* <MediaControlCard/> */}
 
-              <Card sx={{ display: 'flex',justifyContent:'space-between',alignItems:'center' ,width:'100%', cursor: 'pointer' ,background:"linear-gradient(135deg, #fbfbfc 0%,#f6f7f9 100%)",margin:"5px",border:"0px",borderRadius:"15px",boxShadow:"none"}}>
-              <Box sx={{ display: 'flex', flexDirection: 'column' ,alignItems:'center' ,backgroundColor:'whitesmoke',flex: '1 0 auto'}}>
-                  <CardContent sx={{ flex: '1 0 auto' }}>
+              <Card
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                  cursor: "pointer",
+                  background:
+                    "linear-gradient(135deg, #fbfbfc 0%,#f6f7f9 100%)",
+                  margin: "5px",
+                  border: "0px",
+                  borderRadius: "15px",
+                  boxShadow: "none",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    backgroundColor: "whitesmoke",
+                    flex: "1 0 auto",
+                  }}
+                >
+                  <CardContent sx={{ flex: "1 0 auto" }}>
                     <Typography component="div" variant="h7">
                       Category
                     </Typography>
@@ -74,33 +96,56 @@ export default function UsersTable({ users }: { users: User[] }) {
                       variant="subtitle1"
                       color="text.secondary"
                       component="div"
-                      className='text-center'
+                      className="text-center"
                     >
                       Food
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column' ,alignItems:'center',flex: '1 0 auto'}}>
-                  <CardContent sx={{ flex: '1 0 auto' }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    flex: "1 0 auto",
+                  }}
+                >
+                  <CardContent sx={{ flex: "1 0 auto" }}>
                     <Typography
                       variant="subtitle1"
                       color="text.secondary"
                       component="div"
-                      className='text-center'
+                      className="text-center"
                     >
                       27-01-2023
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column' ,alignItems:'center',justifyContent:'start',flex: '3 0 auto'}}>
-                  <CardContent sx={{ flex: '1 0 auto' }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "start",
+                    flex: "3 0 auto",
+                  }}
+                >
+                  <CardContent sx={{ flex: "1 0 auto" }}>
                     <Typography component="div" variant="h7">
                       {user.name}
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column' ,alignItems:'center' ,backgroundColor:'lightgreen',flex: '1 0 auto'}}>
-                  <CardContent sx={{ flex: '1 0 auto' }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    backgroundColor: "lightgreen",
+                    flex: "1 0 auto",
+                  }}
+                >
+                  <CardContent sx={{ flex: "1 0 auto" }}>
                     <Typography component="div" variant="h7">
                       You Owe
                     </Typography>
@@ -108,13 +153,12 @@ export default function UsersTable({ users }: { users: User[] }) {
                       variant="subtitle1"
                       color="text.secondary"
                       component="div"
-                      className='text-center'
+                      className="text-center"
                     >
                       234 (INR)
                     </Typography>
                   </CardContent>
                 </Box>
-                
               </Card>
             </TableRow>
           ))}

@@ -1,7 +1,11 @@
 import { Card, Metric, Text, Flex, Grid, Title, BarList } from '@tremor/react';
 import Chart from './chart';
-
-const website = [
+interface websitex {
+  name: string;
+  value: number;
+}
+[];
+const website: websitex[] = [
   { name: '/home', value: 1230 },
   { name: '/contact', value: 751 },
   { name: '/gallery', value: 471 },
@@ -23,7 +27,6 @@ const app = [
   { name: '/login', value: 234 },
   { name: '/downloads', value: 191 }
 ];
-
 const data = [
   {
     category: 'Website',
