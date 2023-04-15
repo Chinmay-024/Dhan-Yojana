@@ -7,7 +7,8 @@ import {
   Text,
   SelectBox,
   SelectBoxItem,
-  Flex
+  Flex,
+  Grid
 } from '@tremor/react';
 import { useState } from 'react';
 
@@ -75,14 +76,16 @@ export default function Chart() {
     Expense: monthwiseData[month]
   }));
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexWrap: 'wrap'
-      }}
-    >
-      <Card className="mt-8" style={{ maxWidth: '49.5%' }}>
+    // <div
+    //   style={{
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     flexWrap: 'wrap'
+    //   }}
+    // >
+
+    <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
+      <Card>
         <Title>EXPENSES</Title>
         <Text>For current year</Text>
         <div
@@ -144,10 +147,7 @@ export default function Chart() {
           // yAxisWidth={40}
         />
       </Card>
-      <Card
-        className="mt-8"
-        style={{ maxWidth: '49.5%', marginLeft: '0.7rem' }}
-      >
+      <Card>
         <Title>EXPENSES</Title>
         <Text>For selected year</Text>
         <div
@@ -181,6 +181,7 @@ export default function Chart() {
           // yAxisWidth={40}
         />
       </Card>
-    </div>
+      {/* </div> */}
+    </Grid>
   );
 }

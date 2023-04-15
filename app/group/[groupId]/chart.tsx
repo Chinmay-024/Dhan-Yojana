@@ -1,53 +1,143 @@
 'use client';
 
-import { Card, AreaChart, Title, Text,LineChart } from '@tremor/react';
+import {
+  Card,
+  AreaChart,
+  Title,
+  Text,
+  SelectBox,
+  SelectBoxItem,
+  Flex,
+  Grid
+} from '@tremor/react';
+import { useState } from 'react';
 
-const data = [
-  {
-    Month: 'Jan 21',
-    Sales: 2890,
-    Profit: 2400
-  },
-  {
-    Month: 'Feb 21',
-    Sales: 1890,
-    Profit: 1398
-  },
-  {
-    Month: 'Mar 21',
-    Sales: 1890,
-    Profit: 100
-  },
-  {
-    Month: 'Apr 21',
-    Sales: 1890,
-    Profit: 200
-  },
-  {
-    Month: 'Jan 22',
-    Sales: 3890,
-    Profit: 2980
-  }
-];
+interface MonthwiseData {
+  [key: string]: number;
+}
 
 const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
-export default function Chart() {
-  return (
-    <Card className="mt-8">
-      <Title>Performance</Title>
-      <Text>Comparison between Sales and Profit</Text>
+export default function Chart({ data }) {
+  const [selectedYear, setSelectedYear] = useState<string>('2021');
+  const [selectedMonth, setSelectedMonth] = useState<string>('01');
 
-      <AreaChart
-      className="mt-6"
-      data={data}
-      index="Month"
-      categories={[ 'Profit']}
-      colors={["blue"]}
-      valueFormatter={valueFormatter}
-      // yAxisWidth={40}
-    />
-    </Card>
+  const [selectedYear2, setSelectedYear2] = useState<string>('2021');
+
+  const monthwiseData: MonthwiseData = {};
+  data.forEach((item) => {
+    const [itemYear, itemMonth] = item.Date.split('-');
+
+    if (itemYear === selectedYear2.toString()) {
+      if (monthwiseData[itemMonth]) {
+        monthwiseData[itemMonth] += item.Expense;
+      } else {
+        monthwiseData[itemMonth] = item.Expense;
+      }
+    }
+  });
+  const chartData = Object.keys(monthwiseData).map((month) => ({
+    Month: `${selectedYear2}-${month}`,
+    Expense: monthwiseData[month]
+  }));
+  return (
+    <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
+      <Card>
+        <Title>EXPENSES</Title>
+        <Text>For current year</Text>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div style={{ margin: '0.5rem' }}>
+            <SelectBox
+              style={{
+                maxWidth: '1rem'
+              }}
+              value={selectedYear}
+              onValueChange={(e) => setSelectedYear(e)}
+            >
+              <SelectBoxItem value="2018">2018</SelectBoxItem>
+              <SelectBoxItem value="2019">2019</SelectBoxItem>
+              <SelectBoxItem value="2021">2021</SelectBoxItem>
+              <SelectBoxItem value="2022">2022</SelectBoxItem>
+              <SelectBoxItem value="2023">2023</SelectBoxItem>
+            </SelectBox>
+          </div>
+          <div style={{ margin: '0.5rem' }}>
+            <SelectBox
+              style={{
+                maxWidth: '1rem'
+              }}
+              value={selectedMonth}
+              onValueChange={(e) => setSelectedMonth(e)}
+            >
+              <SelectBoxItem value="01">January</SelectBoxItem>
+              <SelectBoxItem value="02">February</SelectBoxItem>
+              <SelectBoxItem value="03">March</SelectBoxItem>
+              <SelectBoxItem value="04">April</SelectBoxItem>
+              <SelectBoxItem value="05">May</SelectBoxItem>
+              <SelectBoxItem value="06">June</SelectBoxItem>
+              <SelectBoxItem value="07">July</SelectBoxItem>
+              <SelectBoxItem value="08">August</SelectBoxItem>
+              <SelectBoxItem value="09">September</SelectBoxItem>
+              <SelectBoxItem value="10">October</SelectBoxItem>
+              <SelectBoxItem value="11">November</SelectBoxItem>
+              <SelectBoxItem value="12">December</SelectBoxItem>
+            </SelectBox>
+          </div>
+        </div>
+        <AreaChart
+          className="mt-6"
+          data={data.filter(
+            (item) =>
+              item.Date.substr(0, 4) === selectedYear &&
+              item.Date.substr(5, 2) === selectedMonth
+          )}
+          index="Date"
+          categories={['Expense']}
+          colors={['blue']}
+          valueFormatter={valueFormatter}
+          // yAxisWidth={40}
+        />
+      </Card>
+      <Card>
+        <Title>EXPENSES</Title>
+        <Text>For selected year</Text>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '1rem'
+          }}
+        >
+          <SelectBox
+            style={{
+              maxWidth: '1rem'
+            }}
+            value={selectedYear2}
+            onValueChange={(e) => setSelectedYear2(e)}
+          >
+            <SelectBoxItem value="2018">2018</SelectBoxItem>
+            <SelectBoxItem value="2019">2019</SelectBoxItem>
+            <SelectBoxItem value="2021">2021</SelectBoxItem>
+            <SelectBoxItem value="2022">2022</SelectBoxItem>
+            <SelectBoxItem value="2023">2023</SelectBoxItem>
+          </SelectBox>
+        </div>
+        <AreaChart
+          className="mt-6"
+          data={chartData}
+          index="Month"
+          categories={['Expense']}
+          colors={['blue']}
+          valueFormatter={valueFormatter}
+        />
+      </Card>
+    </Grid>
   );
 }

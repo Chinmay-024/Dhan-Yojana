@@ -133,6 +133,75 @@ export default function GroupPage({
       username: 'bobsmith'
     }
   ];
+
+  const userData = [
+    {
+      Date: '2021-01-01',
+      Expense: 2400
+    },
+    {
+      Date: '2021-02-01',
+      Expense: 1398
+    },
+    {
+      Date: '2021-02-05',
+      Expense: 130
+    },
+    {
+      Date: '2021-03-01',
+      Expense: 100
+    },
+    {
+      Date: '2021-04-01',
+      Expense: 200
+    },
+    {
+      Date: '2021-04-05',
+      Expense: -100
+    },
+    {
+      Date: '2021-04-25',
+      Expense: 300
+    },
+    {
+      Date: '2022-01-01',
+      Expense: 2980
+    }
+  ];
+  const groupData = [
+    {
+      Date: '2021-01-01',
+      Expense: 2400
+    },
+    {
+      Date: '2021-02-01',
+      Expense: 1398
+    },
+    {
+      Date: '2021-02-05',
+      Expense: 130
+    },
+    {
+      Date: '2021-03-01',
+      Expense: 100
+    },
+    {
+      Date: '2021-04-01',
+      Expense: 200
+    },
+    {
+      Date: '2021-04-05',
+      Expense: -100
+    },
+    {
+      Date: '2021-04-25',
+      Expense: 300
+    },
+    {
+      Date: '2022-01-01',
+      Expense: 2980
+    }
+  ];
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
       <Metric>Group</Metric>
@@ -145,7 +214,8 @@ export default function GroupPage({
       >
         ADD EXPENSE
       </Button>
-      <Chart />
+      <Chart data={userData} />
+      <Chart data={groupData} />
       <Flex justifyContent="center" alignItems="baseline">
         <Card className="mt-6 overflow-y-auto h-80 ">
           <Title className="mb-4">Expense List</Title>

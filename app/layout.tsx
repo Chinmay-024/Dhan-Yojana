@@ -4,11 +4,11 @@ import Nav from './nav';
 import AnalyticsWrapper from './analytics';
 
 import { Suspense } from 'react';
-
+import Loading from './loading';
 export const metadata = {
-  title: 'Next.js 13 + PlanetScale + NextAuth + Tailwind CSS',
+  title: 'Dhan Yojana',
   description:
-    'A user admin dashboard configured with Next.js, PlanetScale, NextAuth, Tailwind CSS, TypeScript, ESLint, and Prettier.'
+    'The Dhan Yojana is a powerful and user-friendly web application designed to help users manage their expenses and split costs with friends, roommates, and colleagues.'
 };
 
 export default async function RootLayout({
@@ -19,12 +19,13 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full bg-gray-50">
       <body className="h-full">
-        <Suspense fallback="...">
+        <Suspense fallback={<Loading />}>
           {/* @ts-expect-error Server Component */}
           <Nav />
         </Suspense>
         {children}
         <AnalyticsWrapper />
+        <Toast />
       </body>
     </html>
   );

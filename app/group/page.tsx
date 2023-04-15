@@ -9,8 +9,10 @@ import {
   BarList,
   Bold,
   DonutChart,
-  Button
+  Button,
+  Subtitle
 } from '@tremor/react';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { useRouter } from 'next/navigation';
 import Chart from './chart';
 import styles from './page.module.css';
@@ -120,23 +122,9 @@ export default function Groups() {
             Create Group
           </Button>
         </Flex>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap'
-          }}
-        >
-          <Card
-            decoration="top"
-            decorationColor="emerald"
-            style={{
-              marginRight: '1rem',
-              minWidth: '20rem',
-              maxWidth: '35rem'
-            }}
-          >
+
+        <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={3}>
+          <Card decoration="top" decorationColor="emerald">
             <Flex alignItems="start">
               <Text>Total Amount</Text>
             </Flex>
@@ -145,14 +133,12 @@ export default function Groups() {
               justifyContent="start"
               alignItems="baseline"
             >
-              <Metric>₹ 5000</Metric>
+              <Metric>
+                <CurrencyRupeeIcon /> 5000
+              </Metric>
             </Flex>
           </Card>
-          <Card
-            decoration="top"
-            decorationColor="emerald"
-            style={{ minWidth: '20rem', maxWidth: '35rem' }}
-          >
+          <Card decoration="top" decorationColor="emerald">
             <Flex alignItems="start">
               <Text>This Month</Text>
             </Flex>
@@ -161,10 +147,24 @@ export default function Groups() {
               justifyContent="start"
               alignItems="baseline"
             >
-              <Metric>₹ 5000</Metric>
+              <Metric>
+                <CurrencyRupeeIcon /> 5000
+              </Metric>
             </Flex>
           </Card>
-        </div>
+          <Card decoration="top" decorationColor="emerald">
+            <Flex alignItems="start">
+              <Text>No of Users</Text>
+            </Flex>
+            <Flex
+              className="space-x-3 truncate"
+              justifyContent="start"
+              alignItems="baseline"
+            >
+              <Metric>20</Metric>
+            </Flex>
+          </Card>
+        </Grid>
         <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={3}>
           {data.map((item,i) => (
             <Card
@@ -182,7 +182,7 @@ export default function Groups() {
                 justifyContent="between"
                 alignItems="baseline"
               >
-                <Text style={{ color: '#50C878' }}>Money Owed</Text>
+                <Subtitle>Money Owed</Subtitle>
                 <Bold style={{ color: '#50C878' }}>{item.stat}</Bold>
               </Flex>
               <DonutChart

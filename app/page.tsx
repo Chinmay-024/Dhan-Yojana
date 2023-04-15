@@ -7,8 +7,16 @@ import gif from './qwe.gif';
 import Image from 'next/image';
 import Head from 'next/head';
 import NoSsr from '@mui/base/NoSsr';
+import { useState, useEffect } from 'react';
 
 export default async function IndexPage() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // introduce a 3-second delay
+  }, []);
   return (
     <NoSsr>
       {/* <style>
@@ -25,8 +33,16 @@ export default async function IndexPage() {
         <div className={`${style.title}`}>
           <div>
             <h2 className={`text-9xl ${style.heading}`}>Dhan</h2>
-            <h2 className={`text-9xl ${style.heading}`}>Yojana</h2>
-            <Text className="text-2xl text-center">
+            <h2
+              className={`text-9xl ${style.heading}`}
+              style={{ marginBottom: '1.5rem' }}
+            >
+              Yojana
+            </h2>
+            <Text
+              className="text-2xl text-center"
+              style={{ marginTop: '1rem' }}
+            >
               {/* Split the bill, not the friendship */}
               {/* Split with ease, together or alone, with our app */}
               Keep track, stay on track
