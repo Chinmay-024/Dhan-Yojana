@@ -31,13 +31,7 @@ const users = [
   // Add as many objects as you need...
 ];
 
-const NewGroup = () => {
-  const [title, setTitle] = useState('');
-  const [description, setdescription] = useState<string>('');
-  const [image, setImage] = useState<string>('');
-  const [error1, setError1] = useState<boolean>(false);
-  const [error2, setError2] = useState<boolean>(false);
-  const [error3, setError3] = useState<boolean>(false);
+const Adduser = () => {
   const [error4, setError4] = useState<boolean>(false);
   const [addedUser, setAddedUser] = useState<
     Array<{ email: string; name: string }>
@@ -69,99 +63,10 @@ const NewGroup = () => {
     setAddedUser(newstate);
   };
 
-  const titleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
-  };
-  const descHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setdescription(event.target.value);
-  };
-  const imageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setImage(event.target.value);
-  };
-
-  const clickHandler = (e: any) => {
-    e.preventDefault();
-    if (
-      title.trim().length !== 0 &&
-      description.trim().length !== 0 &&
-      image.trim().length !== 0 &&
-      addedUser.length !== 0
-    ) {
-      return;
-    }
-    if (addedUser.length === 0) {
-      setError4(true);
-    }
-    if (title.trim().length === 0) {
-      setError1(true);
-    }
-    if (description.trim().length === 0) {
-      setError2(true);
-    }
-    if (image.trim().length === 0) {
-      setError3(true);
-    }
-  };
   return (
     <NoSsr>
-    <main className="p-4 md:p-10 mx-auto max-w-7xl" style={{ margin: 'auto' }}>
-      <Flex justifyContent="evenly">
-        <Card
-          className="max-w-lg "
-          // sx={{ maxWidth: '' }}
-          // style={{ margin: 'auto', textAlign: 'center', padding: '1rem' }}
-        >
-          <form>
-            {/* <div style={{display:"flex", justifyContent:"center",flexWrap: "wrap"}}> */}
-            <Title>Title</Title>
-            <TextInput
-              error={error1}
-              placeholder="Enter the Title of group"
-              value={title}
-              onChange={titleHandler}
-            />
-            <Title className="mt-6">Description</Title>
-            <TextInput
-              error={error2}
-              placeholder="describe your Group"
-              value={description}
-              onChange={descHandler}
-            />
-            <Title className="mt-6">Image</Title>
-            <TextInput
-              error={error3}
-              placeholder="provide LINK for your image"
-              value={image}
-              onChange={imageHandler}
-            />
-            <Flex className="justify-center">
-              <Button className="mt-9" color={'green'} onClick={clickHandler}>
-                <Flex>
-                  <span style={{ margin: '2px' }}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                  <span> Create Group</span>
-                </Flex>
-              </Button>
-            </Flex>
-          </form>
-        </Card>
-        <Card
-          className="max-w-xs"
-          style={{ border: `${error4 ? '1px solid red' : ''}` }}
-        >
-          <Card className="max-w-xs">
+        <Flex className='flex-col'>
+          <Card className="max-100 mt-2 mb-3">
             <Title>Add users</Title>
             <Dropdown
               className="mt-2"
@@ -209,11 +114,9 @@ const NewGroup = () => {
               ))}
             </List>
           </Card>
-        </Card>
-      </Flex>
-    </main>
+          </Flex>
     </NoSsr>
   );
 };
 
-export default NewGroup;
+export default Adduser;

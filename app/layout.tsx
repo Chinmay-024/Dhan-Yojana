@@ -25,7 +25,6 @@ export default async function RootLayout({
         </Suspense>
         {children}
         <AnalyticsWrapper />
-        <Toast />
       </body>
     </html>
   );
