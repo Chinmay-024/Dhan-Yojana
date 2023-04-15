@@ -16,9 +16,10 @@ import {
 import { Button } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import Chart from './chart';
-import UsersTable from '../../table';
+import TransTable from './transtable';
 import styles from './page.module.css';
 import { useRouter, usePathname } from 'next/navigation';
+
 const website = [
   { name: '/home', value: 1230 },
   { name: '/contact', value: 751 },
@@ -95,37 +96,24 @@ const categories: {
   }
 ];
 
-export default function PlaygroundPage() {
+export default function GroupPage({
+  params,
+}: {
+  params: { groupId: string };
+}) {
   const searchParams = useSearchParams();
-
-  console.log(searchParams!!.get('groupId'));
+  const router = useRouter();
+  console.log('got the params',params);
 
   const handleClick = () => {
-    const query = { groupId: 'test' };
+    const query = { groupId: params.groupId};
     const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
+    router.replace(href)
     // Redirect to new page with query parameters
-    window.location.href = href;
+    // window.location.href = href;
   };
 
   const users = [
-    {
-      id: 1,
-      email: 'john.doe@example.com',
-      name: 'John Doe',
-      username: 'johndoe'
-    },
-    {
-      id: 2,
-      email: 'jane.doe@example.com',
-      name: 'Jane Doe',
-      username: 'janedoe'
-    },
-    {
-      id: 3,
-      email: 'bob.smith@example.com',
-      name: 'Bob Smith',
-      username: 'bobsmith'
-    },
     {
       id: 1,
       email: 'john.doe@example.com',
@@ -161,9 +149,10 @@ export default function PlaygroundPage() {
       <Flex justifyContent="center" alignItems="baseline">
         <Card className="mt-6 overflow-y-auto h-80 ">
           <Title className="mb-4">Expense List</Title>
-          <UsersTable users={users} />
+          <TransTable users={users} />
         </Card>
       </Flex>
     </main>
+    
   );
 }

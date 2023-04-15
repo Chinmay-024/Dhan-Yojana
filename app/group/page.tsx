@@ -166,13 +166,13 @@ export default function Groups() {
           </Card>
         </div>
         <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={3}>
-          {data.map((item) => (
+          {data.map((item,i) => (
             <Card
               key={item.category}
               className={styles.card}
               onClick={() => {
                 router.push(
-                  `/group/id=${item.groupId}?groupId=${item.groupId}`
+                  `/group/id`+i
                 );
               }}
             >

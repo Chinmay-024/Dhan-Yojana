@@ -83,7 +83,11 @@ const messages = [
   { username: 'Charlie', message: 'Thanks!' }
 ];
 
-export default function TransactionId() {
+export default function TransactionId({
+  params,
+}: {
+  params: { groupId: string ,transactionId:string};
+}) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -91,6 +95,8 @@ export default function TransactionId() {
   const [expanded, setExpanded] = React.useState(false);
   const [comment, setComment] = React.useState('');
 
+  console.log("param : ",params)
+  
   const valueFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 

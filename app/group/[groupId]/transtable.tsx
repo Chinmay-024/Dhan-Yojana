@@ -1,3 +1,4 @@
+'use client';
 interface User {
   id: number;
   name: string;
@@ -8,6 +9,7 @@ interface User {
 interface Props {
   users: User[];
 }
+
 import { useEffect, useState } from 'react';
 import {
   Table,
@@ -16,26 +18,26 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination
+  TablePagination,
+  NoSsr
 } from '@mui/material';
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
+import { useRouter } from 'next/navigation';
+// import { useSession } from "next-auth/react"
 
-export default function UsersTable({ users }: Props) {
+
+export default function TransTable({ users }: Props) {
+  const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    // Initialize state only on the client-side
+    // Initialize state only on the client- side
     setPage(0);
     setRowsPerPage(5);
   }, []);
@@ -54,6 +56,19 @@ export default function UsersTable({ users }: Props) {
     setPage(0);
   };
 
+  // const { data: session } = useSession()
+  const handleClick = async (event : any) => {
+    // console.log(session)
+    // const session = await getServerSession();
+    // console.log(session?.user)
+    console.log(event.currentTarget.getAttribute('data-id'));
+    const id = event.currentTarget.getAttribute('data-id');
+    // const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
+    router.push(window.location.href+'/'+id);
+    // Redirect to new page with query parameters
+    // window.location.href = href;
+  };
+
   const start = page * rowsPerPage;
   const end = start + rowsPerPage;
   const currentUsers = users.slice(start, end);
@@ -61,16 +76,19 @@ export default function UsersTable({ users }: Props) {
   const theme = useTheme();
 
   return (
+    <NoSsr>
     <TableContainer>
       <Table>
         <TableBody>
-          {currentUsers.map((user) => (
-            <TableRow key={user.id}>
+          {currentUsers.map((user,index) => (
+            <TableRow key={user.id} >
               {/* <TableCell>{user.name}</TableCell> */}
               {/* <TableCell>{user.email}</TableCell> */}
               {/* <MediaControlCard/> */}
 
               <Card
+                data-id={`${index}`}
+                onClick={handleClick} 
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -84,6 +102,8 @@ export default function UsersTable({ users }: Props) {
                   borderRadius: '15px',
                   boxShadow: 'none'
                 }}
+                
+                
               >
                 <Box
                   sx={{
@@ -94,14 +114,14 @@ export default function UsersTable({ users }: Props) {
                     flex: '1 0 auto'
                   }}
                 >
-                  <CardContent sx={{ flex: '1 0 auto' }}>
-                    <Typography component="div" variant="h6">
+                  <CardContent sx={{ flex: '1 0 auto' }} >
+                    <Typography variant="h6">
                       Category
                     </Typography>
                     <Typography
                       variant="subtitle1"
                       color="text.secondary"
-                      component="div"
+                   
                       className="text-center"
                     >
                       Food
@@ -116,11 +136,11 @@ export default function UsersTable({ users }: Props) {
                     flex: '1 0 auto'
                   }}
                 >
-                  <CardContent sx={{ flex: '1 0 auto' }}>
+                  <CardContent sx={{ flex: '1 0 auto' }} >
                     <Typography
                       variant="subtitle1"
                       color="text.secondary"
-                      component="div"
+                
                       className="text-center"
                     >
                       27-01-2023
@@ -137,7 +157,7 @@ export default function UsersTable({ users }: Props) {
                   }}
                 >
                   <CardContent sx={{ flex: '1 0 auto' }}>
-                    <Typography component="div" variant="h6">
+                    <Typography variant="h6">
                       {user.name}
                     </Typography>
                   </CardContent>
@@ -152,13 +172,12 @@ export default function UsersTable({ users }: Props) {
                   }}
                 >
                   <CardContent sx={{ flex: '1 0 auto' }}>
-                    <Typography component="div" variant="h6">
+                    <Typography variant="h6">
                       You Owe
                     </Typography>
                     <Typography
                       variant="subtitle1"
                       color="text.secondary"
-                      component="div"
                       className="text-center"
                     >
                       234 (INR)
@@ -171,7 +190,6 @@ export default function UsersTable({ users }: Props) {
         </TableBody>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
-          component="div"
           count={users.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -180,5 +198,8 @@ export default function UsersTable({ users }: Props) {
         />
       </Table>
     </TableContainer>
+    </NoSsr>
   );
 }
+
+
