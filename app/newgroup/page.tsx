@@ -60,14 +60,16 @@ const NewGroup = () => {
     // })
   };
 
-  const removeUserHandler = (event : any) => {
-      const email = event.target.parentElement.parentElement.parentElement.nextSibling.firstChild.innerHTML;
-      setAddedUser((prevState) => {
-        const newState = prevState.filter(user => {
-          user.email!==email
-        });
-        return newState;
+  const removeUserHandler = (event: any) => {
+    const email =
+      event.target.parentElement.parentElement.parentElement.nextSibling
+        .firstChild.innerHTML;
+    setAddedUser((prevState) => {
+      const newState = prevState.filter((user) => {
+        user.email !== email;
       });
+      return newState;
+    });
   };
 
   const titleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,13 +88,13 @@ const NewGroup = () => {
       title.trim().length !== 0 &&
       description.trim().length !== 0 &&
       image.trim().length !== 0 &&
-      addedUser.length!==0
+      addedUser.length !== 0
     ) {
       return;
     }
-    if(addedUser.length===0){
+    if (addedUser.length === 0) {
       setError4(true);
-    } 
+    }
     if (title.trim().length === 0) {
       setError1(true);
     }
@@ -157,7 +159,10 @@ const NewGroup = () => {
             </Flex>
           </form>
         </Card>
-        <Card className="max-w-xs" style={{'border':`${error4?'1px solid red':''}`}}>
+        <Card
+          className="max-w-xs"
+          style={{ border: `${error4 ? '1px solid red' : ''}` }}
+        >
           <Card className="max-w-xs">
             <Title>Add users</Title>
             <Dropdown
@@ -170,7 +175,7 @@ const NewGroup = () => {
               ))}
             </Dropdown>
           </Card>
-          <Card >
+          <Card>
             <Title className="text-center">Added</Title>
             <List>
               {addedUser.map((user, i) => (

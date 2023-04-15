@@ -1,15 +1,25 @@
-import { Title, Text } from '@tremor/react';
-import Search from './search';
+'use client';
+import React from 'react';
+import { CircularProgress, Typography } from '@mui/material';
 
-export default async function Loading() {
+const Loading: React.FC = () => {
   return (
-    <main className="p-4 md:p-10 mx-auto max-w-7xl">
-      <Title>Users</Title>
-      <Text>
-        A list of users retrieved from a MySQL database (PlanetScale).
-      </Text>
-      <Search disabled />
-      <div className="tremor-base tr-relative tr-w-full tr-mx-auto tr-text-left tr-ring-1 tr-mt-6 tr-max-w-none tr-bg-white tr-shadow tr-border-blue-400 tr-ring-gray-200 tr-pl-6 tr-pr-6 tr-pt-6 tr-pb-6 tr-rounded-lg h-[360px]" />
-    </main>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        backgroundColor: '#f5f5f5'
+      }}
+    >
+      <CircularProgress size={60} thickness={4} color="primary" />
+      <Typography variant="h5" color="textPrimary" style={{ marginTop: 20 }}>
+        Loading...
+      </Typography>
+    </div>
   );
-}
+};
+
+export default Loading;
