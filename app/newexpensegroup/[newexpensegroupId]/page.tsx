@@ -19,6 +19,7 @@ import { BanknotesIcon } from '@heroicons/react/24/outline';
 interface Friend {
   email: string;
   name: string;
+  image: string;
 }
 
 interface UserD {
@@ -28,14 +29,18 @@ interface UserD {
   owned: boolean;
 }
 
-const friends: Friend[] = [
-  { email: '11', name: 'John' },
-  { email: '12', name: 'Jane' },
-  { email: '13', name: 'Bob' },
-  { email: '14', name: 'Alice' }
-];
+// const friends: Friend[] = [
+//   { email: '11', name: 'John' },
+//   { email: '12', name: 'Jane' },
+//   { email: '13', name: 'Bob' },
+//   { email: '14', name: 'Alice' }
+// ];
 
-const ExpenseForm = () => {
+const ExpenseFormGroup = ({
+  params
+}: {
+  params: { newexpensegroupId: string };
+}) => {
   const router = useRouter();
 
   const [selectedPayers, setSelectedPayers] = useState<Friend[]>([]);
@@ -49,6 +54,7 @@ const ExpenseForm = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [errorP, setErrorP] = useState('');
   const [errorO, setErrorO] = useState('');
+  const [friends, setFriends] = useState<Friend[]>([]);
 
   useEffect(() => {
     // Initialize state only on the client-side
@@ -60,7 +66,30 @@ const ExpenseForm = () => {
     setTotalAmount(0);
     setErrorP('');
     setErrorO('');
-  }, []);
+
+    const getData = async () => {
+      console.log('Hu' + params.newexpensegroupId);
+      var data = {
+        groupId: params.newexpensegroupId
+      };
+      const JSONdata = JSON.stringify(data);
+      const endpoint = '/api/groups/findFriends';
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSONdata
+      };
+
+      const response = await fetch(endpoint, options);
+      const result = await response.json();
+
+      setFriends(result.users);
+    };
+    getData();
+  }, [params.newexpensegroupId]);
 
   const handlePayerSelect = (event: SelectChangeEvent) => {
     const friendId = event.target.value as string;
@@ -98,7 +127,7 @@ const ExpenseForm = () => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     var totalOwe = 0;
     selectedOwers.forEach((o) => {
@@ -163,12 +192,36 @@ const ExpenseForm = () => {
       }
     });
 
-    const userData: UserD[] = [];
+    const usersData: UserD[] = [];
     for (const key in users) {
       const user = users[key];
-      userData.push(user);
+      usersData.push(user);
     }
-    console.log(userData);
+    console.log(usersData);
+    var data = {
+      title,
+      type,
+      totalAmount,
+      currency,
+      groupId: parseInt(params.newexpensegroupId),
+      users: usersData
+    };
+    console.log(data);
+
+    const JSONdata = JSON.stringify(data);
+    const endpoint = '/api/payments/addPayment';
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSONdata
+    };
+
+    const response = await fetch(endpoint, options);
+    const result = await response.json();
+
     setTitle('');
     setType('');
     setAmountsO({});
@@ -177,7 +230,7 @@ const ExpenseForm = () => {
     setTotalAmount(0);
     setErrorP('');
     setErrorO('');
-    // router.replace('/');
+    router.replace('/');
   };
 
   return (
@@ -368,4 +421,4 @@ const ExpenseForm = () => {
   );
 };
 
-export default ExpenseForm;
+export default ExpenseFormGroup;

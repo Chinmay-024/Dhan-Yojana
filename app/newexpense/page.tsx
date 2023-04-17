@@ -19,7 +19,7 @@ import { BanknotesIcon } from '@heroicons/react/24/outline';
 interface Friend {
   email: string;
   name: string;
-  image: url;
+  image: string;
 }
 
 interface UserD {

@@ -7,7 +7,7 @@ async function handler(req, res) {
   );
   if (req.method === 'POST') {
     try {
-      const session = await getServerSession(req, res, authOptions);
+      // const session = await getServerSession(req, res, authOptions);
       const {
         title,
         type,
