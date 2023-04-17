@@ -19,6 +19,7 @@ import { BanknotesIcon } from '@heroicons/react/24/outline';
 interface Friend {
   email: string;
   name: string;
+  image: url;
 }
 
 interface UserD {
@@ -28,12 +29,12 @@ interface UserD {
   owned: boolean;
 }
 
-const friends: Friend[] = [
-  { email: '11', name: 'John' },
-  { email: '12', name: 'Jane' },
-  { email: '13', name: 'Bob' },
-  { email: '14', name: 'Alice' }
-];
+// const friends: Friend[] = [
+//   { email: '11', name: 'John' },
+//   { email: '12', name: 'Jane' },
+//   { email: '13', name: 'Bob' },
+//   { email: '14', name: 'Alice' }
+// ];
 
 const ExpenseForm = () => {
   const router = useRouter();
@@ -49,6 +50,7 @@ const ExpenseForm = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [errorP, setErrorP] = useState('');
   const [errorO, setErrorO] = useState('');
+  const [friends, setFriends] = useState<Friend[]>([]);
 
   useEffect(() => {
     // Initialize state only on the client-side
@@ -60,8 +62,15 @@ const ExpenseForm = () => {
     setTotalAmount(0);
     setErrorP('');
     setErrorO('');
+    const getData = async () => {
+      const test_url = `/api/user/getAllUser`;
+      const res = await fetch(test_url);
+      console.log(test_url);
+      const resData = await res.json();
+      setFriends(resData.users);
+    };
+    getData();
   }, []);
-
   const handlePayerSelect = (event: SelectChangeEvent) => {
     const friendId = event.target.value as string;
     const friend = friends.find((f) => f.email === friendId);
@@ -98,7 +107,7 @@ const ExpenseForm = () => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     var totalOwe = 0;
     selectedOwers.forEach((o) => {
@@ -163,12 +172,36 @@ const ExpenseForm = () => {
       }
     });
 
-    const userData: UserD[] = [];
+    const usersData: UserD[] = [];
     for (const key in users) {
       const user = users[key];
-      userData.push(user);
+      usersData.push(user);
     }
-    console.log(userData);
+    console.log(usersData);
+    var data = {
+      title,
+      type,
+      totalAmount,
+      currency,
+      groupId: null,
+      users: usersData
+    };
+    // console.log(data);
+
+    const JSONdata = JSON.stringify(data);
+    const endpoint = '/api/payments/addPayment';
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSONdata
+    };
+
+    const response = await fetch(endpoint, options);
+    const result = await response.json();
+
     setTitle('');
     setType('');
     setAmountsO({});

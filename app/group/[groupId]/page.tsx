@@ -36,6 +36,7 @@ import {
   List,
   ListItem
 } from '@tremor/react';
+import { useEffect } from 'react';
 
 const website = [
   { name: '/home', value: 1230 },
@@ -87,7 +88,13 @@ const data = [
     data: app
   }
 ];
-
+interface MyObject {
+  groups: Group[];
+  paymentDetails: Payment[][];
+  totalAmount: number;
+  totalAmountForGroups: number[];
+  totalAmountForMonth: number;
+}
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
@@ -155,6 +162,61 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   }, [])
   
 
+  const handleClose2 = () => setOpen(false);
+  const [expanded, setExpanded] = React.useState(false);
+  const [comment, setComment] = React.useState('');
+  const [fetchData, setFetchData] = React.useState();
+  // const [fetchData, setFetchData] = React.useState<MyObject>();
+  useEffect(() => {
+    // const getData = async () => {
+    //   const test_url = `/api/user/getGroupUserAnalysis/${params.groupId}`;
+    //   const res = await fetch(test_url);
+    //   console.log(test_url);
+    //   const resData = await res.json();
+    //   console.log('Yo', resData);
+    //   console.log('Hi');
+    // };
+    // getData();
+    const getData = async () => {
+      const test_url = `/api/user/getGroupUserAnalaysis/${params.groupId}`;
+      const res = await fetch(test_url);
+      console.log(test_url);
+      const resData = await res.json();
+      console.log('Yo', resData);
+    };
+    getData();
+  }, [params.groupId]);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const res = await fetch('/api/user/getAllGroupDetails');
+  //     const resData = await res.json();
+  //     console.log('sadada', resData);
+  //     const newData = resData.paymentDetails.map((item: Payment1[]) => {
+  //       return item.map((payment) => {
+  //         return {
+  //           total: parseFloat(payment.total),
+  //           type: payment.type
+  //         };
+  //       });
+  //     });
+  //     const data12 = Array.from(newData);
+  //     console.log('123', {
+  //       groups: resData.groups,
+  //       paymentDetails: newData,
+  //       totalAmount: resData.totalAmount,
+  //       totalAmountForGroups: resData.totalAmountForGroups,
+  //       totalAmountForMonth: resData.totalAmountForMonth
+  //     });
+  //     setFetchData({
+  //       groups: resData.groups,
+  //       paymentDetails: newData,
+  //       totalAmount: resData.totalAmount,
+  //       totalAmountForGroups: resData.totalAmountForGroups,
+  //       totalAmountForMonth: resData.totalAmountForMonth
+  //     });
+  //   };
+  //   getData();
+  // }, []);
   console.log('param : ', params);
 
   // const onChangeHandler = (event: any) => {

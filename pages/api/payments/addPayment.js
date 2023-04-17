@@ -2,6 +2,9 @@ import { query } from '../../../lib/db';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 async function handler(req, res) {
+  console.log(
+    'arrived-----------------------------------------------------------------------'
+  );
   if (req.method === 'POST') {
     try {
       const session = await getServerSession(req, res, authOptions);

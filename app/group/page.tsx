@@ -213,10 +213,10 @@ export default function Groups() {
           )}
         </Grid>
         {!fetchData && (
-            <Box sx={{ display: 'flex' ,justifyContent:"center"}}>
-              <CircularProgress />
-            </Box>
-          )}
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <CircularProgress />
+          </Box>
+        )}
         <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={3}>
           {fetchData &&
             fetchData.groups.map((item, i) => (
@@ -224,7 +224,7 @@ export default function Groups() {
                 key={item.groupId}
                 className={styles.card}
                 onClick={() => {
-                  router.push(`/group/`+item.groupId);
+                  router.push(`/group/${item.groupId}`);
                 }}
               >
                 <Metric>{item.title}</Metric>
