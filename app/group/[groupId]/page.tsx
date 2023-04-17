@@ -15,7 +15,8 @@ import {
 } from '@tremor/react';
 import { Button } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import Chart from './chart';
 import TransTable from './transtable';
@@ -31,6 +32,10 @@ import Fade from '@mui/material/Fade';
 
 import TextField from '@mui/material/TextField';
 import Adduser from './formModal';
+import {
+  List,
+  ListItem
+} from '@tremor/react';
 
 const website = [
   { name: '/home', value: 1230 },
@@ -124,25 +129,47 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   console.log('got the params', params);
-
+  const [allUser,setAllUser] = React.useState<any>([]);
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleOpen2 = () => setOpen(true);
+  const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
-  const handleClose2 = () => setOpen(false);
-  const [expanded, setExpanded] = React.useState(false);
-  const [comment, setComment] = React.useState('');
+  const handleClose2 = () => setOpen2(false);
+  console.log("alluser",allUser)
+  React.useEffect(() => {
+    const getData =async () => {
+        const resData = await fetch('/api/user/getAllUser');
+        const data :any = await resData.json();
+        console.log("all users",data.users)
+        setAllUser([...data.users])
+    }
+
+    const getgroupdata = async () => {
+        const resData = await fetch('/api/user/getGroupUserAnalaysis/'+params.groupId);
+        const data = await resData.json();
+        console.log("group data",data)
+    }
+    getgroupdata();
+    getData();
+  }, [])
+  
 
   console.log('param : ', params);
 
-  const onChangeHandler = (event: any) => {
-    setComment(event.target.value);
-  };
+  // const onChangeHandler = (event: any) => {
+  //   setComment(event.target.value);
+  // };
 
-  const addCommentHandler = () => {
-    console.log(comment);
+  const addCommentHandler = (event: any) => {
+    event.preventDefault();
+    console.log('asd', 1);
     setOpen(false);
+  };
+  const addCommentHandler2 = (event: any) => {
+    event.preventDefault();
+    console.log('qwe', 2);
+    setOpen2(false);
   };
 
   const handleClick = () => {
@@ -256,7 +283,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           ADD EXPENSE
         </Button>
         <Button
-          icon={PlusIcon}
+          icon={UserPlusIcon}
           size="xl"
           onClick={handleOpen}
           style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
@@ -306,16 +333,17 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               >
                 Type Comment
               </Typography>
-              <Adduser/>
+              <Adduser userData={allUser}/>
+              <Flex justifyContent='center'>
               <Button
-                icon={BanknotesIcon}
                 size="xl"
                 onClick={addCommentHandler}
-                style={{ marginTop: '1.5rem'}}
+                style={{ marginTop: '1.5rem' }}
                 color="emerald"
               >
-                Add User
+                Add
               </Button>
+              </Flex>
             </form>
           </Box>
         </Fade>
@@ -343,16 +371,33 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               >
                 All Users
               </Typography>
-              <Adduser/>
-              <Button
-                icon={BanknotesIcon}
-                size="xl"
-                onClick={addCommentHandler}
-                style={{ marginTop: '1.5rem'}}
-                color="emerald"
-              >
-                Add User
-              </Button>
+              <List>
+                {categories.map((user, i) => (
+                  <ListItem key={i + 1} className="block">
+                    <div className="flex flex-col items-center justify-center">
+                      <div>
+                        <Flex>
+                          <Text color="stone">{user.title}</Text>
+                        </Flex>
+                      </div>
+                      <div>
+                        <Text color="gray">{user.title}</Text>
+                      </div>
+                    </div>
+                  </ListItem>
+                ))}
+              </List>
+              <Flex justifyContent="center">
+                <Button
+                  icon={XMarkIcon}
+                  size="xl"
+                  onClick={addCommentHandler2}
+                  style={{ marginTop: '1.5rem' }}
+                  color="emerald"
+                >
+                  Close
+                </Button>
+              </Flex>
             </form>
           </Box>
         </Fade>
@@ -360,4 +405,3 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     </>
   );
 }
-

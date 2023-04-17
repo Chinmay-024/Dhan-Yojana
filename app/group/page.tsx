@@ -82,7 +82,7 @@ export default function Groups() {
       const res = await fetch('/api/user/getAllGroupDetails');
       const resData = await res.json();
       console.log('sadada', resData);
-      const newData = resData.paymentDetails.map((item: Payment1[]) => {
+      const newData = resData!!.paymentDetails.map((item: Payment1[]) => {
         return item.map((payment) => {
           return {
             total: parseFloat(payment.total),
@@ -224,7 +224,7 @@ export default function Groups() {
                 key={item.groupId}
                 className={styles.card}
                 onClick={() => {
-                  router.push(`/group/id` + i);
+                  router.push(`/group/`+item.groupId);
                 }}
               >
                 <Metric>{item.title}</Metric>

@@ -14,6 +14,7 @@ export default function MediaControlCard() {
   const theme = useTheme();
 
   return (
-    <></>
+    <>
+    </>
   );
 }

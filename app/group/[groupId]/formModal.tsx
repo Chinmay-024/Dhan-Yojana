@@ -31,23 +31,23 @@ const users = [
   // Add as many objects as you need...
 ];
 
-const Adduser = () => {
+const Adduser = ({ userData }: any) => {
   const [error4, setError4] = useState<boolean>(false);
   const [addedUser, setAddedUser] = useState<
     Array<{ email: string; name: string }>
   >([]);
-
+  console.log('in modal',userData)
   const addUserHandler = (value: String) => {
     const val = Number(value);
     const f = addedUser.find((user) => {
-      return user.email === users[val].email;
+      return user.email === userData[val].email;
     });
-    console.log(f, users[val].name);
+    console.log(f, userData[val].name);
     if (f === undefined) {
       setAddedUser((prevState) => {
         return [
           ...prevState,
-          { name: users[val].name, email: users[val].email }
+          { name: userData[val].name, email: userData[val].email }
         ];
       });
     }
@@ -64,7 +64,7 @@ const Adduser = () => {
   };
 
   return (
-    <NoSsr>
+
         <Flex className='flex-col'>
           <Card className="max-100 mt-2 mb-3">
             <Title>Add users</Title>
@@ -73,7 +73,7 @@ const Adduser = () => {
               onValueChange={addUserHandler}
               placeholder="user"
             >
-              {users.map((user, i) => (
+              {userData&& userData.map((user :any, i:any) => (
                 <DropdownItem key={i} value={String(i)} text={`${user.name}`} />
               ))}
             </Dropdown>
@@ -115,7 +115,6 @@ const Adduser = () => {
             </List>
           </Card>
           </Flex>
-    </NoSsr>
   );
 };
 
