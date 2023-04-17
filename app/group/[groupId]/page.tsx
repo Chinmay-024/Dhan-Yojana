@@ -32,10 +32,7 @@ import Fade from '@mui/material/Fade';
 
 import TextField from '@mui/material/TextField';
 import Adduser from './formModal';
-import {
-  List,
-  ListItem
-} from '@tremor/react';
+import { List, ListItem } from '@tremor/react';
 import { useEffect } from 'react';
 
 const website = [
@@ -136,37 +133,33 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   console.log('got the params', params);
-  const [allUser,setAllUser] = React.useState<any>([]);
+  const [allUser, setAllUser] = React.useState<any>([]);
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
-  console.log("alluser",allUser)
+  console.log('alluser', allUser);
   React.useEffect(() => {
-    const getData =async () => {
-        const resData = await fetch('/api/user/getAllUser');
-        const data :any = await resData.json();
-        console.log("all users",data.users)
-        setAllUser([...data.users])
-    }
+    const getData = async () => {
+      const resData = await fetch('/api/user/getAllUser');
+      const data: any = await resData.json();
+      console.log('all users', data.users);
+      setAllUser([...data.users]);
+    };
 
     const getgroupdata = async () => {
-        const resData = await fetch('/api/user/getGroupUserAnalaysis/'+params.groupId);
-        const data = await resData.json();
-        console.log("group data",data)
-    }
+      const resData = await fetch(
+        '/api/user/getGroupUserAnalaysis/' + params.groupId
+      );
+      const data = await resData.json();
+      console.log('group data', data);
+    };
     getgroupdata();
     getData();
-  }, [])
-  
+  }, [params.groupId]);
 
-  const handleClose2 = () => setOpen(false);
-  const [expanded, setExpanded] = React.useState(false);
-  const [comment, setComment] = React.useState('');
-  const [fetchData, setFetchData] = React.useState();
-  // const [fetchData, setFetchData] = React.useState<MyObject>();
   useEffect(() => {
     // const getData = async () => {
     //   const test_url = `/api/user/getGroupUserAnalysis/${params.groupId}`;
@@ -395,16 +388,16 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               >
                 Type Comment
               </Typography>
-              <Adduser userData={allUser}/>
-              <Flex justifyContent='center'>
-              <Button
-                size="xl"
-                onClick={addCommentHandler}
-                style={{ marginTop: '1.5rem' }}
-                color="emerald"
-              >
-                Add
-              </Button>
+              <Adduser userData={allUser} />
+              <Flex justifyContent="center">
+                <Button
+                  size="xl"
+                  onClick={addCommentHandler}
+                  style={{ marginTop: '1.5rem' }}
+                  color="emerald"
+                >
+                  Add
+                </Button>
               </Flex>
             </form>
           </Box>
