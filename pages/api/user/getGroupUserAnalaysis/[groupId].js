@@ -13,7 +13,7 @@ async function handler(req, res) {
 
       for (let i = 0; i < 12; i++) {
         const querySql =
-          'SELECT payments.totalAmount,payments.type,payments.currency,share.amount,share.owned FROM share JOIN payments ON share.paymentId = payments.paymentId WHERE share.userId = ? AND MONTH(payments.createdAt) = ? AND YEAR(payments.createdAt) = YEAR(CURRENT_DATE()) AND payments.groupId = ? ORDER BY payments.createdAt DESC';
+          'SELECT payments.totalAmount,payments.type,payments.currency,share.amount,share.owned FROM share JOIN payments ON share.paymentId = payments.paymentId WHERE share.userId = ? AND MONTH(payments.createdAt) = ? AND payments.groupId = ? ORDER BY payments.createdAt DESC';
         const valueParams = [userId, i + 1, req.query.groupId];
         const data = await query({ query: querySql, values: valueParams });
         userPayments.push(data);
@@ -37,7 +37,7 @@ async function handler(req, res) {
       const groupPaymentMonthWise = [];
       for (let i = 0; i < 12; i++) {
         const querySql =
-          'SELECT payments.totalAmount,payments.type,payments.currency FROM payments WHERE MONTH(payments.createdAt) = ? AND YEAR(payments.createdAt) = YEAR(CURRENT_DATE()) AND payments.groupId = ? ORDER BY payments.createdAt DESC';
+          'SELECT payments.totalAmount,payments.type,payments.currency FROM payments WHERE MONTH(payments.createdAt) = ? AND payments.groupId = ? ORDER BY payments.createdAt DESC';
         const valueParams = [i + 1, req.query.groupId];
         const data = await query({ query: querySql, values: valueParams });
         groupPayments.push(data);
