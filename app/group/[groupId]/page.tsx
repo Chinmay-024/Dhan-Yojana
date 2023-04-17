@@ -332,7 +332,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
                 </Box>
                 <Text className='mt-2' color='blue'> Fetching Expenses</Text></>
             )}
-            {fetchedPayments && allPayments.length>0 && <TransTable users={users}  />}
+            {fetchedPayments && allPayments.length>0 && <TransTable paymentData={allPayments}  />}
             {fetchedPayments && allPayments.length===0 && <Text>No Expense Yet!!!</Text>}
           </Card>
         </Flex>

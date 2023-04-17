@@ -1,13 +1,19 @@
 'use client';
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
+interface paymentData {
+    amount: string;
+    createdAt: string;
+    email: string;
+    name: string;
+    owned: number;
+    paymentId: number;
+    title: string;
+    totalAmount: string;
+    type: string;
 }
 
+
 interface Props {
-  users: User[];
+  paymentData: paymentData[];
 }
 
 import { useEffect, useState } from 'react';
@@ -31,10 +37,30 @@ import { useRouter } from 'next/navigation';
 // import { useSession } from "next-auth/react"
 
 
-export default function TransTable({ users }: Props) {
+export default function TransTable({ paymentData }: Props) {
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+const combinedData :any= {};
+
+console.log("users",paymentData);
+paymentData.forEach((item:any) => {
+  const key = `${item.email}_${item.paymentId}`;
+  if (!combinedData[key]) {
+    combinedData[key] = { ...item };
+  } else {
+    if (item.owned === 1) {
+      combinedData[key].amount = (parseFloat(combinedData[key].amount) + parseFloat(item.amount)).toFixed(2);
+    } else if (item.owned === 0) {
+      combinedData[key].amount = (parseFloat(combinedData[key].amount) - parseFloat(item.amount)).toFixed(2);
+    }
+  }
+});
+
+const finalData = Object.values(combinedData);
+console.log("final data",finalData);
+
 
   useEffect(() => {
     // Initialize state only on the client- side
@@ -71,7 +97,7 @@ export default function TransTable({ users }: Props) {
 
   const start = page * rowsPerPage;
   const end = start + rowsPerPage;
-  const currentUsers = users.slice(start, end);
+  const currentPayment = finalData.slice(start, end);
 
   const theme = useTheme();
 
@@ -80,14 +106,14 @@ export default function TransTable({ users }: Props) {
     <TableContainer>
       <Table>
         <TableBody>
-          {currentUsers.map((user,index) => (
-            <TableRow key={user.id} >
+          {currentPayment.map((payment :any,index) => (
+            <TableRow key={payment.paymentId} >
               {/* <TableCell>{user.name}</TableCell> */}
               {/* <TableCell>{user.email}</TableCell> */}
               {/* <MediaControlCard/> */}
 
               <Card
-                data-id={`${index}`}
+                data-id={`${payment.paymentId}`}
                 onClick={handleClick} 
                 sx={{
                   display: 'flex',
@@ -124,7 +150,7 @@ export default function TransTable({ users }: Props) {
                    
                       className="text-center"
                     >
-                      Food
+                      {payment.type}
                     </Typography>
                   </CardContent>
                 </Box>
@@ -143,7 +169,7 @@ export default function TransTable({ users }: Props) {
                 
                       className="text-center"
                     >
-                      27-01-2023
+                      {new Date(payment.createdAt).toLocaleString().split(',')[0]}
                     </Typography>
                   </CardContent>
                 </Box>
@@ -158,7 +184,7 @@ export default function TransTable({ users }: Props) {
                 >
                   <CardContent sx={{ flex: '1 0 auto' }}>
                     <Typography variant="h6">
-                      {user.name}
+                      {payment.title}
                     </Typography>
                   </CardContent>
                 </Box>
@@ -180,7 +206,7 @@ export default function TransTable({ users }: Props) {
                       color="text.secondary"
                       className="text-center"
                     >
-                      234 (INR)
+                      {payment.amount} (INR)
                     </Typography>
                   </CardContent>
                 </Box>
@@ -190,7 +216,7 @@ export default function TransTable({ users }: Props) {
         </TableBody>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
-          count={users.length}
+          count={finalData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
