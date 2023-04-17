@@ -29,8 +29,7 @@ import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-
-import TextField from '@mui/material/TextField';
+import { CircularProgress } from '@mui/material';
 import Adduser from './formModal';
 import { List, ListItem } from '@tremor/react';
 import { useEffect } from 'react';
@@ -130,10 +129,13 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [allUser, setAllUser] = React.useState<any>([]);
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [fetchedPayments, setFetchedPayments] = React.useState(false);
+  const [allPayments ,setAllPayments] = React.useState<any>([]);
   const handleOpen = () => setOpen(true);
   const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
+
   console.log('alluser', allUser);
   React.useEffect(() => {
     const getData = async () => {
@@ -143,6 +145,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       setAllUser([...data.users]);
     };
 
+    getData();
 
   }, []);
 
@@ -163,7 +166,17 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       const resData = await res.json();
       console.log('Yo', resData);
     };
+    const getPayments = async () => {
+      const test_url = `/api/groups/getPayments/${params.groupId}`;
+      const res = await fetch(test_url);
+      console.log(test_url);
+      const resData = await res.json();
+      console.log('Yo', resData.payments);
+      setAllPayments(resData.payments);
+      setFetchedPayments(true);
+    };
     getData();
+    getPayments();
   }, [params.groupId]);
   // useEffect(() => {
   //   const getData = async () => {
@@ -347,7 +360,15 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>
-            <TransTable users={users} />
+            {!fetchedPayments && (
+                <>
+                <Box sx={{ display: 'flex' }}>
+                  <CircularProgress />
+                </Box>
+                <Text className='mt-2' color='blue'> Fetching Expenses</Text></>
+            )}
+            {fetchedPayments && allPayments.length>0 && <TransTable users={users}  />}
+            {fetchedPayments && allPayments.length===0 && <Text>No Expense Yet!!!</Text>}
           </Card>
         </Flex>
       </main>
