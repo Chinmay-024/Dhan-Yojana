@@ -13,7 +13,7 @@ async function handler(req, res) {
       const paymentMonthWise = [];
       for (let i = 0; i < 12; i++) {
         const querySql =
-          'SELECT payments.totalAmount,payments.type,payments.currency,share.amount,share.owned FROM share JOIN payments ON share.paymentId = payments.paymentId WHERE share.userId = ? AND MONTH(payments.createdAt) = ? AND YEAR(payments.createdAt) = YEAR(CURRENT_DATE()) ORDER BY payments.createdAt DESC';
+          'SELECT payments.totalAmount,payments.type,payments.currency,share.amount,share.owned FROM share JOIN payments ON share.paymentId = payments.paymentId WHERE share.userId = ? AND MONTH(payments.createdAt) = ?  ORDER BY payments.createdAt DESC';
         const valueParams = [userId, i + 1];
         const data = await query({ query: querySql, values: valueParams });
         payments.push(data);
