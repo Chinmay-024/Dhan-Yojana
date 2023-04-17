@@ -178,42 +178,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     getData();
     getPayments();
   }, [params.groupId]);
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const res = await fetch('/api/user/getAllGroupDetails');
-  //     const resData = await res.json();
-  //     console.log('sadada', resData);
-  //     const newData = resData.paymentDetails.map((item: Payment1[]) => {
-  //       return item.map((payment) => {
-  //         return {
-  //           total: parseFloat(payment.total),
-  //           type: payment.type
-  //         };
-  //       });
-  //     });
-  //     const data12 = Array.from(newData);
-  //     console.log('123', {
-  //       groups: resData.groups,
-  //       paymentDetails: newData,
-  //       totalAmount: resData.totalAmount,
-  //       totalAmountForGroups: resData.totalAmountForGroups,
-  //       totalAmountForMonth: resData.totalAmountForMonth
-  //     });
-  //     setFetchData({
-  //       groups: resData.groups,
-  //       paymentDetails: newData,
-  //       totalAmount: resData.totalAmount,
-  //       totalAmountForGroups: resData.totalAmountForGroups,
-  //       totalAmountForMonth: resData.totalAmountForMonth
-  //     });
-  //   };
-  //   getData();
-  // }, []);
-  console.log('param : ', params);
 
-  // const onChangeHandler = (event: any) => {
-  //   setComment(event.target.value);
-  // };
+  console.log('param : ', params);
 
   const addCommentHandler = (event: any) => {
     event.preventDefault();
@@ -227,11 +193,10 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   };
 
   const handleClick = () => {
-    const query = { groupId: params.groupId };
-    const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
-    router.replace(href);
-    // Redirect to new page with query parameters
-    // window.location.href = href;
+    // const query = { groupId: params.groupId };
+    // const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
+    // router.replace(href);
+    router.push(`/newexpensegroup/${params.groupId}`);
   };
 
   const users = [
