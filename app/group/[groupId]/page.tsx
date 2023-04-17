@@ -130,7 +130,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [fetchedPayments, setFetchedPayments] = React.useState(false);
-  const [allPayments ,setAllPayments] = React.useState<any>([]);
+  const [allPayments, setAllPayments] = React.useState<any>([]);
   const handleOpen = () => setOpen(true);
   const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
@@ -146,7 +146,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     };
 
     getData();
-
   }, []);
 
   useEffect(() => {
@@ -193,9 +192,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   };
 
   const handleClick = () => {
-    // const query = { groupId: params.groupId };
-    // const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
-    // router.replace(href);
     router.push(`/newexpensegroup/${params.groupId}`);
   };
 
@@ -326,14 +322,22 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>
             {!fetchedPayments && (
-                <>
+              <>
                 <Box sx={{ display: 'flex' }}>
                   <CircularProgress />
                 </Box>
-                <Text className='mt-2' color='blue'> Fetching Expenses</Text></>
+                <Text className="mt-2" color="blue">
+                  {' '}
+                  Fetching Expenses
+                </Text>
+              </>
             )}
-            {fetchedPayments && allPayments.length>0 && <TransTable users={users}  />}
-            {fetchedPayments && allPayments.length===0 && <Text>No Expense Yet!!!</Text>}
+            {fetchedPayments && allPayments.length > 0 && (
+              <TransTable users={users} />
+            )}
+            {fetchedPayments && allPayments.length === 0 && (
+              <Text>No Expense Yet!!!</Text>
+            )}
           </Card>
         </Flex>
       </main>
