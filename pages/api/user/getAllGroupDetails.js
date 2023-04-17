@@ -6,7 +6,7 @@ async function handler(req, res) {
     try {
       const session = await getServerSession(req, res, authOptions);
       //   const userId = session.user.id;
-      const userId = '31cf34b1-2274-4062-b6ca-bc9276ad904b';
+      const userId = 'a23e67ba-5fdb-4565-9f5d-be4ca9e39e7d';
 
       //Find the groups that the user is involved in and get the payment details for each group
 

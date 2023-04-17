@@ -85,13 +85,7 @@ const data = [
     data: app
   }
 ];
-interface MyObject {
-  groups: Group[];
-  paymentDetails: Payment[][];
-  totalAmount: number;
-  totalAmountForGroups: number[];
-  totalAmountForMonth: number;
-}
+
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
@@ -149,16 +143,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       setAllUser([...data.users]);
     };
 
-    const getgroupdata = async () => {
-      const resData = await fetch(
-        '/api/user/getGroupUserAnalaysis/' + params.groupId
-      );
-      const data = await resData.json();
-      console.log('group data', data);
-    };
-    getgroupdata();
-    getData();
-  }, [params.groupId]);
+
+  }, []);
 
   useEffect(() => {
     // const getData = async () => {

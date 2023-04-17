@@ -69,16 +69,17 @@ interface MyObject {
 export default function Groups() {
   const router = useRouter();
   const [fetchData, setFetchData] = useState<MyObject>();
-
+  const [datafetching,setDataFetching] = useState<boolean>(false);
   const valueFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
   const clickHandler = () => {
     router.replace('/newgroup');
   };
-
+  
   useEffect(() => {
     const getData = async () => {
+      setDataFetching(true);
       const res = await fetch('/api/user/getAllGroupDetails');
       const resData = await res.json();
       console.log('sadada', resData);
@@ -98,6 +99,7 @@ export default function Groups() {
         totalAmountForGroups: resData.totalAmountForGroups,
         totalAmountForMonth: resData.totalAmountForMonth
       });
+      setDataFetching(false);
       setFetchData({
         groups: resData.groups,
         paymentDetails: newData,
@@ -184,7 +186,7 @@ export default function Groups() {
               </Flex>
             </Card>
           )}
-          {fetchData && (
+          {fetchData  && (
             <Card
               decoration="top"
               decorationColor={
@@ -212,7 +214,7 @@ export default function Groups() {
             </Card>
           )}
         </Grid>
-        {!fetchData && (
+        {!fetchData && datafetching && (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <CircularProgress />
           </Box>
