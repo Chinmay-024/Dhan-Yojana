@@ -24,57 +24,6 @@ import Adduser from './formModal';
 import { List, ListItem } from '@tremor/react';
 import { useEffect } from 'react';
 
-const website = [
-  { name: '/home', value: 1230 },
-  { name: '/contact', value: 751 },
-  { name: '/gallery', value: 471 },
-  { name: '/august-discount-offer', value: 280 },
-  { name: '/case-studies', value: 78 }
-];
-
-const shop = [
-  { name: '/home', value: 453 },
-  { name: '/imprint', value: 351 },
-  { name: '/shop', value: 271 },
-  { name: '/pricing', value: 191 }
-];
-
-const app = [
-  { name: '/shop', value: 789 },
-  { name: '/product-features', value: 676 },
-  { name: '/about', value: 564 },
-  { name: '/login', value: 234 },
-  { name: '/downloads', value: 191 }
-];
-
-const data = [
-  {
-    category: 'Website',
-    stat: '10,234',
-    data: website
-  },
-  {
-    category: 'Online Shop',
-    stat: '12,543',
-    data: shop
-  },
-  {
-    category: 'Mobile App',
-    stat: '2,543',
-    data: app
-  },
-  {
-    category: 'Mobile App',
-    stat: '2,543',
-    data: app
-  },
-  {
-    category: 'Mobile App',
-    stat: '2,543',
-    data: app
-  }
-];
-
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
@@ -115,7 +64,6 @@ const style = {
 export default function GroupPage({ params }: { params: { groupId: string } }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  // console.log('got the params', params);
   const [allUser, setAllUser] = React.useState<any>([]);
   const [friends, setFriends] = React.useState<any>([]);
   const [open, setOpen] = React.useState(false);
@@ -130,8 +78,10 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
 
-  // console.log('alluser', allUser);
-  React.useEffect(() => {
+  const [userPayments, setUserPayments] = React.useState<any>([]);
+  const [groupPayments, setGroupPayments] = React.useState<any>([]);
+
+  useEffect(() => {
     let intial_user: any = [];
     let intial_friends: any = [];
     const getData = async () => {
@@ -155,35 +105,61 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       setAllUser([...intial_user]);
       setFetchingUsers(false);
     };
-    const getFriends = async () => {
-      // const resData = await fetch(`/api/groups/findFriends/${params.groupId}`);
-      // const data: any = await resData.json();
-      // // console.log('response of friends', data);
-      // // console.log("setFriends",data.users);
-      // intial_friends = [...data.users];
-      // // console.log("Friends :->",intial_friends)
-      // setFriends([...intial_friends]);
-    };
 
     getData();
-    // getFriends();
 
-    
-  }, [addingUser]);
-
-  useEffect(() => {
-    const getPayments = async () => {
-      const test_url = `/api/groups/getPayments/${params.groupId}`;
-      const res = await fetch(test_url);
-      console.log(test_url);
+    const expenseGroupData = async () => {
+      var userMail = '20cs01009@iitbbs.ac.in';
+      const res = await fetch(`/api/groups/getPayments/${params.groupId}`);
       const resData = await res.json();
-      console.log('Yo', resData.payments);
       setAllPayments(resData.payments);
       setFetchedPayments(true);
+      const filteredArray = resData.payments.filter(
+        (obj: {
+          name: string;
+          email: string;
+          amount: number;
+          owned: boolean;
+          paymentId: number;
+          type: string;
+          title: string;
+          updatedAt: string;
+        }) => obj.owned == false
+      );
+      const filteredArrayForUser = resData.payments.filter(
+        (obj: {
+          name: string;
+          email: string;
+          amount: number;
+          owned: boolean;
+          paymentId: number;
+          type: string;
+          title: string;
+          updatedAt: string;
+        }) => obj.owned == false && obj.email == userMail
+      );
+
+      const selectedColumnsArray = filteredArray.map(
+        (obj: { updatedAt: any; amount: any }) => {
+          return {
+            Date: obj.updatedAt,
+            Expense: obj.amount
+          };
+        }
+      );
+      const selectedColumnsArrayonUser = filteredArrayForUser.map(
+        (obj: { updatedAt: any; amount: any }) => {
+          return {
+            Date: obj.updatedAt,
+            Expense: obj.amount
+          };
+        }
+      );
+      setGroupPayments(selectedColumnsArray);
+      setUserPayments(selectedColumnsArray);
     };
-    // getData();
-    getPayments();
-  }, [params.groupId]);
+    expenseGroupData();
+  }, [params.groupId,addingUser]);
 
   // console.log('param : ', params);
 
@@ -230,74 +206,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     router.push(`/newexpensegroup/${params.groupId}`);
   };
 
-  const userData = [
-    {
-      Date: '2021-01-01',
-      Expense: 2400
-    },
-    {
-      Date: '2021-02-01',
-      Expense: 1398
-    },
-    {
-      Date: '2021-02-05',
-      Expense: 130
-    },
-    {
-      Date: '2021-03-01',
-      Expense: 100
-    },
-    {
-      Date: '2021-04-01',
-      Expense: 200
-    },
-    {
-      Date: '2021-04-05',
-      Expense: -100
-    },
-    {
-      Date: '2021-04-25',
-      Expense: 300
-    },
-    {
-      Date: '2022-01-01',
-      Expense: 2980
-    }
-  ];
-  const groupData = [
-    {
-      Date: '2021-01-01',
-      Expense: 2400
-    },
-    {
-      Date: '2021-02-01',
-      Expense: 1398
-    },
-    {
-      Date: '2021-02-05',
-      Expense: 130
-    },
-    {
-      Date: '2021-03-01',
-      Expense: 100
-    },
-    {
-      Date: '2021-04-01',
-      Expense: 200
-    },
-    {
-      Date: '2021-04-05',
-      Expense: -100
-    },
-    {
-      Date: '2021-04-25',
-      Expense: 300
-    },
-    {
-      Date: '2022-01-01',
-      Expense: 2980
-    }
-  ];
   return (
     <>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
@@ -362,8 +270,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
             Added Users
           </Text>
         )}
-        <Chart data={userData} />
-        <Chart data={groupData} />
+        <Chart expenseData={userPayments} />
+        <Chart expenseData={groupPayments} />
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>

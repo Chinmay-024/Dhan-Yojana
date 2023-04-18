@@ -73,17 +73,11 @@ const ExpenseFormGroup = ({
         groupId: params.newexpensegroupId
       };
       const JSONdata = JSON.stringify(data);
-      const endpoint = '/api/groups/findFriends';
+      const endpoint = `/api/groups/findFriends/`+params.newexpensegroupId;
 
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSONdata
-      };
+      // const options = {};
 
-      const response = await fetch(endpoint, options);
+      const response = await fetch(endpoint);
       const result = await response.json();
 
       setFriends(result.users);
@@ -159,44 +153,30 @@ const ExpenseFormGroup = ({
       };
     } = {};
 
+    const usersData: UserD[] = [];
+    let user;
     selectedPayers.forEach((friend) => {
       if (amountsP[friend.email] == 0) return;
-      users[friend.email] = {
+      user = {
         email: friend.email,
         name: friend.name,
         amount: amountsP[friend.email] || 0,
         owned: true
       };
+      usersData.push(user);
     });
 
     selectedOwers.forEach((friend) => {
       if (amountsO[friend.email] == 0) return;
-      if (amountsP[friend.email]) {
-        users[friend.email] = {
-          email: friend.email,
-          name: friend.name,
-          amount: amountsP[friend.email] - amountsO[friend.email] || 0,
-          owned: true
-        };
-        if (users[friend.email].amount < 0) {
-          users[friend.email].amount *= -1;
-          users[friend.email].owned = false;
-        }
-      } else {
-        users[friend.email] = {
-          email: friend.email,
-          name: friend.name,
-          amount: amountsO[friend.email] || 0,
-          owned: false
-        };
-      }
+      user = {
+        email: friend.email,
+        name: friend.name,
+        amount: amountsO[friend.email] || 0,
+        owned: false
+      };
+      usersData.push(user);
     });
 
-    const usersData: UserD[] = [];
-    for (const key in users) {
-      const user = users[key];
-      usersData.push(user);
-    }
     console.log(usersData);
     var data = {
       title,
@@ -230,7 +210,7 @@ const ExpenseFormGroup = ({
     setTotalAmount(0);
     setErrorP('');
     setErrorO('');
-    router.replace('/');
+    router.replace(`/group/${params.newexpensegroupId}`);
   };
 
   return (

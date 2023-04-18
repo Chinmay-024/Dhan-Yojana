@@ -29,13 +29,6 @@ interface UserD {
   owned: boolean;
 }
 
-// const friends: Friend[] = [
-//   { email: '11', name: 'John' },
-//   { email: '12', name: 'Jane' },
-//   { email: '13', name: 'Bob' },
-//   { email: '14', name: 'Alice' }
-// ];
-
 const ExpenseForm = () => {
   const router = useRouter();
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getServerSession } from 'next-auth/next';
 import {
   Button,
   Flex,
@@ -17,6 +18,7 @@ import { Card } from '@tremor/react';
 import { NoSsr } from '@mui/material';
 import { Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
+import { authOptions } from '../../pages/api/auth/[...nextauth]';
 
 const friends = [
   { id: 11, name: 'John' },
@@ -33,7 +35,8 @@ const users = [
   // Add as many objects as you need...
 ];
 
-const NewGroup = () => {
+const NewGroup = async() => {
+  const {user} = await getServerSession(authOptions);
   const [title, setTitle] = useState('');
   const [description, setdescription] = useState<string>('');
   const [image, setImage] = useState<string>('');
@@ -65,7 +68,7 @@ const NewGroup = () => {
         title: title,
         description: description,
         image: image,
-        userId: 'a23e67ba-5fdb-4565-9f5d-be4ca9e39e7d'
+        userId: user.id,
       })
     });
     const resData = await response.json();

@@ -12,40 +12,6 @@ import {
 } from '@tremor/react';
 import { useState } from 'react';
 
-const data = [
-  {
-    Date: '2021-01-01',
-    Expense: 2400
-  },
-  {
-    Date: '2021-02-01',
-    Expense: 1398
-  },
-  {
-    Date: '2021-02-05',
-    Expense: 130
-  },
-  {
-    Date: '2021-03-01',
-    Expense: 100
-  },
-  {
-    Date: '2021-04-01',
-    Expense: 200
-  },
-  {
-    Date: '2021-04-05',
-    Expense: -100
-  },
-  {
-    Date: '2021-04-25',
-    Expense: 300
-  },
-  {
-    Date: '2022-01-01',
-    Expense: 2980
-  }
-];
 interface MonthwiseData {
   [key: string]: number;
 }
@@ -53,37 +19,31 @@ interface MonthwiseData {
 const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
-export default function Chart() {
-  const [selectedYear, setSelectedYear] = useState<string>('2021');
-  const [selectedMonth, setSelectedMonth] = useState<string>('01');
+export default function Chart({ expenseData }: any) {
+  const [selectedYear, setSelectedYear] = useState<string>('2023');
+  const [selectedMonth, setSelectedMonth] = useState<string>('04');
 
-  const [selectedYear2, setSelectedYear2] = useState<string>('2021');
+  const [selectedYear2, setSelectedYear2] = useState<string>('2023');
 
   const monthwiseData: MonthwiseData = {};
-  data.forEach((item) => {
+  expenseData.forEach((item) => {
     const [itemYear, itemMonth] = item.Date.split('-');
 
-    if (itemYear === selectedYear2.toString()) {
+    if (itemYear == selectedYear2.toString()) {
       if (monthwiseData[itemMonth]) {
-        monthwiseData[itemMonth] += item.Expense;
+        monthwiseData[itemMonth] += parseFloat(item.Expense);
       } else {
-        monthwiseData[itemMonth] = item.Expense;
+        monthwiseData[itemMonth] = parseFloat(item.Expense);
       }
     }
   });
+
   const chartData = Object.keys(monthwiseData).map((month) => ({
     Month: `${selectedYear2}-${month}`,
     Expense: monthwiseData[month]
   }));
+  console.log(monthwiseData);
   return (
-    // <div
-    //   style={{
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     flexWrap: 'wrap'
-    //   }}
-    // >
-
     <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
       <Card>
         <Title>EXPENSES</Title>
@@ -135,7 +95,7 @@ export default function Chart() {
         </div>
         <AreaChart
           className="mt-6"
-          data={data.filter(
+          data={expenseData.filter(
             (item) =>
               item.Date.substr(0, 4) === selectedYear &&
               item.Date.substr(5, 2) === selectedMonth
