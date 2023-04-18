@@ -152,7 +152,7 @@ export default function Groups() {
                 alignItems="baseline"
               >
                 <Metric>
-                  {fetchData ? fetchData.totalAmount : '0'}{' '}
+                  {fetchData ? fetchData.totalAmount : '0'}
                   <CurrencyRupeeIcon />
                 </Metric>
               </Flex>
@@ -200,7 +200,7 @@ export default function Groups() {
               }
             >
               <Flex alignItems="start">
-                <Text>No of Users</Text>
+                <Text>Total Groups</Text>
               </Flex>
               <Flex
                 className="space-x-3 truncate"

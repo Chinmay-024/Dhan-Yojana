@@ -1,12 +1,12 @@
-import { query } from '../../../lib/db';
+import { query } from '../../../../lib/db';
 
 async function handler(req, res) {
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
     //TODO make this request get and take groupId as a param
     try {
       const querySql =
         'SELECT name,email,image FROM users JOIN userInvolvedGroup ON users.id = userInvolvedGroup.userId WHERE groupId = ?';
-      const valueParams = [req.body.groupId];
+      const valueParams = [req.query.groupId];
       const data = await query({ query: querySql, values: valueParams });
       //TODO Find the money spent on this user by the group
       res.status(200).json({ users: data });

@@ -1,15 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import {
-  Card,
-  Metric,
-  Text,
-  Flex,
-  Grid,
-  Title,
-  Icon
-} from '@tremor/react';
+import { Card, Metric, Text, Flex, Grid, Title, Icon } from '@tremor/react';
 import { Button } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -123,31 +115,61 @@ const style = {
 export default function GroupPage({ params }: { params: { groupId: string } }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  console.log('got the params', params);
+  // console.log('got the params', params);
   const [allUser, setAllUser] = React.useState<any>([]);
+  const [friends, setFriends] = React.useState<any>([]);
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [fetchedPayments, setFetchedPayments] = React.useState(false);
   const [allPayments, setAllPayments] = React.useState<any>([]);
   const [addingUser, setAddingUser] = React.useState(false);
   const [firstAdd, setFirstAdd] = React.useState(0);
-
+  const [fetchingUsers, setFetchingUsers] = React.useState(true);
   const handleOpen = () => setOpen(true);
   const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
 
-  console.log('alluser', allUser);
+  // console.log('alluser', allUser);
   React.useEffect(() => {
+    let intial_user: any = [];
+    let intial_friends: any = [];
     const getData = async () => {
       const resData = await fetch('/api/user/getAllUser');
       const data: any = await resData.json();
       console.log('all users', data.users);
-      setAllUser([...data.users]);
+      intial_user = [...data.users];
+      const resData2 = await fetch(`/api/groups/findFriends/${params.groupId}`);
+      const data2: any = await resData2.json();
+      // console.log('response of friends', data);
+      // console.log("setFriends",data.users);
+      intial_friends = [...data2.users];
+      // console.log("Friends :->",intial_friends)
+      setFriends([...intial_friends]);
+      console.log('unfiltered', intial_user);
+      intial_user = intial_user.filter(
+        (itema: any) =>
+          !intial_friends.some((itemb: any) => itemb.email === itema.email)
+      );
+      console.log('filtered', intial_user);
+      setAllUser([...intial_user]);
+      setFetchingUsers(false);
+    };
+    const getFriends = async () => {
+      // const resData = await fetch(`/api/groups/findFriends/${params.groupId}`);
+      // const data: any = await resData.json();
+      // // console.log('response of friends', data);
+      // // console.log("setFriends",data.users);
+      // intial_friends = [...data.users];
+      // // console.log("Friends :->",intial_friends)
+      // setFriends([...intial_friends]);
     };
 
     getData();
-  }, []);
+    // getFriends();
+
+    
+  }, [addingUser]);
 
   useEffect(() => {
     const getPayments = async () => {
@@ -163,14 +185,14 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     getPayments();
   }, [params.groupId]);
 
-  console.log('param : ', params);
+  // console.log('param : ', params);
 
   const addUserToSql = async (addedUser: any) => {
     if (addedUser.length === 0) {
       return;
     }
     setAddingUser(true);
-    console.log('added req :', addedUser);
+    // console.log('added req :', addedUser);
     const response = await fetch('/api/groups/addUserToGroup', {
       method: 'POST',
       headers: {
@@ -182,7 +204,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       })
     });
     const resData = await response.json();
-    console.log(resData);
+    // console.log(resData);
     if (response.ok) {
       setFirstAdd(1);
       setAddingUser(false);
@@ -195,12 +217,12 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const addCommentHandler = (addedUser: any) => {
     // event.preventDefault();
     addUserToSql(addedUser);
-    console.log('add user array ', addedUser);
+    // console.log('add user array ', addedUser);
     setOpen(false);
   };
   const addCommentHandler2 = (event: any) => {
     event.preventDefault();
-    console.log('qwe', 2);
+    // console.log('qwe', 2);
     setOpen2(false);
   };
 
@@ -295,6 +317,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           onClick={handleOpen}
           style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
           color="emerald"
+          disabled={fetchingUsers}
         >
           Add User
         </Button>
@@ -304,6 +327,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           onClick={handleOpen2}
           style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
           color="emerald"
+          disabled={fetchingUsers}
         >
           See All User
         </Button>
@@ -325,14 +349,19 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
             </Text>
           </>
         )}
-        {!addingUser && firstAdd===-1 && <Text className="mt-2 text-center " color="red">
-              {' '}
-              Error Adding Users
-            </Text>}
-        {!addingUser && firstAdd===1 && <Text className="mt-2 text-center " color="emerald">
-              {' '}
-              <Icon size="xs" color="emerald" icon={CheckIcon} />Added Users
-            </Text>}
+        {!addingUser && firstAdd === -1 && (
+          <Text className="mt-2 text-center " color="red">
+            {' '}
+            Error Adding Users
+          </Text>
+        )}
+        {!addingUser && firstAdd === 1 && (
+          <Text className="mt-2 text-center " color="emerald">
+            {' '}
+            <Icon size="xs" color="emerald" icon={CheckIcon} />
+            Added Users
+          </Text>
+        )}
         <Chart data={userData} />
         <Chart data={groupData} />
         <Flex justifyContent="center" alignItems="baseline">
@@ -421,16 +450,16 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
                 All Users
               </Typography>
               <List>
-                {categories.map((user, i) => (
+                {friends.map((user: any, i: any) => (
                   <ListItem key={i + 1} className="block">
                     <div className="flex flex-col items-center justify-center">
                       <div>
                         <Flex>
-                          <Text color="stone">{user.title}</Text>
+                          <Text color="stone">{user.name}</Text>
                         </Flex>
                       </div>
                       <div>
-                        <Text color="gray">{user.title}</Text>
+                        <Text color="gray">{user.email}</Text>
                       </div>
                     </div>
                   </ListItem>

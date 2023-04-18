@@ -299,11 +299,18 @@ export default function TransactionId({
                 Updated At: {new Date(paymentDetails.updatedAt).toLocaleString().split(',')[0]}
               </Text>
               <Flex justifyContent="start">
-                <Title className="text-1xl text-white	">Type </Title>
-                <Subtitle className="ml-2 text-2xl text-slate-200	">
+                {/* <Title className="text-1xl text-white	">Type </Title> */}
+                <Subtitle className="text-2xl text-slate-200	">
                   {paymentDetails.type}
                 </Subtitle>
-              </Flex></>)}
+              </Flex>
+              <Flex justifyContent="start">
+                {/* <Title className="text-1xl text-white	">Type </Title> */}
+                <Subtitle className="text-2xl text-slate-200	">
+                  {paymentDetails.totalAmount}
+                </Subtitle>
+              </Flex>
+              </>)}
             </Card>
             <Card
               style={{
@@ -402,7 +409,7 @@ export default function TransactionId({
                             variant="h6"
                             component="h2"
                           >
-                            Type Comment
+                            Enter Comment
                           </Typography>
                           <TextField
                             value={comment}
