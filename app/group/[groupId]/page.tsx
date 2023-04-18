@@ -74,7 +74,7 @@ const style = {
 export default function GroupPage({ params }: { params: { groupId: string } }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  console.log('got the params', params);
+  // console.log('got the params', params);
   const [allUser, setAllUser] = React.useState<any>([]);
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
@@ -85,49 +85,79 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
 
-  console.log('alluser', allUser);
-  React.useEffect(() => {
+  const [userPayments, setUserPayments] = React.useState<any>([]);
+  const [groupPayments, setGroupPayments] = React.useState<any>([]);
+
+  useEffect(() => {
     const getData = async () => {
       const resData = await fetch('/api/user/getAllUser');
       const data: any = await resData.json();
-      console.log('all users', data.users);
+      // console.log('all users', data.users);
       setAllUser([...data.users]);
     };
 
     getData();
-  }, []);
-
-  useEffect(() => {
-    const getData = async () => {
-      const test_url = `/api/groups/getPayments/${params.groupId}`;
-      const res = await fetch(test_url);
-      console.log(test_url);
+    const expenseGroupData = async () => {
+      var userMail = '20cs01009@iitbbs.ac.in';
+      const res = await fetch(`/api/groups/getPayments/${params.groupId}`);
       const resData = await res.json();
-      console.log('Yo', resData);
-    };
-    const getPayments = async () => {
-      const test_url = `/api/groups/getPayments/${params.groupId}`;
-      const res = await fetch(test_url);
-      console.log(test_url);
-      const resData = await res.json();
-      console.log('Yo', resData.payments);
       setAllPayments(resData.payments);
       setFetchedPayments(true);
-    };
-    getData();
-    getPayments();
-  }, [params.groupId]);
+      const filteredArray = resData.payments.filter(
+        (obj: {
+          name: string;
+          email: string;
+          amount: number;
+          owned: boolean;
+          paymentId: number;
+          type: string;
+          title: string;
+          updatedAt: string;
+        }) => obj.owned == false
+      );
+      const filteredArrayForUser = resData.payments.filter(
+        (obj: {
+          name: string;
+          email: string;
+          amount: number;
+          owned: boolean;
+          paymentId: number;
+          type: string;
+          title: string;
+          updatedAt: string;
+        }) => obj.owned == false && obj.email == userMail
+      );
 
-  console.log('param : ', params);
+      const selectedColumnsArray = filteredArray.map(
+        (obj: { updatedAt: any; amount: any }) => {
+          return {
+            Date: obj.updatedAt,
+            Expense: obj.amount
+          };
+        }
+      );
+      const selectedColumnsArrayonUser = filteredArrayForUser.map(
+        (obj: { updatedAt: any; amount: any }) => {
+          return {
+            Date: obj.updatedAt,
+            Expense: obj.amount
+          };
+        }
+      );
+      setGroupPayments(selectedColumnsArray);
+      setUserPayments(selectedColumnsArray);
+    };
+    expenseGroupData();
+  }, [params.groupId]);
 
   const addCommentHandler = (event: any) => {
     event.preventDefault();
-    console.log('asd', 1);
+    // console.log('asd', 1);
     setOpen(false);
   };
   const addCommentHandler2 = (event: any) => {
     event.preventDefault();
-    console.log('qwe', 2);
+    // console.log('qwe', 2);
     setOpen2(false);
   };
 
@@ -156,74 +186,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     }
   ];
 
-  const userData = [
-    {
-      Date: '2021-01-01',
-      Expense: 2400
-    },
-    {
-      Date: '2021-02-01',
-      Expense: 1398
-    },
-    {
-      Date: '2021-02-05',
-      Expense: 130
-    },
-    {
-      Date: '2021-03-01',
-      Expense: 100
-    },
-    {
-      Date: '2021-04-01',
-      Expense: 200
-    },
-    {
-      Date: '2021-04-05',
-      Expense: -100
-    },
-    {
-      Date: '2021-04-25',
-      Expense: 300
-    },
-    {
-      Date: '2022-01-01',
-      Expense: 2980
-    }
-  ];
-  const groupData = [
-    {
-      Date: '2021-01-01',
-      Expense: 2400
-    },
-    {
-      Date: '2021-02-01',
-      Expense: 1398
-    },
-    {
-      Date: '2021-02-05',
-      Expense: 130
-    },
-    {
-      Date: '2021-03-01',
-      Expense: 100
-    },
-    {
-      Date: '2021-04-01',
-      Expense: 200
-    },
-    {
-      Date: '2021-04-05',
-      Expense: -100
-    },
-    {
-      Date: '2021-04-25',
-      Expense: 300
-    },
-    {
-      Date: '2022-01-01',
-      Expense: 2980
-    }
-  ];
   return (
     <>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
@@ -256,8 +218,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           See All User
         </Button>
 
-        <Chart expenseData={userData} />
-        <Chart expenseData={groupData} />
+        <Chart expenseData={userPayments} />
+        <Chart expenseData={groupPayments} />
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>
@@ -278,8 +240,12 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
             {fetchedPayments && allPayments.length === 0 && (
               <Text>No Expense Yet!!!</Text>
             )}
-            {fetchedPayments && allPayments.length>0 && <TransTable paymentData={allPayments}  />}
-            {fetchedPayments && allPayments.length===0 && <Text>No Expense Yet!!!</Text>}
+            {fetchedPayments && allPayments.length > 0 && (
+              <TransTable paymentData={allPayments} />
+            )}
+            {fetchedPayments && allPayments.length === 0 && (
+              <Text>No Expense Yet!!!</Text>
+            )}
           </Card>
         </Flex>
       </main>

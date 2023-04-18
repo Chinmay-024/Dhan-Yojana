@@ -56,7 +56,6 @@ export default function PlaygroundPage() {
           };
         }
       );
-      // console.log(selectedColumnsArray);
       setPayments(selectedColumnsArray);
     };
     expenseData();

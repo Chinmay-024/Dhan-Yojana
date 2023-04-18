@@ -19,35 +19,31 @@ interface MonthwiseData {
 const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
-export default function Chart({ expenseData }) {
+export default function Chart({ expenseData }: any) {
+  // console.log(expenseData);
   const [selectedYear, setSelectedYear] = useState<string>('2023');
-  const [selectedMonth, setSelectedMonth] = useState<string>('01');
+  const [selectedMonth, setSelectedMonth] = useState<string>('04');
 
   const [selectedYear2, setSelectedYear2] = useState<string>('2023');
 
   const monthwiseData: MonthwiseData = {};
-  expenseData.forEach(
-    (item: {
-      Date: { split: (arg0: string) => [any, any] };
-      Expense: number;
-    }) => {
-      const [itemYear, itemMonth] = item.Date.split('-');
+  expenseData.forEach((item) => {
+    const [itemYear, itemMonth] = item.Date.split('-');
 
-      if (itemYear == selectedYear2.toString()) {
-        if (monthwiseData[itemMonth]) {
-          monthwiseData[itemMonth] += parseFloat(item.Expense);
-        } else {
-          monthwiseData[itemMonth] = parseFloat(item.Expense);
-        }
+    if (itemYear == selectedYear2.toString()) {
+      if (monthwiseData[itemMonth]) {
+        monthwiseData[itemMonth] += parseFloat(item.Expense);
+      } else {
+        monthwiseData[itemMonth] = parseFloat(item.Expense);
       }
     }
-  );
+  });
 
   const chartData = Object.keys(monthwiseData).map((month) => ({
     Month: `${selectedYear2}-${month}`,
     Expense: monthwiseData[month]
   }));
-  console.log(monthwiseData);
+  // console.log(monthwiseData);
   return (
     <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
       <Card>
