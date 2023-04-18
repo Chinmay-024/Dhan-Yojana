@@ -1,10 +1,14 @@
 import { query } from '../../../lib/db';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/[...nextauth]';
 
 async function handler(req, res) {
   if (req.method === 'GET') {
     //TODO check if the current session user is part of the group
     try {
-      const userId = 'a23e67ba-5fdb-4565-9f5d-be4ca9e39e7d';
+      const session = await getServerSession(req, res, authOptions);
+      const userId = session.user.id;
+
       const querySql =
         'SELECT users.name,users.email,share.amount,share.owned,payments.paymentId,payments.title,payments.totalAmount,payments.type,payments.updatedAt FROM users JOIN share ON users.id = share.userId JOIN payments ON payments.paymentId = share.paymentId WHERE share.userId=?';
       const valueParams = [userId];

@@ -39,6 +39,17 @@ export default function TransTable({ paymentData }: Props) {
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    // Initialize state only on the client- side
+    setPage(0);
+    setRowsPerPage(5);
+  }, []);
+
+  const theme = useTheme();
+
+  if (paymentData == undefined) return;
+
   const combinedData: any = {};
   // console.log('users', paymentData);
   useEffect(() => {
@@ -97,9 +108,7 @@ export default function TransTable({ paymentData }: Props) {
 
   const start = page * rowsPerPage;
   const end = start + rowsPerPage;
-  let currentPayment = finalData.slice(start, end);
-  // currentPayment = currentPayment.filter(item)
-  console.log('list of pay', currentPayment);
+  const currentPayment = finalData.slice(start, end);
 
   return (
     <NoSsr>

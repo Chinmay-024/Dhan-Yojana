@@ -8,7 +8,8 @@ import {
   SelectBox,
   SelectBoxItem,
   Flex,
-  Grid
+  Grid,
+  Metric
 } from '@tremor/react';
 import { useState } from 'react';
 
@@ -19,7 +20,7 @@ interface MonthwiseData {
 const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
-export default function Chart({ expenseData }: any) {
+export default function Chart({ expenseData, title }: any) {
   // console.log(expenseData);
   const [selectedYear, setSelectedYear] = useState<string>('2023');
   const [selectedMonth, setSelectedMonth] = useState<string>('04');
@@ -27,17 +28,22 @@ export default function Chart({ expenseData }: any) {
   const [selectedYear2, setSelectedYear2] = useState<string>('2023');
 
   const monthwiseData: MonthwiseData = {};
-  expenseData.forEach((item) => {
-    const [itemYear, itemMonth] = item.Date.split('-');
+  expenseData.forEach(
+    (item: {
+      Date: { split: (arg0: string) => [any, any] };
+      Expense: string;
+    }) => {
+      const [itemYear, itemMonth] = item.Date.split('-');
 
-    if (itemYear == selectedYear2.toString()) {
-      if (monthwiseData[itemMonth]) {
-        monthwiseData[itemMonth] += parseFloat(item.Expense);
-      } else {
-        monthwiseData[itemMonth] = parseFloat(item.Expense);
+      if (itemYear == selectedYear2.toString()) {
+        if (monthwiseData[itemMonth]) {
+          monthwiseData[itemMonth] += parseFloat(item.Expense);
+        } else {
+          monthwiseData[itemMonth] = parseFloat(item.Expense);
+        }
       }
     }
-  });
+  );
 
   const chartData = Object.keys(monthwiseData).map((month) => ({
     Month: `${selectedYear2}-${month}`,
@@ -47,7 +53,7 @@ export default function Chart({ expenseData }: any) {
   return (
     <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
       <Card>
-        <Title>EXPENSES</Title>
+        <Title> {title}</Title>
         <Text>For current year</Text>
         <div
           style={{
@@ -109,7 +115,7 @@ export default function Chart({ expenseData }: any) {
         />
       </Card>
       <Card>
-        <Title>EXPENSES</Title>
+        <Title> {title}</Title>
         <Text>For selected year</Text>
         <div
           style={{

@@ -69,14 +69,14 @@ interface MyObject {
 export default function Groups() {
   const router = useRouter();
   const [fetchData, setFetchData] = useState<MyObject>();
-  const [datafetching,setDataFetching] = useState<boolean>(false);
+  const [datafetching, setDataFetching] = useState<boolean>(false);
   const valueFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
   const clickHandler = () => {
     router.replace('/newgroup');
   };
-  
+
   useEffect(() => {
     const getData = async () => {
       setDataFetching(true);
@@ -186,7 +186,7 @@ export default function Groups() {
               </Flex>
             </Card>
           )}
-          {fetchData  && (
+          {fetchData && (
             <Card
               decoration="top"
               decorationColor={
@@ -226,7 +226,7 @@ export default function Groups() {
                 key={item.groupId}
                 className={styles.card}
                 onClick={() => {
-                  router.push(`/group/${item.groupId}`);
+                  router.push(`/group/${item.groupId}?name=${item.title}`);
                 }}
               >
                 <Metric>{item.title}</Metric>

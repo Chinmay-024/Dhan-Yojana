@@ -16,6 +16,7 @@ import {
 } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import Chart from './chart';
+import Settle from './settle';
 // import UsersTable from '../table';
 import styles from './page.module.css';
 import { useRouter, usePathname } from 'next/navigation';
@@ -107,6 +108,7 @@ export default function PlaygroundPage() {
     <NoSsr>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
         <Metric>ANALYTICS</Metric>
+        <Settle />
         <Button
           icon={BanknotesIcon}
           size="xl"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   InputLabel,
@@ -232,7 +232,9 @@ const ExpenseForm = () => {
                 label="Title"
                 value={title}
                 required
-                onChange={(event) => setTitle(event.target.value)}
+                onChange={(event: {
+                  target: { value: SetStateAction<string> };
+                }) => setTitle(event.target.value)}
                 margin="normal"
               />
               <FormControl style={{ marginTop: '1rem' }}>
@@ -243,7 +245,9 @@ const ExpenseForm = () => {
                   value={type}
                   required
                   label="Type"
-                  onChange={(event) => setType(event.target.value as string)}
+                  onChange={(event: { target: { value: string } }) =>
+                    setType(event.target.value as string)
+                  }
                 >
                   <MenuItem value={'Food'}>Food</MenuItem>
                   <MenuItem value={'Housing'}>Housing</MenuItem>
@@ -283,7 +287,7 @@ const ExpenseForm = () => {
                       type="number"
                       label="Amount"
                       value={amountsP[friend.email] || ''}
-                      onChange={(event) =>
+                      onChange={(event: { target: { value: string } }) =>
                         setAmountsP({
                           ...amountsP,
                           [friend.email]: parseFloat(event.target.value) || 0
@@ -302,7 +306,7 @@ const ExpenseForm = () => {
                   variant="outlined"
                   required
                   value={totalAmount}
-                  onChange={(e) =>
+                  onChange={(e: { target: { value: string } }) =>
                     setTotalAmount(parseInt(e.target.value) || 0)
                   }
                   margin="normal"
@@ -318,7 +322,7 @@ const ExpenseForm = () => {
                     value={currency}
                     required
                     label="Currency"
-                    onChange={(event) =>
+                    onChange={(event: { target: { value: string } }) =>
                       setCurrency(event.target.value as string)
                     }
                   >
@@ -366,7 +370,7 @@ const ExpenseForm = () => {
                       type="number"
                       label="Amount"
                       value={amountsO[friend.email] || ''}
-                      onChange={(event) =>
+                      onChange={(event: { target: { value: string } }) =>
                         setAmountsO({
                           ...amountsO,
                           [friend.email]: parseFloat(event.target.value) || 0

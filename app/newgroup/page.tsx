@@ -35,8 +35,8 @@ const users = [
   // Add as many objects as you need...
 ];
 
-const NewGroup = async() => {
-  const {user} = await getServerSession(authOptions);
+const NewGroup = async () => {
+  const { user } = await getServerSession(authOptions);
   const [title, setTitle] = useState('');
   const [description, setdescription] = useState<string>('');
   const [image, setImage] = useState<string>('');
@@ -68,15 +68,14 @@ const NewGroup = async() => {
         title: title,
         description: description,
         image: image,
-        userId: user.id,
+        userId: user.id
       })
     });
     const resData = await response.json();
     console.log('on createGroup :', response);
     if (response.status === 200) {
       setStatus(1);
-    }
-    else{
+    } else {
       setStatus(2);
     }
     setIsCreatingGroup(false);
@@ -127,10 +126,10 @@ const NewGroup = async() => {
       // addedUser.length !== 0
       console.log('called the post request');
       createGroup();
-      if(status===1){
-          setTitle('');
-          setdescription('');
-          setImage('');
+      if (status === 1) {
+        setTitle('');
+        setdescription('');
+        setImage('');
       }
       return;
     }
@@ -203,18 +202,30 @@ const NewGroup = async() => {
                   </Flex>
                 </Button>
               </Flex>
-              <Flex justifyContent='center' className='flex-col mt-4'>
-              {isCreatingGroup && (
-                <>
-                <Box sx={{ display: 'flex' }}>
-                  <CircularProgress />
-                </Box>
-                <Text className='mt-2' color='blue'> Submitting The Form</Text></>
-              )}
+              <Flex justifyContent="center" className="flex-col mt-4">
+                {isCreatingGroup && (
+                  <>
+                    <Box sx={{ display: 'flex' }}>
+                      <CircularProgress />
+                    </Box>
+                    <Text className="mt-2" color="blue">
+                      {' '}
+                      Submitting The Form
+                    </Text>
+                  </>
+                )}
               </Flex>
               <Flex>
-                {status===1 && !isCreatingGroup &&  <Text className='mt-2 text-center m-auto' color='green'>SuccessFully Created the Group</Text>}
-                {status===2 && !isCreatingGroup &&  <Text className='mt-2 text-center m-auto' color='red'>Failed to create Group</Text>}
+                {status === 1 && !isCreatingGroup && (
+                  <Text className="mt-2 text-center m-auto" color="green">
+                    SuccessFully Created the Group
+                  </Text>
+                )}
+                {status === 2 && !isCreatingGroup && (
+                  <Text className="mt-2 text-center m-auto" color="red">
+                    Failed to create Group
+                  </Text>
+                )}
               </Flex>
             </form>
           </Card>

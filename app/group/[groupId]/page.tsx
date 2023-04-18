@@ -79,6 +79,9 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const handleClose2 = () => setOpen2(false);
 
   const [userPayments, setUserPayments] = React.useState<any>([]);
+  const [groupName, setGroupName] = React.useState<any>(
+    searchParams?.get('name')
+  );
   const [groupPayments, setGroupPayments] = React.useState<any>([]);
 
   useEffect(() => {
@@ -137,7 +140,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           type: string;
           title: string;
           updatedAt: string;
-        }) => obj.owned == false && obj.email == userMail
+        }) => obj.owned == false && obj.email == 'chinmaynegi024@gmail.com'
       );
 
       const selectedColumnsArray = filteredArray.map(
@@ -157,7 +160,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
         }
       );
       setGroupPayments(selectedColumnsArray);
-      setUserPayments(selectedColumnsArray);
+      setUserPayments(selectedColumnsArrayonUser);
     };
     expenseGroupData();
   }, [params.groupId, addingUser]);
@@ -210,7 +213,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   return (
     <>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
-        <Metric>Group</Metric>
+        <Metric>{groupName}</Metric>
         <Button
           icon={BanknotesIcon}
           size="xl"
@@ -271,8 +274,9 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
             Added Users
           </Text>
         )}
-        <Chart expenseData={userPayments} />
-        <Chart expenseData={groupPayments} />
+
+        <Chart expenseData={userPayments} title={'USER ANALYSIS'} />
+        <Chart expenseData={groupPayments} title={'GROUP ANALYSIS'} />
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>
