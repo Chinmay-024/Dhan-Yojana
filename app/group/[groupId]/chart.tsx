@@ -19,28 +19,35 @@ interface MonthwiseData {
 const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
-export default function Chart({ data }) {
-  const [selectedYear, setSelectedYear] = useState<string>('2021');
+export default function Chart({ expenseData }) {
+  const [selectedYear, setSelectedYear] = useState<string>('2023');
   const [selectedMonth, setSelectedMonth] = useState<string>('01');
 
-  const [selectedYear2, setSelectedYear2] = useState<string>('2021');
+  const [selectedYear2, setSelectedYear2] = useState<string>('2023');
 
   const monthwiseData: MonthwiseData = {};
-  data.forEach((item) => {
-    const [itemYear, itemMonth] = item.Date.split('-');
+  expenseData.forEach(
+    (item: {
+      Date: { split: (arg0: string) => [any, any] };
+      Expense: number;
+    }) => {
+      const [itemYear, itemMonth] = item.Date.split('-');
 
-    if (itemYear === selectedYear2.toString()) {
-      if (monthwiseData[itemMonth]) {
-        monthwiseData[itemMonth] += item.Expense;
-      } else {
-        monthwiseData[itemMonth] = item.Expense;
+      if (itemYear == selectedYear2.toString()) {
+        if (monthwiseData[itemMonth]) {
+          monthwiseData[itemMonth] += parseFloat(item.Expense);
+        } else {
+          monthwiseData[itemMonth] = parseFloat(item.Expense);
+        }
       }
     }
-  });
+  );
+
   const chartData = Object.keys(monthwiseData).map((month) => ({
     Month: `${selectedYear2}-${month}`,
     Expense: monthwiseData[month]
   }));
+  console.log(monthwiseData);
   return (
     <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
       <Card>
@@ -93,8 +100,8 @@ export default function Chart({ data }) {
         </div>
         <AreaChart
           className="mt-6"
-          data={data.filter(
-            (item: { Date: string }) =>
+          data={expenseData.filter(
+            (item) =>
               item.Date.substr(0, 4) === selectedYear &&
               item.Date.substr(5, 2) === selectedMonth
           )}
@@ -136,8 +143,10 @@ export default function Chart({ data }) {
           categories={['Expense']}
           colors={['blue']}
           valueFormatter={valueFormatter}
+          // yAxisWidth={40}
         />
       </Card>
+      {/* </div> */}
     </Grid>
   );
 }

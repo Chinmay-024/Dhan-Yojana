@@ -34,57 +34,6 @@ import Adduser from './formModal';
 import { List, ListItem } from '@tremor/react';
 import { useEffect } from 'react';
 
-const website = [
-  { name: '/home', value: 1230 },
-  { name: '/contact', value: 751 },
-  { name: '/gallery', value: 471 },
-  { name: '/august-discount-offer', value: 280 },
-  { name: '/case-studies', value: 78 }
-];
-
-const shop = [
-  { name: '/home', value: 453 },
-  { name: '/imprint', value: 351 },
-  { name: '/shop', value: 271 },
-  { name: '/pricing', value: 191 }
-];
-
-const app = [
-  { name: '/shop', value: 789 },
-  { name: '/product-features', value: 676 },
-  { name: '/about', value: 564 },
-  { name: '/login', value: 234 },
-  { name: '/downloads', value: 191 }
-];
-
-const data = [
-  {
-    category: 'Website',
-    stat: '10,234',
-    data: website
-  },
-  {
-    category: 'Online Shop',
-    stat: '12,543',
-    data: shop
-  },
-  {
-    category: 'Mobile App',
-    stat: '2,543',
-    data: app
-  },
-  {
-    category: 'Mobile App',
-    stat: '2,543',
-    data: app
-  },
-  {
-    category: 'Mobile App',
-    stat: '2,543',
-    data: app
-  }
-];
-
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
@@ -149,17 +98,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   }, []);
 
   useEffect(() => {
-    // const getData = async () => {
-    //   const test_url = `/api/user/getGroupUserAnalysis/${params.groupId}`;
-    //   const res = await fetch(test_url);
-    //   console.log(test_url);
-    //   const resData = await res.json();
-    //   console.log('Yo', resData);
-    //   console.log('Hi');
-    // };
-    // getData();
     const getData = async () => {
-      const test_url = `/api/user/getGroupUserAnalaysis/${params.groupId}`;
+      const test_url = `/api/groups/getPayments/${params.groupId}`;
       const res = await fetch(test_url);
       console.log(test_url);
       const resData = await res.json();
@@ -316,8 +256,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           See All User
         </Button>
 
-        <Chart data={userData} />
-        <Chart data={groupData} />
+        <Chart expenseData={userData} />
+        <Chart expenseData={groupData} />
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>
@@ -338,6 +278,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
             {fetchedPayments && allPayments.length === 0 && (
               <Text>No Expense Yet!!!</Text>
             )}
+            {fetchedPayments && allPayments.length>0 && <TransTable paymentData={allPayments}  />}
+            {fetchedPayments && allPayments.length===0 && <Text>No Expense Yet!!!</Text>}
           </Card>
         </Flex>
       </main>

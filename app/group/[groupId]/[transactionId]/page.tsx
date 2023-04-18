@@ -27,7 +27,8 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import { Button } from '@tremor/react';
 import TextField from '@mui/material/TextField';
-
+import pic from './food.jpg';
+import Image from 'next/image'
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -101,13 +102,14 @@ export default function TransactionId({
     console.log(comment);
     setOpen(false);
   };
-
+  // https://www.gstatic.com/webp/gallery/4.sm.jpg
   return (
     <>
       <main className="p-4 md:p-10 mx-auto max-w-5xl ">
         <Grid numCols={1} className="gap-2">
           <Col numColSpan={1}>
-            <Card style={{ height: '500px' }} className="bg-no-repeat bg-center bg-cover bg-[url('https://www.gstatic.com/webp/gallery/4.sm.jpg')] bg-blend-mulitply">
+          <Image src={pic} alt="Picture of the author" />
+            <Card style={{ height: '500px' }} className="bg-no-repeat bg-center bg-cover bg-[pic.src] bg-blend-mulitply">
               <Metric className='text-5xl	text-white	'>Payment Title</Metric>
               <Text className="mt-3 text-1xl text-slate-100	" style={{ marginLeft: '7px' }}>
                 Created At: 27/05/03
