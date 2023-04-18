@@ -5,8 +5,9 @@ async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const session = await getServerSession(req, res, authOptions);
-      //   const userId = session.user.id;
-      const userId = 'a23e67ba-5fdb-4565-9f5d-be4ca9e39e7d';
+      const userId = session.user.id;
+      // console.log("In backend",userId);
+      // const userId = 'a23e67ba-5fdb-4565-9f5d-be4ca9e39e7d';
 
       //Find the groups that the user is involved in and get the payment details for each group
 

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   images: {
     domains: [
       'avatars.githubusercontent.com',
@@ -9,7 +10,7 @@ const nextConfig = {
   },
   experimental: {
     appDir: true,
-    serverComponentsExternalPackages: ['@tremor/react']
+    serverComponentsExternalPackages: ['@tremor/react', 'mysql2']
   }
 };
 
