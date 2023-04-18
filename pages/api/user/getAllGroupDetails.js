@@ -34,7 +34,7 @@ async function handler(req, res) {
           // console.log(data2[j].owned, parseFloat(amount));
           let amount = parseFloat(data2[j].amount);
           if (data2[j].owned) {
-            totalAmount += amount;
+            // totalAmount += amount;
             totalAmountForGroup += amount;
           } else {
             totalAmount -= amount;
@@ -45,7 +45,7 @@ async function handler(req, res) {
           const month = date.getMonth();
           if (month === new Date().getMonth()) {
             if (data2[j].owned) {
-              totalAmountForMonth += amount;
+              // totalAmountForMonth += amount;
             } else {
               totalAmountForMonth -= amount;
             }

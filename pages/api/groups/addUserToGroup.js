@@ -19,6 +19,7 @@ async function handler(req, res) {
               'Join the Dhan Yojana app to join the group and manage your expenses'
           });
         }
+        //TODO check if the user is already in the GROUP or not
         const querySql2 =
           'INSERT INTO userInvolvedGroup (userId, groupId) VALUES (?, ?)';
         const valueParams2 = [data[0].id, groupId];

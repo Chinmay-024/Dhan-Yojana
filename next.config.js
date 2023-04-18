@@ -4,7 +4,8 @@ const nextConfig = {
     domains: [
       'avatars.githubusercontent.com',
       'avatar.vercel.sh',
-      'lh3.googleusercontent.com'
+      'googleusercontent.com',
+      'source.unsplash.com'
     ]
   },
   experimental: {

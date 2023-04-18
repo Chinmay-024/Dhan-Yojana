@@ -43,7 +43,9 @@ export default function TransTable({ paymentData }: Props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
 const combinedData :any= {};
-
+if(paymentData===undefined){
+    return <></>;
+}
 console.log("users",paymentData);
 paymentData.forEach((item:any) => {
   const key = `${item.email}_${item.paymentId}`;

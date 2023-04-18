@@ -8,16 +8,14 @@ import {
   Flex,
   Grid,
   Title,
-  BarList,
-  Bold,
-  DonutChart,
-  LineChart
+  Icon
 } from '@tremor/react';
 import { Button } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
 import { EyeIcon } from '@heroicons/react/24/outline';
+import { CheckIcon } from '@heroicons/react/24/outline';
 import Chart from './chart';
 import TransTable from './transtable';
 import styles from './page.module.css';
@@ -131,6 +129,9 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [open2, setOpen2] = React.useState(false);
   const [fetchedPayments, setFetchedPayments] = React.useState(false);
   const [allPayments, setAllPayments] = React.useState<any>([]);
+  const [addingUser, setAddingUser] = React.useState(false);
+  const [firstAdd, setFirstAdd] = React.useState(0);
+
   const handleOpen = () => setOpen(true);
   const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
@@ -149,22 +150,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   }, []);
 
   useEffect(() => {
-    // const getData = async () => {
-    //   const test_url = `/api/user/getGroupUserAnalysis/${params.groupId}`;
-    //   const res = await fetch(test_url);
-    //   console.log(test_url);
-    //   const resData = await res.json();
-    //   console.log('Yo', resData);
-    //   console.log('Hi');
-    // };
-    // getData();
-    const getData = async () => {
-      const test_url = `/api/user/getGroupUserAnalaysis/${params.groupId}`;
-      const res = await fetch(test_url);
-      console.log(test_url);
-      const resData = await res.json();
-      console.log('Yo', resData);
-    };
     const getPayments = async () => {
       const test_url = `/api/groups/getPayments/${params.groupId}`;
       const res = await fetch(test_url);
@@ -174,15 +159,43 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       setAllPayments(resData.payments);
       setFetchedPayments(true);
     };
-    getData();
+    // getData();
     getPayments();
   }, [params.groupId]);
 
   console.log('param : ', params);
 
-  const addCommentHandler = (event: any) => {
-    event.preventDefault();
-    console.log('asd', 1);
+  const addUserToSql = async (addedUser: any) => {
+    if (addedUser.length === 0) {
+      return;
+    }
+    setAddingUser(true);
+    console.log('added req :', addedUser);
+    const response = await fetch('/api/groups/addUserToGroup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        emails: addedUser.map((user: any) => user.email),
+        groupId: params.groupId
+      })
+    });
+    const resData = await response.json();
+    console.log(resData);
+    if (response.ok) {
+      setFirstAdd(1);
+      setAddingUser(false);
+    } else {
+      setFirstAdd(-1);
+      setAddingUser(false);
+    }
+  };
+
+  const addCommentHandler = (addedUser: any) => {
+    // event.preventDefault();
+    addUserToSql(addedUser);
+    console.log('add user array ', addedUser);
     setOpen(false);
   };
   const addCommentHandler2 = (event: any) => {
@@ -194,27 +207,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const handleClick = () => {
     router.push(`/newexpensegroup/${params.groupId}`);
   };
-
-  const users = [
-    {
-      id: 1,
-      email: 'john.doe@example.com',
-      name: 'John Doe',
-      username: 'johndoe'
-    },
-    {
-      id: 2,
-      email: 'jane.doe@example.com',
-      name: 'Jane Doe',
-      username: 'janedoe'
-    },
-    {
-      id: 3,
-      email: 'bob.smith@example.com',
-      name: 'Bob Smith',
-      username: 'bobsmith'
-    }
-  ];
 
   const userData = [
     {
@@ -315,7 +307,32 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
         >
           See All User
         </Button>
-
+        {addingUser && (
+          <>
+            <Box
+              sx={{
+                display: 'flex',
+                marginTop: '15px',
+                marginBottom: '15px',
+                justifyContent: 'center'
+              }}
+            >
+              <CircularProgress />
+            </Box>
+            <Text className="mt-2 text-center " color="blue">
+              {' '}
+              Adding Users
+            </Text>
+          </>
+        )}
+        {!addingUser && firstAdd===-1 && <Text className="mt-2 text-center " color="red">
+              {' '}
+              Error Adding Users
+            </Text>}
+        {!addingUser && firstAdd===1 && <Text className="mt-2 text-center " color="emerald">
+              {' '}
+              <Icon size="xs" color="emerald" icon={CheckIcon} />Added Users
+            </Text>}
         <Chart data={userData} />
         <Chart data={groupData} />
         <Flex justifyContent="center" alignItems="baseline">
@@ -333,13 +350,11 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               </>
             )}
             {fetchedPayments && allPayments.length > 0 && (
-              <TransTable users={users} />
+              <TransTable paymentData={allPayments} />
             )}
             {fetchedPayments && allPayments.length === 0 && (
               <Text>No Expense Yet!!!</Text>
             )}
-            {fetchedPayments && allPayments.length>0 && <TransTable paymentData={allPayments}  />}
-            {fetchedPayments && allPayments.length===0 && <Text>No Expense Yet!!!</Text>}
           </Card>
         </Flex>
       </main>
@@ -358,26 +373,27 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <form>
-              <Typography
-                id="transition-modal-title"
-                variant="h6"
-                component="h2"
-              >
-                Type Comment
-              </Typography>
-              <Adduser userData={allUser} />
-              <Flex justifyContent="center">
-                <Button
+            {/* <form> */}
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              className="text-center"
+            >
+              SELECT User's to ADD
+            </Typography>
+            <Adduser userData={allUser} addCommentHandler={addCommentHandler} />
+            <Flex justifyContent="center">
+              {/* <Button
                   size="xl"
                   onClick={addCommentHandler}
                   style={{ marginTop: '1.5rem' }}
                   color="emerald"
                 >
                   Add
-                </Button>
-              </Flex>
-            </form>
+                </Button> */}
+            </Flex>
+            {/* </form> */}
           </Box>
         </Fade>
       </Modal>
