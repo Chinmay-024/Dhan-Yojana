@@ -36,37 +36,37 @@ import { useRouter } from 'next/navigation';
 // import { useSession } from "next-auth/react"
 
 export default function TransTable({ paymentData }: Props) {
-
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-const combinedData :any= {};
-if(paymentData===undefined){
-    return <>qwe</>;
-}
-console.log("users",paymentData);
-paymentData.forEach((item:any) => {
-  const key = `${item.email}_${item.paymentId}`;
-  if (!combinedData[key]) {
-    combinedData[key] = { ...item };
-  } else {
-    if (item.owned === 1) {
-      combinedData[key].amount = (parseFloat(combinedData[key].amount) + parseFloat(item.amount)).toFixed(2);
-    } else if (item.owned === 0) {
-      combinedData[key].amount = (parseFloat(combinedData[key].amount) - parseFloat(item.amount)).toFixed(2);
-    }
-  }
-});
-
-  const finalData = Object.values(combinedData);
-  console.log('final data', finalData);
-
+  const combinedData: any = {};
+  // console.log('users', paymentData);
   useEffect(() => {
     // Initialize state only on the client- side
     setPage(0);
     setRowsPerPage(5);
   }, []);
+  if (paymentData === undefined) {
+    return <></>;
+  }
+  paymentData.forEach((item: any) => {
+    const key = `${item.email}_${item.paymentId}`;
+    if (!combinedData[key]) {
+      combinedData[key] = { ...item };
+    } else {
+      if (item.owned === 1) {
+        combinedData[key].amount = (
+          parseFloat(combinedData[key].amount) + parseFloat(item.amount)
+        ).toFixed(2);
+      } else if (item.owned === 0) {
+        combinedData[key].amount = (
+          parseFloat(combinedData[key].amount) - parseFloat(item.amount)
+        ).toFixed(2);
+      }
+    }
+  });
+
+  const finalData = Object.values(combinedData);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -98,9 +98,8 @@ paymentData.forEach((item:any) => {
   const start = page * rowsPerPage;
   const end = start + rowsPerPage;
   let currentPayment = finalData.slice(start, end);
-  // currentPayment = currentPayment.filter(item) 
-  console.log("list of pay",currentPayment);
-  const theme = useTheme();
+  // currentPayment = currentPayment.filter(item)
+  console.log('list of pay', currentPayment);
 
   return (
     <NoSsr>
@@ -165,7 +164,9 @@ paymentData.forEach((item:any) => {
                         className="text-center"
                       >
                         {
-                          new Date(payment.updatedAt).toLocaleString().split(',')[0]
+                          new Date(payment.updatedAt)
+                            .toLocaleString()
+                            .split(',')[0]
                         }
                       </Typography>
                     </CardContent>

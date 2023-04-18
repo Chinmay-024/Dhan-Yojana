@@ -110,6 +110,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
 
     const expenseGroupData = async () => {
       var userMail = '20cs01009@iitbbs.ac.in';
+      //TODO: get user email from session
       const res = await fetch(`/api/groups/getPayments/${params.groupId}`);
       const resData = await res.json();
       setAllPayments(resData.payments);
@@ -159,7 +160,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       setUserPayments(selectedColumnsArray);
     };
     expenseGroupData();
-  }, [params.groupId,addingUser]);
+  }, [params.groupId, addingUser]);
 
   // console.log('param : ', params);
 
@@ -317,7 +318,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               component="h2"
               className="text-center"
             >
-              SELECT User's to ADD
+              SELECT User&apos;s to ADD
             </Typography>
             <Adduser userData={allUser} addCommentHandler={addCommentHandler} />
             <Flex justifyContent="center">

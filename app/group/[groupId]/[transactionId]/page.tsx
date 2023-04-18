@@ -130,30 +130,30 @@ const categories: {
 ];
 
 // paymentDetails
-// : 
+// :
 // createdAt
-// : 
+// :
 // "2023-04-17T19:11:12.000Z"
 // currency
-// : 
+// :
 // "US dollar (USD)"
 // groupId
-// : 
+// :
 // 1
 // paymentId
-// : 
+// :
 // 2
 // title
-// : 
+// :
 // "hi"
 // totalAmount
-// : 
+// :
 // "100.00"
 // type
-// : 
+// :
 // "Food"
 // updatedAt
-// : 
+// :
 // "2023-04-18T16:56:59.000Z"
 export default function TransactionId({
   params
@@ -169,11 +169,11 @@ export default function TransactionId({
   const [fetchingComm, setFetchingComm] = React.useState(true);
   const [submittingComm, setsubmittingComm] = React.useState(false);
   const [anyCommup, setanyCommup] = React.useState(false);
-  const [success,setSucess] = React.useState(false);
+  const [success, setSucess] = React.useState(false);
   const [commentsArray, setCommentsArray] = React.useState<any>([]);
-  const [paymentDetails,setPaymentDetails] = React.useState<any>({});
-  const [paymentList,setPaymentList] = React.useState<any>([]);
-  const [fetchingList,setfetchingList] = React.useState<any>(false);
+  const [paymentDetails, setPaymentDetails] = React.useState<any>({});
+  const [paymentList, setPaymentList] = React.useState<any>([]);
+  const [fetchingList, setfetchingList] = React.useState<any>(false);
 
   React.useEffect(() => {
     const getData = async () => {
@@ -186,7 +186,7 @@ export default function TransactionId({
     };
     const getpaymentslist = async () => {
       setfetchingList(true);
-      const resData = await fetch('/api/payments/'+params.transactionId);
+      const resData = await fetch('/api/payments/' + params.transactionId);
       const data: any = await resData.json();
       console.log('payments involment', data);
       setfetchingList(false);
@@ -196,11 +196,21 @@ export default function TransactionId({
 
     getData();
     getpaymentslist();
-  }, []);
+  }, [params.transactionId]);
 
-  const addtolist = (description:any) => {
-      setCommentsArray((prevState :any) => [{email:"20cs01009@iitbbs.ac.in",image:"https://lh3.googleusercontent.com/a/AGNmyxZ3wGdjsI-9N8G4fFZzTApyood-npkmt6W5KVxU=s96-c",name:"ANKIT JAGDISHBHAI PATEL",description:description},...prevState])
-  }
+  const addtolist = (description: any) => {
+    setCommentsArray((prevState: any) => [
+      {
+        //TODO: change this to user email
+        email: '20cs01009@iitbbs.ac.in',
+        image:
+          'https://lh3.googleusercontent.com/a/AGNmyxZ3wGdjsI-9N8G4fFZzTApyood-npkmt6W5KVxU=s96-c',
+        name: 'ANKIT JAGDISHBHAI PATEL',
+        description: description
+      },
+      ...prevState
+    ]);
+  };
 
   const uploadComment = async (description: any) => {
     setsubmittingComm(true);
@@ -213,6 +223,7 @@ export default function TransactionId({
       body: JSON.stringify({
         description: description,
         paymentId: params.transactionId,
+        //TODO: change this to user email
         email: '20cs01009@iitbbs.ac.in'
       })
     });
@@ -259,58 +270,83 @@ export default function TransactionId({
               }}
               className="bg-no-repeat bg-center bg-cover bg-blend-mulitply"
             >
-              {Object.keys(paymentDetails).length===0 && <>
-                  <Box sx={{ display: 'flex' ,marginTop:"15px",marginBottom:"15px"}}>
-                    <CircularProgress  />
+              {Object.keys(paymentDetails).length === 0 && (
+                <>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      marginTop: '15px',
+                      marginBottom: '15px'
+                    }}
+                  >
+                    <CircularProgress />
                   </Box>
                   <Text className="mt-2" color="blue">
                     {' '}
                     Loading Payment Details
                   </Text>
-                </>}
+                </>
+              )}
 
-              {Object.keys(paymentDetails).length!=0 && (<><Metric className="text-5xl	text-white	">{paymentDetails.title}</Metric>
-              <Text
-                className="mt-3 text-1xl text-slate-100	"
-                style={{ marginLeft: '7px' }}
-              >
-                Created At: {new Date(paymentDetails.createdAt).toLocaleString().split(',')[0]}
-              </Text>
-              <Image
-               
-                // src={pic}
-                src={" https://source.unsplash.com/600x600/?"+paymentDetails.type}
-                style={{
-                  position: 'absolute',
-                  top: '0',
-                  left: '0',
-                  zIndex: '-1  ',
-                  opacity: '1',
-                  height: '100%'
-                  
-                }}
-                width={500} height={500}
-                alt="Food pic"
-              />
-              <Text
-                className="text-1xl text-slate-100"
-                style={{ marginLeft: '7px' }}
-              >
-                Updated At: {new Date(paymentDetails.updatedAt).toLocaleString().split(',')[0]}
-              </Text>
-              <Flex justifyContent="start">
-                {/* <Title className="text-1xl text-white	">Type </Title> */}
-                <Subtitle className="text-2xl text-slate-200	">
-                  {paymentDetails.type}
-                </Subtitle>
-              </Flex>
-              <Flex justifyContent="start">
-                {/* <Title className="text-1xl text-white	">Type </Title> */}
-                <Subtitle className="text-2xl text-slate-200	">
-                  {paymentDetails.totalAmount}
-                </Subtitle>
-              </Flex>
-              </>)}
+              {Object.keys(paymentDetails).length != 0 && (
+                <>
+                  <Metric className="text-5xl	text-white	">
+                    {paymentDetails.title}
+                  </Metric>
+                  <Text
+                    className="mt-3 text-1xl text-slate-100	"
+                    style={{ marginLeft: '7px' }}
+                  >
+                    Created At:{' '}
+                    {
+                      new Date(paymentDetails.createdAt)
+                        .toLocaleString()
+                        .split(',')[0]
+                    }
+                  </Text>
+                  <Image
+                    // src={pic}
+                    src={
+                      ' https://source.unsplash.com/600x600/?' +
+                      paymentDetails.type
+                    }
+                    style={{
+                      position: 'absolute',
+                      top: '0',
+                      left: '0',
+                      zIndex: '-1  ',
+                      opacity: '1',
+                      height: '100%'
+                    }}
+                    width={500}
+                    height={500}
+                    alt="Food pic"
+                  />
+                  <Text
+                    className="text-1xl text-slate-100"
+                    style={{ marginLeft: '7px' }}
+                  >
+                    Updated At:{' '}
+                    {
+                      new Date(paymentDetails.updatedAt)
+                        .toLocaleString()
+                        .split(',')[0]
+                    }
+                  </Text>
+                  <Flex justifyContent="start">
+                    {/* <Title className="text-1xl text-white	">Type </Title> */}
+                    <Subtitle className="text-2xl text-slate-200	">
+                      {paymentDetails.type}
+                    </Subtitle>
+                  </Flex>
+                  <Flex justifyContent="start">
+                    {/* <Title className="text-1xl text-white	">Type </Title> */}
+                    <Subtitle className="text-2xl text-slate-200	">
+                      {paymentDetails.totalAmount}
+                    </Subtitle>
+                  </Flex>
+                </>
+              )}
             </Card>
             <Card
               style={{
@@ -327,49 +363,63 @@ export default function TransactionId({
               >
                 PAYMENT DETAILS
               </Typography>
-              {fetchingList && <>
-                  <Box sx={{ display: 'flex' ,marginTop:"15px",marginBottom:"15px" ,justifyContent:"center"}}>
-                    <CircularProgress  />
+              {fetchingList && (
+                <>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      marginTop: '15px',
+                      marginBottom: '15px',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <CircularProgress />
                   </Box>
                   <Text className="mt-2 text-center " color="blue">
                     {' '}
                     Fetching payment Details
                   </Text>
-                </>}
-              {!fetchingList && <List>
-                {paymentList.map((user :any, i:any) => (
-                  <ListItem key={i + 1} className="block">
-                    <Flex>
-                      <Text color="stone">{user.name}</Text>
-                      {user.owned===1 && <div
-                        className="pl-2 pr-2 pt-1 pb-1"
-                        style={{
-                          backgroundColor: 'rgba(132, 204, 22, 0.3)',
-                          borderRadius: '10px',
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}
-                      >
-                        <Icon size="xs" color="emerald" icon={PlusIcon} />
-                        <Text color="emerald">{user.amount}</Text>
-                      </div>}
-                      {user.owned===0 && <div
-                        className="pl-2 pr-2 pt-1 pb-1"
-                        style={{
-                          backgroundColor: 'rgba(244, 63, 94, 0.3)',
-                          borderRadius: '10px',
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}
-                      >
-                        <Icon size="xs" color="red" icon={MinusIcon} />
-                        <Text color="red">{user.amount}</Text>
-                      </div>}
-                      
-                    </Flex>
-                  </ListItem>
-                ))}
-              </List>}
+                </>
+              )}
+              {!fetchingList && (
+                <List>
+                  {paymentList.map((user: any, i: any) => (
+                    <ListItem key={i + 1} className="block">
+                      <Flex>
+                        <Text color="stone">{user.name}</Text>
+                        {user.owned === 1 && (
+                          <div
+                            className="pl-2 pr-2 pt-1 pb-1"
+                            style={{
+                              backgroundColor: 'rgba(132, 204, 22, 0.3)',
+                              borderRadius: '10px',
+                              display: 'flex',
+                              alignItems: 'center'
+                            }}
+                          >
+                            <Icon size="xs" color="emerald" icon={PlusIcon} />
+                            <Text color="emerald">{user.amount}</Text>
+                          </div>
+                        )}
+                        {user.owned === 0 && (
+                          <div
+                            className="pl-2 pr-2 pt-1 pb-1"
+                            style={{
+                              backgroundColor: 'rgba(244, 63, 94, 0.3)',
+                              borderRadius: '10px',
+                              display: 'flex',
+                              alignItems: 'center'
+                            }}
+                          >
+                            <Icon size="xs" color="red" icon={MinusIcon} />
+                            <Text color="red">{user.amount}</Text>
+                          </div>
+                        )}
+                      </Flex>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </Card>
           </Col>
 
@@ -432,8 +482,14 @@ export default function TransactionId({
               > */}
               {submittingComm && (
                 <>
-                  <Box sx={{ display: 'flex' ,marginTop:"15px",marginBottom:"15px"}}>
-                    <CircularProgress  />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      marginTop: '15px',
+                      marginBottom: '15px'
+                    }}
+                  >
+                    <CircularProgress />
                   </Box>
                   <Text className="mt-2" color="blue">
                     {' '}
@@ -441,18 +497,22 @@ export default function TransactionId({
                   </Text>
                 </>
               )}
-              {!submittingComm && anyCommup && success &&  <Text className="mt-2" color="green">
-                    {' '}
-                    Successfully Created Comments
-                  </Text>}
-              {!submittingComm && anyCommup && !success &&  <Text className="mt-2" color="green">
-                    {' '}
-                    Failed to Create Comments
-                  </Text>}
+              {!submittingComm && anyCommup && success && (
+                <Text className="mt-2" color="green">
+                  {' '}
+                  Successfully Created Comments
+                </Text>
+              )}
+              {!submittingComm && anyCommup && !success && (
+                <Text className="mt-2" color="green">
+                  {' '}
+                  Failed to Create Comments
+                </Text>
+              )}
               <List>
                 {!fetchingComm &&
                   commentsArray.length > 0 &&
-                  commentsArray.map((item: any, i:any) => (
+                  commentsArray.map((item: any, i: any) => (
                     <Card key={i} className="p-0 m-3" style={{ width: '97%' }}>
                       <CardHeader
                         avatar={
