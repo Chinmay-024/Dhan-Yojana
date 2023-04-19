@@ -26,17 +26,22 @@ export default function Chart({ expenseData }: any) {
   const [selectedYear2, setSelectedYear2] = useState<string>('2023');
 
   const monthwiseData: MonthwiseData = {};
-  expenseData.forEach((item) => {
-    const [itemYear, itemMonth] = item.Date.split('-');
+  expenseData.forEach(
+    (item: {
+      Date: { split: (arg0: string) => [any, any] };
+      Expense: string;
+    }) => {
+      const [itemYear, itemMonth] = item.Date.split('-');
 
-    if (itemYear == selectedYear2.toString()) {
-      if (monthwiseData[itemMonth]) {
-        monthwiseData[itemMonth] += parseFloat(item.Expense);
-      } else {
-        monthwiseData[itemMonth] = parseFloat(item.Expense);
+      if (itemYear == selectedYear2.toString()) {
+        if (monthwiseData[itemMonth]) {
+          monthwiseData[itemMonth] += parseFloat(item.Expense);
+        } else {
+          monthwiseData[itemMonth] = parseFloat(item.Expense);
+        }
       }
     }
-  });
+  );
 
   const chartData = Object.keys(monthwiseData).map((month) => ({
     Month: `${selectedYear2}-${month}`,
@@ -96,7 +101,7 @@ export default function Chart({ expenseData }: any) {
         <AreaChart
           className="mt-6"
           data={expenseData.filter(
-            (item) =>
+            (item: any) =>
               item.Date.substr(0, 4) === selectedYear &&
               item.Date.substr(5, 2) === selectedMonth
           )}

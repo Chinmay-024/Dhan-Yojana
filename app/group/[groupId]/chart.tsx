@@ -103,7 +103,7 @@ export default function Chart({ expenseData, title }: any) {
         <AreaChart
           className="mt-6"
           data={expenseData.filter(
-            (item) =>
+            (item: any) =>
               item.Date.substr(0, 4) === selectedYear &&
               item.Date.substr(5, 2) === selectedMonth
           )}

@@ -6,8 +6,8 @@ import style from './page.module.css';
 import gif from './qwe.gif';
 import Image from 'next/image';
 import Head from 'next/head';
-import NoSsr from '@mui/base/NoSsr';
 import { useState, useEffect } from 'react';
+import { NoSsr } from '@mui/material';
 
 export default async function IndexPage() {
   const [isLoading, setIsLoading] = useState(true);

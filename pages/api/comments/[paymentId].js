@@ -5,14 +5,27 @@ async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const session = await getServerSession(req, res, authOptions);
-      const { paymentId } = req.query;
 
-      //TODO check if current session user is from the group
+      const { paymentId } = req.query;
 
       const querySql1 = 'SELECT groupId from payments WHERE paymentId = ?';
       const data = await query({ query: querySql1, values: [paymentId] });
       if (data.length === 0) {
         res.status(500).json({ error: 'Group don;t exits!!!' });
+        return;
+      }
+
+      //check if current session user is from the group
+      const userId = session.user.id;
+      const querySql2 =
+        'SELECT groupId,userId from userInvolvedGroup WHERE userId = ? AND groupId = ?';
+      const data2 = await query({
+        query: querySql2,
+        values: [userId, data[0].groupId]
+      });
+      if (data2.length === 0) {
+        res.status(401).json({ error: 'Not authorized!!!' });
+        return;
       }
 
       const querySql =

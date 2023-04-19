@@ -48,15 +48,8 @@ export default function TransTable({ paymentData }: Props) {
 
   const theme = useTheme();
 
-  if (paymentData == undefined) return;
-
   const combinedData: any = {};
-  // console.log('users', paymentData);
-  useEffect(() => {
-    // Initialize state only on the client- side
-    setPage(0);
-    setRowsPerPage(5);
-  }, []);
+
   if (paymentData === undefined) {
     return <></>;
   }

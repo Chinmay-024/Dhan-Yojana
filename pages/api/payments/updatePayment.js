@@ -5,6 +5,7 @@ async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const session = await getServerSession(req, res, authOptions);
+      const userId = session.user.id;
       const { groupId, users: usersData, paymentId } = req.body;
 
       const querySql3 = 'SELECT * from groupTable WHERE groupId=?';
@@ -16,7 +17,6 @@ async function handler(req, res) {
       for (const user of usersData) {
         // console.log('obj', user);
         //TODO check if user exists in group and if not add him to group
-
         const querySql2 = 'SELECT * FROM users WHERE email=?';
         const valueParams2 = [user.email];
         const userObtained = await query({
