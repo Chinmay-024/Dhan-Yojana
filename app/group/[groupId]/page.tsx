@@ -24,6 +24,32 @@ import Adduser from './formModal';
 import { List, ListItem } from '@tremor/react';
 import { useEffect } from 'react';
 
+interface Transaction {
+  owned: boolean;
+  amount: number;
+  email: string;
+  name: string;
+}
+
+interface UserD {
+  email: string;
+  name: string;
+  amount: number;
+  owned: boolean;
+}
+interface NetAmounts {
+  [email: string]: { amount: number; name: string };
+}
+
+interface Result {
+  [email: string]: {
+    payer: string;
+    receiver: string;
+    amount: number;
+    name: string;
+  };
+}
+
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
@@ -73,6 +99,9 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [addingUser, setAddingUser] = React.useState(false);
   const [firstAdd, setFirstAdd] = React.useState(0);
   const [fetchingUsers, setFetchingUsers] = React.useState(true);
+  // const [owe, setOwe] = React.useState(false);
+  //TODO
+  var owe = true;
   const handleOpen = () => setOpen(true);
   const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
@@ -83,6 +112,10 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     searchParams?.get('name')
   );
   const [groupPayments, setGroupPayments] = React.useState<any>([]);
+  const [transactions, setTransactions] = React.useState<Transaction[]>([]);
+
+  var userMail = '20cs01009@iitbbs.ac.in';
+  //TODO: get user email from session
 
   useEffect(() => {
     let intial_user: any = [];
@@ -112,8 +145,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     getData();
 
     const expenseGroupData = async () => {
-      var userMail = '20cs01009@iitbbs.ac.in';
-      //TODO: get user email from session
       const res = await fetch(`/api/groups/getPayments/${params.groupId}`);
       const resData = await res.json();
       setAllPayments(resData.payments);
@@ -140,7 +171,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           type: string;
           title: string;
           updatedAt: string;
-        }) => obj.owned == false && obj.email == 'chinmaynegi024@gmail.com'
+        }) => obj.owned == false && obj.email == userMail
       );
 
       const selectedColumnsArray = filteredArray.map(
@@ -151,6 +182,14 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           };
         }
       );
+      const selectedColumnsArrayForTransaction = resData.payments.map((obj) => {
+        return {
+          email: obj.email,
+          amount: obj.amount,
+          owned: obj.owned,
+          name: obj.name
+        };
+      });
       const selectedColumnsArrayonUser = filteredArrayForUser.map(
         (obj: { updatedAt: any; amount: any }) => {
           return {
@@ -159,13 +198,89 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           };
         }
       );
+      setTransactions(selectedColumnsArrayForTransaction);
       setGroupPayments(selectedColumnsArray);
       setUserPayments(selectedColumnsArrayonUser);
     };
     expenseGroupData();
-  }, [params.groupId, addingUser]);
+  }, [params.groupId, addingUser, userMail]);
 
-  // console.log('param : ', params);
+  console.log('param : ', transactions);
+  const netAmounts: NetAmounts = {};
+  const positiveNetAmounts: NetAmounts = {};
+  const negativeNetAmounts: NetAmounts = {};
+  const result: Result = {};
+
+  // Calculate net amounts for each user
+  for (const transaction of transactions) {
+    if (!(transaction.email in netAmounts)) {
+      netAmounts[transaction.email] = { amount: 0, name: transaction.name };
+    }
+    netAmounts[transaction.email].amount +=
+      transaction.amount * (transaction.owned ? 1 : -1);
+  }
+
+  // Group users into positive and negative net amounts
+  for (const email in netAmounts) {
+    const netAmount = netAmounts[email].amount;
+    if (netAmount > 0) {
+      positiveNetAmounts[email] = {
+        amount: netAmount,
+        name: netAmounts[email].name
+      };
+    } else if (netAmount < 0) {
+      negativeNetAmounts[email] = {
+        amount: netAmount * -1,
+        name: netAmounts[email].name
+      };
+    }
+  }
+  var sumPositive = 0;
+  for (const posEmail in positiveNetAmounts)
+    sumPositive += positiveNetAmounts[posEmail].amount;
+
+  var sumNegative = 0;
+  for (const negEmail in negativeNetAmounts)
+    sumNegative += negativeNetAmounts[negEmail].amount;
+  var Finalamount = 0;
+  if (userMail in negativeNetAmounts) {
+    // setOwe(false);
+    owe = false;
+    const netAmountToPay = negativeNetAmounts[userMail]?.amount;
+    Finalamount = netAmountToPay ? netAmountToPay : 0;
+    for (const posEmail in positiveNetAmounts) {
+      const posAmount = positiveNetAmounts[posEmail].amount;
+      const amountToGive = ((netAmountToPay * posAmount) / sumPositive) * 1.0;
+      if (!(posEmail in result)) {
+        result[posEmail] = {
+          payer: userMail,
+          receiver: posEmail,
+          amount: 0,
+          name: positiveNetAmounts[posEmail].name
+        };
+      }
+      result[posEmail].amount += amountToGive;
+    }
+  } else {
+    // setOwe(true);
+    owe = true;
+    const netAmountToTake = positiveNetAmounts[userMail]?.amount;
+    Finalamount = netAmountToTake ? netAmountToTake : 0;
+    for (const negEmail in negativeNetAmounts) {
+      const negAmount = negativeNetAmounts[negEmail].amount;
+      const amountToGive = ((netAmountToTake * negAmount) / sumNegative) * 1.0;
+      if (!(negEmail in result)) {
+        result[negEmail] = {
+          payer: negEmail,
+          receiver: userMail,
+          amount: 0,
+          name: negativeNetAmounts[negEmail].name
+        };
+      }
+      result[negEmail].amount += amountToGive;
+    }
+  }
+  console.log(result);
 
   const addUserToSql = async (addedUser: any) => {
     if (addedUser.length === 0) {
@@ -208,6 +323,51 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
 
   const handleClick = () => {
     router.push(`/newexpensegroup/${params.groupId}`);
+  };
+
+  const handleSubmit = async () => {
+    const users: {
+      [key: string]: {
+        email: string;
+        name: string;
+        amount: number;
+        owned: boolean;
+      };
+    } = {};
+    const usersData: UserD[] = [];
+    let user;
+    for (const usermail in result) {
+      user = {
+        email: usermail,
+        name: result[usermail].name,
+        amount: result[usermail].amount,
+        owned: !owe
+      };
+      usersData.push(user);
+    }
+    // console.log(usersData);
+    var data = {
+      title: 'Settle Payment',
+      type: 'Settle',
+      totalAmount: Finalamount,
+      currency: 'INR',
+      groupId: parseInt(params.groupId),
+      users: usersData
+    };
+    // const JSONdata = JSON.stringify(data);
+    // const endpoint = '/api/payments/addPayment';
+
+    // const options = {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSONdata
+    // };
+
+    // const response = await fetch(endpoint, options);
+    // const result = await response.json();
+    router.replace(`/group/${params.groupId}`);
   };
 
   return (
@@ -364,18 +524,39 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               </Typography>
               <List>
                 {friends.map((user: any, i: any) => (
-                  <ListItem key={i + 1} className="block">
-                    <div className="flex flex-col items-center justify-center">
-                      <div>
-                        <Flex>
-                          <Text color="stone">{user.name}</Text>
-                        </Flex>
+                  <div
+                    key={i + 1}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between'
+                    }}
+                  >
+                    <ListItem className="block">
+                      <div className="flex flex-col items-center justify-center">
+                        <div>
+                          <Flex>
+                            <Text color="stone">{user.name}</Text>
+                          </Flex>
+                        </div>
+                        <div>
+                          <Text color="gray">{user.email}</Text>
+                        </div>
                       </div>
-                      <div>
-                        <Text color="gray">{user.email}</Text>
-                      </div>
-                    </div>
-                  </ListItem>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between'
+                        }}
+                      ></div>
+                    </ListItem>
+
+                    <Title
+                      className="mt-4"
+                      style={{ color: owe == true ? 'green' : 'red' }}
+                    >
+                      {result[user.email] ? result[user.email].amount : 0}
+                    </Title>
+                  </div>
                 ))}
               </List>
               <Flex justifyContent="center">
@@ -387,6 +568,15 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
                   color="emerald"
                 >
                   Close
+                </Button>
+                <Button
+                  icon={BanknotesIcon}
+                  size="xl"
+                  onClick={handleSubmit}
+                  style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
+                  color="emerald"
+                >
+                  Settle Group
                 </Button>
               </Flex>
             </form>

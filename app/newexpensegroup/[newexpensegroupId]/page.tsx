@@ -73,7 +73,7 @@ const ExpenseFormGroup = ({
         groupId: params.newexpensegroupId
       };
       const JSONdata = JSON.stringify(data);
-      const endpoint = `/api/groups/findFriends/`+params.newexpensegroupId;
+      const endpoint = `/api/groups/findFriends/` + params.newexpensegroupId;
 
       // const options = {};
 
@@ -257,6 +257,7 @@ const ExpenseFormGroup = ({
                   <MenuItem value={'Transportation'}>Transportation</MenuItem>
                   <MenuItem value={'Clothing'}>Clothing</MenuItem>
                   <MenuItem value={'Medical'}>Medical</MenuItem>
+                  <MenuItem value={'Settle'}>Settle</MenuItem>
                   <MenuItem value={'Miscellaneous'}>Miscellaneous</MenuItem>
                 </Select>
               </FormControl>
@@ -329,19 +330,11 @@ const ExpenseFormGroup = ({
                       setCurrency(event.target.value as string)
                     }
                   >
-                    <MenuItem value={'US dollar (USD)'}>
-                      US dollar (USD)
-                    </MenuItem>
-                    <MenuItem value={'Euro (EUR)'}>Euro (EUR)</MenuItem>
-                    <MenuItem value={'Japanese yen (JPY)'}>
-                      Japanese yen (JPY)
-                    </MenuItem>
-                    <MenuItem value={'Pound sterling (GBP)'}>
-                      Pound sterling (GBP)
-                    </MenuItem>
-                    <MenuItem value={'Indian Rupee (INR)'}>
-                      Indian Rupee (INR)
-                    </MenuItem>
+                    <MenuItem value={'USD'}>US dollar (USD)</MenuItem>
+                    <MenuItem value={'EUR'}>Euro (EUR)</MenuItem>
+                    <MenuItem value={'JPY'}>Japanese yen (JPY)</MenuItem>
+                    <MenuItem value={'GBP'}>Pound sterling (GBP)</MenuItem>
+                    <MenuItem value={'INR'}>Indian Rupee (INR)</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl style={{ marginTop: '1.5rem' }}>

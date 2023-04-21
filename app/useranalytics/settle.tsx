@@ -19,6 +19,7 @@ interface Result {
 }
 
 export default function Settle() {
+  var userEmail = 'user2@example.com';
   // useEffect(() => {
   //   const expenseData = async () => {
   //     const res = await fetch('/api/user/getPayments');
@@ -61,23 +62,50 @@ export default function Settle() {
       negativeNetAmounts[email] = netAmount * -1;
     }
   }
-  var sum = 0;
+  var sumPositive = 0;
   for (const posEmail in positiveNetAmounts)
-    sum += positiveNetAmounts[posEmail];
-  console.log('sum = ' + sum);
-  for (const negEmail in negativeNetAmounts) {
-    const negAmount = negativeNetAmounts[negEmail];
+    sumPositive += positiveNetAmounts[posEmail];
 
+  var sumNegative = 0;
+  for (const negEmail in negativeNetAmounts)
+    sumNegative += negativeNetAmounts[negEmail];
+
+  if (userEmail in negativeNetAmounts) {
+    const netAmountToPay = negativeNetAmounts[userEmail];
     for (const posEmail in positiveNetAmounts) {
       const posAmount = positiveNetAmounts[posEmail];
-      const amountToGive = ((negAmount * posAmount) / sum) * 1.0;
+      const amountToGive = ((netAmountToPay * posAmount) / sumPositive) * 1.0;
       result.push({
-        payer: negEmail,
+        payer: userEmail,
         receiver: posEmail,
         amount: amountToGive
       });
     }
+  } else {
+    const netAmountToTake = positiveNetAmounts[userEmail];
+    for (const negEmail in negativeNetAmounts) {
+      const negAmount = negativeNetAmounts[negEmail];
+      const amountToGive = ((netAmountToTake * negAmount) / sumNegative) * 1.0;
+      result.push({
+        payer: negEmail,
+        receiver: userEmail,
+        amount: amountToGive
+      });
+    }
   }
+  // for (const negEmail in negativeNetAmounts) {
+  //   const negAmount = negativeNetAmounts[negEmail];
+
+  // for (const posEmail in positiveNetAmounts) {
+  //   const posAmount = positiveNetAmounts[posEmail];
+  //   const amountToGive = ((negAmount * posAmount) / sum) * 1.0;
+  //   result.push({
+  //     payer: negEmail,
+  //     receiver: posEmail,
+  //     amount: amountToGive
+  //   });
+  // }
+  // }
 
   console.log(result);
 
