@@ -110,9 +110,7 @@ const NewGroup = () => {
       }
       return;
     }
-    // if (addedUser.length === 0) {
-    //   setError4(true);
-    // }
+
     if (title.trim().length === 0) {
       setError1(true);
     }
