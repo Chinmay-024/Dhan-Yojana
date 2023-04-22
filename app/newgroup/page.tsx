@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getServerSession } from 'next-auth/next';
 import {
   Button,
   Flex,
@@ -18,26 +17,15 @@ import { Card } from '@tremor/react';
 import { NoSsr } from '@mui/material';
 import { Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
-import { authOptions } from '../../pages/api/auth/[...nextauth]';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
 
-const friends = [
-  { id: 11, name: 'John' },
-  { id: 12, name: 'Jane' },
-  { id: 13, name: 'Bob' },
-  { id: 14, name: 'Alice' }
-];
 
-const users = [
-  { name: 'John Doe', email: 'johndoe@example.com' },
-  { name: 'Jane Smith', email: 'janesmith@example.com' },
-  { name: 'Bob Johnson', email: 'bobjohnson@example.com' },
-  { name: 'Alice Williams', email: 'alicewilliams@example.com' }
-  // Add as many objects as you need...
-];
 
-const NewGroup = async () => {
-  const { user } = await getServerSession(authOptions);
+const NewGroup = () => {
+  const router = useRouter();
   const [title, setTitle] = useState('');
+  const [userId,setUserId] = useState('');
+  const [user,setUser] = useState({});
   const [description, setdescription] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const [error1, setError1] = useState<boolean>(false);
@@ -50,6 +38,18 @@ const NewGroup = async () => {
     Array<{ email: string; name: string }>
   >([]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let user2 = localStorage.getItem('user') || '{"id":"none","name":"none","email":"nobe"}';
+      setUser(JSON.parse(user2))
+      setUserId(JSON.parse(user2).id);
+      console.log(user2)
+    }
+  },[]);
+
+  if(userId!=='none'){
+      return router.replace('/')
+  }
   const createGroup = async () => {
     setIsCreatingGroup(true);
     console.log(
@@ -68,46 +68,22 @@ const NewGroup = async () => {
         title: title,
         description: description,
         image: image,
-        userId: user.id
+        userId: userId
       })
     });
     const resData = await response.json();
     console.log('on createGroup :', response);
     if (response.status === 200) {
       setStatus(1);
+      router.replace('/group')
     } else {
       setStatus(2);
     }
     setIsCreatingGroup(false);
   };
 
-  // const addUserHandler = (value: String) => {
-  //   const val = Number(value);
-  //   const f = addedUser.find((user) => {
-  //     return user.email === users[val].email;
-  //   });
-  //   console.log(f, users[val].name);
-  //   if (f === undefined) {
-  //     setAddedUser((prevState) => {
-  //       return [
-  //         ...prevState,
-  //         { name: users[val].name, email: users[val].email }
-  //       ];
-  //     });
-  //   }
-
-  //   // })
-  // };
-
-  // const removeUserHandler = (event: any) => {
-  //   const email = event.currentTarget.getAttribute('data-email');
-  //   let newstate = [...addedUser];
-  //   newstate = newstate.filter((obj) => obj.email !== email);
-  //   setAddedUser(newstate);
-  // };
-
-  const titleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
+    const titleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setTitle(event.target.value);
   };
   const descHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setdescription(event.target.value);
@@ -115,21 +91,22 @@ const NewGroup = async () => {
   const imageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setImage(event.target.value);
   };
-
+  
   const clickHandler = (e: any) => {
     e.preventDefault();
     if (
       title.trim().length !== 0 &&
       description.trim().length !== 0 &&
       image.trim().length !== 0
-    ) {
-      // addedUser.length !== 0
-      console.log('called the post request');
-      createGroup();
-      if (status === 1) {
-        setTitle('');
+      ) {
+        // addedUser.length !== 0
+        console.log('called the post request');
+        createGroup();
+        if (status === 1) {
+          setTitle('');
         setdescription('');
         setImage('');
+        
       }
       return;
     }
@@ -237,65 +214,3 @@ const NewGroup = async () => {
 
 export default NewGroup;
 
-{
-  /* <Card
-            className="max-w-xs"
-            style={{ border: `${error4 ? '1px solid red' : ''}` }}
-          >
-            <Card className="max-w-xs">
-              <Title>Add users</Title>
-              <Dropdown
-                className="mt-2"
-                onValueChange={addUserHandler}
-                placeholder="user"
-              >
-                {users.map((user, i) => (
-                  <DropdownItem
-                    key={i}
-                    value={String(i)}
-                    text={`${user.name}`}
-                  />
-                ))}
-              </Dropdown>
-            </Card>
-            <Card>
-              <Title className="text-center">Added</Title>
-              <List>
-                {addedUser.map((user, i) => (
-                  <ListItem key={i + 1} className="block">
-                    <div className="flex flex-col items-center justify-center">
-                      <div>
-                        <Flex>
-                          <Text color="stone">{user.name}</Text>
-                          <span
-                            onClick={removeUserHandler}
-                            data-email={`${user.email}`}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1"
-                              stroke="currentColor"
-                              className="w-4 h-4 ml-2"
-                              color="red"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                              />
-                            </svg>
-                          </span>
-                        </Flex>
-                      </div>
-                      <div>
-                        <Text color="gray">{user.email}</Text>
-                      </div>
-                    </div>
-                  </ListItem>
-                ))}
-              </List>
-            </Card>
-          </Card> */
-}

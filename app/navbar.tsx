@@ -8,35 +8,37 @@ import { signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'Group', href: '/group' },
-  { name: 'User Analytics', href: '/useranalytics' }
-];
+
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Navbar({ user }: { user: any }) {
+export default function Navbar({ user }: { user: any }) {  
   const pathname = usePathname();
-  // console.log(user, JSON.stringify(user));
-  // if (!user) {
-  // }
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user|| '{"id":"none","name":"none","email":"nobe"}'));
     }
   }, [user]);
 
-  // console.log('user => ' + { ...user });
-  console.log(user);
   const handleSignOut = () => {
     signOut();
     if (typeof window !== 'undefined') {
       localStorage.removeItem('user');
     }
   };
+
+  let navigation = [
+    { name: 'Home', href: '/' }
+  ];
+  if(user){
+      navigation = [
+        { name: 'Home', href: '/' },    
+        { name: 'Group', href: '/group' },
+        { name: 'User Analytics', href: '/useranalytics' }
+      ]
+  }
 
   return (
     <Disclosure as="nav" className="bg-white shadow-sm">

@@ -1,7 +1,18 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Card, Metric, Text, Flex, Grid, Title, Icon } from '@tremor/react';
+import {
+  Card,
+  Metric,
+  Text,
+  Flex,
+  Grid,
+  Title,
+  Icon,
+  Subtitle,
+  Tab,
+  TabList
+} from '@tremor/react';
 import { Button } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -27,7 +38,7 @@ import { useEffect } from 'react';
 import { Session } from '@next-auth/sequelize-adapter/dist/models';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import UserChart from './userChart';
-
+import Image from 'next/image';
 interface Transaction {
   owned: boolean;
   amount: number;
@@ -96,13 +107,16 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [groupName, setGroupName] = React.useState<any>(
     searchParams?.get('name')
   );
+  const [groupDesc, setGroupDesc] = React.useState<any>(
+    searchParams?.get('description')
+  );
   const [groupPayments, setGroupPayments] = React.useState<any>([]);
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
   const [result, setResult] = React.useState<Result>({});
   const [userMail, setUserMail] = React.useState<string>('');
   const [userName, setUserName] = React.useState<string>('');
   const [fetchGraph, setFetchGraph] = React.useState(true);
-
+  const [showCard, setShowCard] = React.useState(true);
   useEffect(() => {
     if (typeof window !== 'undefined') {
       let user2 = localStorage.getItem('user') || '{}';
@@ -384,78 +398,121 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   return (
     <>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
-        <Metric>{groupName}</Metric>
-        {/* {user && <Metric>{user.name}</Metric>} */}
-        <Button
-          icon={BanknotesIcon}
-          size="xl"
-          onClick={handleClick}
-          style={{ marginTop: '1.5rem' }}
-          color="emerald"
+        <Card
+          style={{
+            overflowX: 'hidden',
+            overflowY: 'hidden',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)'
+          }}
+          className="bg-no-repeat bg-center bg-cover bg-blend-mulitply"
         >
-          ADD EXPENSE
-        </Button>
-        <Button
-          icon={UserPlusIcon}
-          size="xl"
-          onClick={handleOpen}
-          style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
-          color="emerald"
-          disabled={fetchingUsers}
-        >
-          Add User
-        </Button>
-        <Button
-          icon={EyeIcon}
-          size="xl"
-          onClick={handleOpen2}
-          style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
-          color="emerald"
-          disabled={fetchingUsers}
-        >
-          See All User
-        </Button>
-        {addingUser && (
-          <>
-            <Box
-              sx={{
-                display: 'flex',
-                marginTop: '15px',
-                marginBottom: '15px',
-                justifyContent: 'center'
-              }}
-            >
-              <CircularProgress />
-            </Box>
-            <Text className="mt-2 text-center " color="blue">
+          <Metric className="text-white	">{groupName}</Metric>
+          <Subtitle className="text-white	mt-5 ml-2">{groupDesc}</Subtitle>
+          {/* {user && <Metric>{user.name}</Metric>} */}
+          <Image
+            // src={pic}
+            src={' https://source.unsplash.com/1200x1200/?group'}
+            style={{
+              position: 'absolute',
+              top: '0',
+              left: '0',
+              zIndex: '-1  ',
+              opacity: '1',
+              width: '1200px'
+            }}
+            width={500}
+            height={500}
+            alt="Food pic"
+          />
+          <Button
+            icon={BanknotesIcon}
+            size="xl"
+            onClick={handleClick}
+            style={{ marginTop: '1.5rem' }}
+            color="emerald"
+          >
+            ADD EXPENSE
+          </Button>
+          <Button
+            icon={UserPlusIcon}
+            size="xl"
+            onClick={handleOpen}
+            style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
+            color="emerald"
+            disabled={fetchingUsers}
+          >
+            Add User
+          </Button>
+          <Button
+            icon={EyeIcon}
+            size="xl"
+            onClick={handleOpen2}
+            style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
+            color="emerald"
+            disabled={fetchingUsers}
+          >
+            See All User
+          </Button>
+          {addingUser && (
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  marginTop: '15px',
+                  marginBottom: '15px',
+                  justifyContent: 'center'
+                }}
+              >
+                <CircularProgress />
+              </Box>
+              <Text className="mt-2 text-center " color="blue">
+                {' '}
+                Adding Users
+              </Text>
+            </>
+          )}
+          {!addingUser && firstAdd === -1 && (
+            <Text className="mt-2 text-center " color="red">
               {' '}
-              Adding Users
+              Error Adding Users
             </Text>
-          </>
-        )}
-        {!addingUser && firstAdd === -1 && (
-          <Text className="mt-2 text-center " color="red">
-            {' '}
-            Error Adding Users
-          </Text>
-        )}
-        {!addingUser && firstAdd === 1 && (
-          <Text className="mt-2 text-center " color="emerald">
-            {' '}
-            <Icon size="xs" color="emerald" icon={CheckIcon} />
-            Added Users
-          </Text>
-        )}
-
-        {!fetchGraph && (
+          )}
+          {!addingUser && firstAdd === 1 && (
+            <Text className="mt-2 text-center " color="emerald">
+              {' '}
+              <Icon size="xs" color="emerald" icon={CheckIcon} />
+              Added Users
+            </Text>
+          )}
+        </Card>
+        <Card className="mt-2">
           <>
-            <UserChart expenseData={userPayments} title={'USER ANALYSIS'} />
-
-            <Chart expenseData={groupPayments} title={'GROUP ANALYSIS'} />
+            <TabList
+              defaultValue="1"
+              onValueChange={(value) => setShowCard(value === '1')}
+              className="mt-1"
+            >
+              <Tab value="1" text="Group Analysis" />
+              <Tab value="2" text="Individual Analysis"/>
+            </TabList>
           </>
-        )}
+
+          {showCard === true ? (
+            <div className="mt-6">
+              {!fetchGraph && (
+                <Chart expenseData={groupPayments} />)}
+            </div>
+          ) : (
+            <div className="mt-6">
+              {!fetchGraph && (
+              <>
+                <UserChart expenseData={userPayments}  />{' '}
+              </>)}
+            </div>
+          )}
+        </Card>
         <Flex justifyContent="center" alignItems="baseline">
-          <Card className="mt-6 overflow-y-auto h-80 ">
+          <Card className="mt-6 overflow-y-auto h-100 ">
             <Title className="mb-4">Expense List</Title>
             {!fetchedPayments && (
               <>
@@ -469,7 +526,11 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               </>
             )}
             {fetchedPayments && allPayments.length > 0 && (
-              <TransTable paymentData={allPayments} />
+              <TransTable
+                paymentData={allPayments}
+                userName={userName}
+                userMail={userMail}
+              />
             )}
             {fetchedPayments && allPayments.length === 0 && (
               <Text>No Expense Yet!!!</Text>

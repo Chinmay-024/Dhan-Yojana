@@ -15,10 +15,6 @@ import {
   Button
 } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
-import Chart from './chart';
-import Settle from './settle';
-// import UsersTable from '../table';
-import styles from './page.module.css';
 import { useRouter, usePathname } from 'next/navigation';
 import UsersTable from '../table';
 import { NoSsr } from '@mui/material';

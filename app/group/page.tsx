@@ -10,7 +10,7 @@ import {
   Bold,
   DonutChart,
   Button,
-  Subtitle
+  Subtitle,
 } from '@tremor/react';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { useRouter } from 'next/navigation';
@@ -19,6 +19,7 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+// import { PieChart } from '@mui/icons-material';
 
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
@@ -226,7 +227,7 @@ export default function Groups() {
                 key={item.groupId}
                 className={styles.card}
                 onClick={() => {
-                  router.push(`/group/${item.groupId}?name=${item.title}`);
+                  router.push(`/group/${item.groupId}?name=${item.title}&description=${item.description}`);
                 }}
               >
                 <Metric>{item.title}</Metric>
@@ -250,9 +251,11 @@ export default function Groups() {
                   </Bold>
                 </Flex>
                 <DonutChart
-                  className="mt-6"
+                  className="mt-6 border-none"
                   category="total"
                   index="type"
+                  
+                  // colors={["slate", "violet", "indigo", "rose", "cyan", "amber"]}
                   data={
                     fetchData.paymentDetails[i].length > 0
                       ? fetchData.paymentDetails[i]
@@ -260,9 +263,8 @@ export default function Groups() {
                   }
                   colors={
                     fetchData.paymentDetails[i].length > 0
-                      ? ['emerald', 'green', 'teal']
-                      : ['gray']
-                  }
+                      ? ["amber", "yellow", "lime", "green", "emerald", "teal","cyan","sky","blue"]
+                      : ['gray']}
                   valueFormatter={dataFormatter}
                 />
               </Card>
