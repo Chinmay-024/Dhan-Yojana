@@ -19,30 +19,13 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-// import { PieChart } from '@mui/icons-material';
+import { groupDataSliceActions } from '../store';
+import { useDispatch } from 'react-redux';
 
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
-const categories: {
-  groupId: number;
-  title: string;
-  metric: string;
-  metricPrev: string;
-}[] = [
-  {
-    groupId: 1,
-    title: 'Sales',
-    metric: '$ 12,699',
-    metricPrev: '$ 9,456'
-  },
-  {
-    groupId: 2,
-    title: 'Profit',
-    metric: '$ 40,598',
-    metricPrev: '$ 45,564'
-  }
-];
+
 
 interface Group {
   groupId: number;
@@ -69,6 +52,7 @@ interface MyObject {
 }
 export default function Groups() {
   const router = useRouter();
+  // const dispatch = useDispatch();
   const [fetchData, setFetchData] = useState<MyObject>();
   const [datafetching, setDataFetching] = useState<boolean>(false);
   const valueFormatter = (number: number) =>
@@ -84,6 +68,7 @@ export default function Groups() {
       const res = await fetch('/api/user/getAllGroupDetails');
       const resData = await res.json();
       console.log('sadada', resData);
+      // dispatch(groupDataSliceActions.updateGroups(resData))
       const newData = resData!!.paymentDetails.map((item: Payment1[]) => {
         return item.map((payment) => {
           return {
@@ -114,6 +99,7 @@ export default function Groups() {
 
   return (
     <>
+    {/* <Provider store={store}> */}
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
         <Flex
           alignItems="end"
@@ -271,6 +257,7 @@ export default function Groups() {
             ))}
         </Grid>
       </main>
+      {/* </Provider> */}
     </>
   );
 }

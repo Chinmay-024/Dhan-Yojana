@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Button,
   Flex,
@@ -18,11 +17,12 @@ import { NoSsr } from '@mui/material';
 import { Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
+import NotAuthenticated from '../notAuth';
 
 
 
 const NewGroup = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const [title, setTitle] = useState('');
   const [userId,setUserId] = useState('');
   const [user,setUser] = useState({});
@@ -40,7 +40,7 @@ const NewGroup = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      let user2 = localStorage.getItem('user') || '{"id":"none","name":"none","email":"nobe"}';
+      let user2 = localStorage.getItem('user') || '{"id":"none","name":"none","email":"none"}';
       setUser(JSON.parse(user2))
       setUserId(JSON.parse(user2).id);
       console.log(user2)
@@ -48,7 +48,7 @@ const NewGroup = () => {
   },[]);
 
   if(userId!=='none'){
-      return router.replace('/')
+      return <><NotAuthenticated></NotAuthenticated></>;
   }
   const createGroup = async () => {
     setIsCreatingGroup(true);
@@ -75,7 +75,6 @@ const NewGroup = () => {
     console.log('on createGroup :', response);
     if (response.status === 200) {
       setStatus(1);
-      router.replace('/group')
     } else {
       setStatus(2);
     }

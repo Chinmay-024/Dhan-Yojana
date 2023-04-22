@@ -25,7 +25,7 @@ import styles from './page.module.css';
 import { useRouter, usePathname } from 'next/navigation';
 import * as React from 'react';
 import { getServerSession } from 'next-auth/next';
-
+import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -39,6 +39,7 @@ import { Session } from '@next-auth/sequelize-adapter/dist/models';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import UserChart from './userChart';
 import Image from 'next/image';
+import { groupDataSliceActions } from '../../store';
 interface Transaction {
   owned: boolean;
   amount: number;
@@ -82,6 +83,9 @@ const style = {
 
 export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [user, setUser] = React.useState<any>(null);
+  // const dispatch = useDispatch();
+  // const groupData = useSelector((state :any)=> state.groupData.group);
+  // console.log("Group Data",groupData)
   const searchParams = useSearchParams();
   const router = useRouter();
   const [allUser, setAllUser] = React.useState<any>([]);
@@ -104,12 +108,6 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const handleClose2 = () => setOpen2(false);
 
   const [userPayments, setUserPayments] = React.useState<any>([]);
-  const [groupName, setGroupName] = React.useState<any>(
-    searchParams?.get('name')
-  );
-  const [groupDesc, setGroupDesc] = React.useState<any>(
-    searchParams?.get('description')
-  );
   const [groupPayments, setGroupPayments] = React.useState<any>([]);
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
   const [result, setResult] = React.useState<Result>({});
@@ -117,6 +115,25 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [userName, setUserName] = React.useState<string>('');
   const [fetchGraph, setFetchGraph] = React.useState(true);
   const [showCard, setShowCard] = React.useState(true);
+
+  
+
+  // let k = groupData.findIndex((item:any)=>{
+  //   return item.groupId==params.groupId
+  // });
+  // useEffect(()=>{
+  //   if(k==-1){
+  //     console.log("sent the request")
+  //     const getGroupdata = async() => {
+  //       const res = await fetch('/api/user/getAllGroupDetails');
+  //       const resData = await res.json();
+  //       //  dispatch(groupDataSliceActions.updateGroups(resData))
+
+  //     }
+  //     getGroupdata();
+  //   }
+  // },[k])
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       let user2 = localStorage.getItem('user') || '{}';
@@ -126,6 +143,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     }
     let intial_user: any = [];
     let intial_friends: any = [];
+
 
     const userANDexpenseGroupData = async () => {
       const resData1 = await fetch('/api/user/getAllUser');
@@ -406,8 +424,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           }}
           className="bg-no-repeat bg-center bg-cover bg-blend-mulitply"
         >
-          <Metric className="text-white	">{groupName}</Metric>
-          <Subtitle className="text-white	mt-5 ml-2">{groupDesc}</Subtitle>
+          {/* <Metric className="text-white	">{k!=-1 && groupData[k].title} {k==-1 && <>Loading....</>}</Metric> */}
+          {/* <Subtitle className="text-white	mt-5 ml-2">{k!=-1 && groupData[k].description}</Subtitle> */}
           {/* {user && <Metric>{user.name}</Metric>} */}
           <Image
             // src={pic}

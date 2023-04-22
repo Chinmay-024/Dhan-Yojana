@@ -1,8 +1,7 @@
+// 'use client';
 import './globals.css';
-
 import Nav from './nav';
 import AnalyticsWrapper from './analytics';
-
 import { Suspense } from 'react';
 import Loading from './loading';
 export const metadata = {
@@ -24,6 +23,7 @@ export default async function RootLayout({
           <Nav />
         </Suspense>
         {children}
+
         <AnalyticsWrapper />
       </body>
     </html>
