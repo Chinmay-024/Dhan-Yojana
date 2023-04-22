@@ -14,15 +14,14 @@ import {
 import { useState } from 'react';
 
 interface MonthwiseData {
-  [key: string]: number;
+  [key: string]: { Paid: number; Owed: number };
 }
 
 const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
-export default function Chart({ expenseData, title }: any) {
-  let max2 = 0;
-  let max = 0;
+export default function UserChart({ expenseData, title }: any) {
+  // console.log(expenseData);
   const [selectedYear, setSelectedYear] = useState<string>(
     new Date().getFullYear().toString()
   );
@@ -35,30 +34,42 @@ export default function Chart({ expenseData, title }: any) {
   const [selectedYear2, setSelectedYear2] = useState<string>(
     new Date().getFullYear().toString()
   );
-
+  const [maxValue, setMaxValue] = useState<number>(0);
   const monthwiseData: MonthwiseData = {};
+
+  let max = 0;
+  let max2 = 0;
   expenseData.forEach(
     (item: {
       Date: { split: (arg0: string) => [any, any] };
-      Expense: string;
+      Paid: string;
+      Owed: string;
     }) => {
-      max = Math.max(max, parseFloat(item.Expense));
+      max = Math.max(max, parseFloat(item.Paid), parseFloat(item.Owed), max);
       const [itemYear, itemMonth] = item.Date.split('-');
-
       if (itemYear == selectedYear2.toString()) {
         if (monthwiseData[itemMonth]) {
-          monthwiseData[itemMonth] += parseFloat(item.Expense);
+          monthwiseData[itemMonth].Paid += parseFloat(item.Paid);
+          monthwiseData[itemMonth].Owed += parseFloat(item.Owed);
         } else {
-          monthwiseData[itemMonth] = parseFloat(item.Expense);
+          monthwiseData[itemMonth] = {
+            Paid: parseFloat(item.Paid),
+            Owed: parseFloat(item.Owed)
+          };
         }
+        max2 = Math.max(
+          max2,
+          monthwiseData[itemMonth].Paid,
+          monthwiseData[itemMonth].Owed
+        );
       }
-      max2 = Math.max(max2, monthwiseData[itemMonth]);
     }
   );
 
   const chartData = Object.keys(monthwiseData).map((month) => ({
     Month: `${selectedYear2}-${month}`,
-    Expense: monthwiseData[month]
+    Paid: monthwiseData[month].Paid,
+    Owed: monthwiseData[month].Owed
   }));
   // console.log(monthwiseData);
   return (
@@ -119,9 +130,10 @@ export default function Chart({ expenseData, title }: any) {
               item.Date.substr(5, 2) === selectedMonth
           )}
           index="Date"
+          autoMinValue={true}
           maxValue={max}
-          categories={['Expense']}
-          colors={['blue']}
+          categories={['Paid', 'Owed']}
+          colors={['blue', 'red']}
           valueFormatter={valueFormatter}
           // yAxisWidth={40}
         />
@@ -154,9 +166,9 @@ export default function Chart({ expenseData, title }: any) {
           className="mt-6"
           data={chartData}
           index="Month"
+          categories={['Paid', 'Owed']}
+          colors={['blue', 'red']}
           maxValue={max2}
-          categories={['Expense']}
-          colors={['blue']}
           valueFormatter={valueFormatter}
           // yAxisWidth={40}
         />

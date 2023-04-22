@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CircularProgress } from '@mui/material';
 import {
   InputLabel,
   MenuItem,
   TextField,
   Typography,
   FormControl,
-  FormHelperText
+  FormHelperText,
+  Box
 } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import PaymentsIcon from '@mui/icons-material/Payments';
@@ -45,7 +47,7 @@ const ExpenseFormGroup = ({
 
   const [selectedPayers, setSelectedPayers] = useState<Friend[]>([]);
   const [selectedOwers, setSelectedOwers] = useState<Friend[]>([]);
-
+  const [submitLoader, setSubmitLoader] = useState<boolean>(false);
   const [title, setTitle] = useState('');
   const [type, setType] = useState('');
   const [currency, setCurrency] = useState('');
@@ -122,6 +124,7 @@ const ExpenseFormGroup = ({
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setSubmitLoader(true);
     event.preventDefault();
     var totalOwe = 0;
     selectedOwers.forEach((o) => {
@@ -210,6 +213,7 @@ const ExpenseFormGroup = ({
     setTotalAmount(0);
     setErrorP('');
     setErrorO('');
+    setSubmitLoader(false);
     router.replace(`/group/${params.newexpensegroupId}`);
   };
 
@@ -291,6 +295,7 @@ const ExpenseFormGroup = ({
                       type="number"
                       label="Amount"
                       value={amountsP[friend.email] || ''}
+                      // required
                       onChange={(event) =>
                         setAmountsP({
                           ...amountsP,
@@ -372,6 +377,7 @@ const ExpenseFormGroup = ({
                           [friend.email]: parseFloat(event.target.value) || 0
                         })
                       }
+                      // required
                       margin="normal"
                     />
                   </div>
@@ -379,15 +385,31 @@ const ExpenseFormGroup = ({
               </div>
             </FormControl>
           </div>
-          <Button
-            type="submit"
-            icon={BanknotesIcon}
-            size="xl"
-            style={{ marginTop: '1.5rem' }}
-            color="emerald"
-          >
-            Submit
-          </Button>
+          <Box sx={{ m: 1, position: 'relative' }}>
+            <Button
+              type="submit"
+              icon={BanknotesIcon}
+              size="xl"
+              disabled={submitLoader}
+              style={{ marginTop: '1.5rem' }}
+              color="emerald"
+            >
+              Submit
+            </Button>
+            {submitLoader && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: 'emerald',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-4px',
+                  marginLeft: '-4px'
+                }}
+              />
+            )}
+          </Box>
         </form>
       </Card>
     </main>

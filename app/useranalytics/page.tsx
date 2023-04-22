@@ -23,6 +23,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import UsersTable from '../table';
 import { NoSsr } from '@mui/material';
 import { useEffect, useState } from 'react';
+import UserChart from './userChart';
 
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
@@ -36,24 +37,13 @@ export default function PlaygroundPage() {
       const res = await fetch('/api/user/getPayments');
       const resData = await res.json();
       console.log('sadada', resData.payments);
-      const filteredArray = resData.payments.filter(
-        (obj: {
-          name: string;
-          email: string;
-          amount: number;
-          owned: boolean;
-          paymentId: number;
-          type: string;
-          title: string;
-          updatedAt: string;
-        }) => obj.owned == false
-      );
 
-      const selectedColumnsArray = filteredArray.map(
-        (obj: { updatedAt: any; amount: any }) => {
+      const selectedColumnsArray = resData.payments.map(
+        (obj: { owned: any; updatedAt: any; amount: any }) => {
           return {
             Date: obj.updatedAt,
-            Expense: obj.amount
+            Paid: !obj.owned ? 0 : obj.amount,
+            Owed: !obj.owned ? obj.amount : 0
           };
         }
       );
@@ -108,7 +98,6 @@ export default function PlaygroundPage() {
     <NoSsr>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
         <Metric>ANALYTICS</Metric>
-        <Settle />
         <Button
           icon={BanknotesIcon}
           size="xl"
@@ -118,7 +107,7 @@ export default function PlaygroundPage() {
         >
           ADD EXPENSE
         </Button>
-        <Chart expenseData={payments} />
+        <UserChart expenseData={payments} />
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>

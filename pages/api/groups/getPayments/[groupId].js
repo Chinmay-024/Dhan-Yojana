@@ -10,7 +10,8 @@ async function handler(req, res) {
       const session = await getServerSession(req, res, authOptions);
       const userId = session.user.id;
       //check if the current session user is part of the group
-      const querySql1 = 'SELECT * FROM userInvolvedGroup WHERE userId = ? AND groupId = ?';
+      const querySql1 =
+        'SELECT * FROM userInvolvedGroup WHERE userId = ? AND groupId = ?';
       const valueParams1 = [userId, groupId];
       const data1 = await query({ query: querySql1, values: valueParams1 });
       if (data1.length === 0) {
@@ -19,7 +20,7 @@ async function handler(req, res) {
       }
 
       const querySql =
-      'SELECT users.name,users.email,share.amount,share.owned,payments.paymentId,payments.title,payments.totalAmount,payments.type,payments.updatedAt FROM users JOIN share ON users.id = share.userId JOIN payments ON payments.paymentId = share.paymentId WHERE payments.groupId = ?';
+        'SELECT users.name,users.email,share.amount,share.owned,payments.paymentId,payments.title,payments.totalAmount,payments.type,payments.createdAt FROM users JOIN share ON users.id = share.userId JOIN payments ON payments.paymentId = share.paymentId WHERE payments.groupId = ?';
       const valueParams = [groupId];
       const data = await query({ query: querySql, values: valueParams });
 

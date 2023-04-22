@@ -26,6 +26,7 @@ import { List, ListItem } from '@tremor/react';
 import { useEffect } from 'react';
 import { Session } from '@next-auth/sequelize-adapter/dist/models';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
+import UserChart from './userChart';
 
 interface Transaction {
   owned: boolean;
@@ -56,28 +57,6 @@ interface Result {
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
 
-const categories: {
-  title: string;
-  metric: string;
-  metricPrev: string;
-}[] = [
-  {
-    title: 'Sales',
-    metric: '$ 12,699',
-    metricPrev: '$ 9,456'
-  },
-  {
-    title: 'Profit',
-    metric: '$ 40,598',
-    metricPrev: '$ 45,564'
-  },
-  {
-    title: 'Customers',
-    metric: '1,072',
-    metricPrev: '856'
-  }
-];
-
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -106,8 +85,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [finalAmount, setfinalAmount] = React.useState(0);
   const [owe, setOwe] = React.useState(false);
   const [settleFlag, setSettleFlag] = React.useState(false);
-  //TODO
-  // var owe = true;
+  const [submitLoader, setSubmitLoader] = React.useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleOpen2 = () => setOpen2(true);
   const handleClose = () => setOpen(false);
@@ -122,10 +101,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const [result, setResult] = React.useState<Result>({});
   const [userMail, setUserMail] = React.useState<string>('');
   const [userName, setUserName] = React.useState<string>('');
-  // var userMail = '20cs01009@iitbbs.ac.in';
-  // var userName = 'ANKIT JAGDISHBHAI PATEL';
-
-  //TODO: get user email from session
+  const [fetchGraph, setFetchGraph] = React.useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -136,17 +112,15 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     }
     let intial_user: any = [];
     let intial_friends: any = [];
-    const getData = async () => {
-      const resData = await fetch('/api/user/getAllUser');
-      const data: any = await resData.json();
+
+    const userANDexpenseGroupData = async () => {
+      const resData1 = await fetch('/api/user/getAllUser');
+      const data: any = await resData1.json();
       console.log('all users', data.users);
       intial_user = [...data.users];
       const resData2 = await fetch(`/api/groups/findFriends/${params.groupId}`);
       const data2: any = await resData2.json();
-      // console.log('response of friends', data);
-      // console.log("setFriends",data.users);
       intial_friends = [...data2.users];
-      // console.log("Friends :->",intial_friends)
       setFriends([...intial_friends]);
       console.log('unfiltered', intial_user);
       intial_user = intial_user.filter(
@@ -156,14 +130,11 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       console.log('filtered', intial_user);
       setAllUser([...intial_user]);
       setFetchingUsers(false);
-    };
 
-    getData();
-
-    const expenseGroupData = async () => {
       const res = await fetch(`/api/groups/getPayments/${params.groupId}`);
       const resData = await res.json();
       setAllPayments(resData.payments);
+      console.log('boi', resData.payments);
       setFetchedPayments(true);
       const filteredArray = resData.payments.filter(
         (obj: {
@@ -174,7 +145,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           paymentId: number;
           type: string;
           title: string;
-          updatedAt: string;
+          createdAt: string;
         }) => obj.owned == false
       );
       const filteredArrayForUser = resData.payments.filter(
@@ -186,14 +157,14 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           paymentId: number;
           type: string;
           title: string;
-          updatedAt: string;
-        }) => obj.owned == false && obj.email == userMail
+          createdAt: string;
+        }) => obj.email == userMail
       );
 
-      const selectedColumnsArray = filteredArray.map(
-        (obj: { updatedAt: any; amount: any }) => {
+      const selectedColumnsArray = resData.payments.map(
+        (obj: { createdAt: any; amount: any }) => {
           return {
-            Date: obj.updatedAt,
+            Date: obj.createdAt,
             Expense: obj.amount
           };
         }
@@ -209,14 +180,14 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
         }
       );
       const selectedColumnsArrayonUser = filteredArrayForUser.map(
-        (obj: { updatedAt: any; amount: any }) => {
+        (obj: { createdAt: any; owned: any; amount: any }) => {
           return {
-            Date: obj.updatedAt,
-            Expense: obj.amount
+            Date: obj.createdAt,
+            Paid: !obj.owned ? 0 : obj.amount,
+            Owed: !obj.owned ? obj.amount : 0
           };
         }
       );
-      setTransactions(selectedColumnsArrayForTransaction);
       setGroupPayments(selectedColumnsArray);
       setUserPayments(selectedColumnsArrayonUser);
 
@@ -277,7 +248,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           result2[posEmail].amount += amountToGive;
           // setResult(result2);
         }
-      } else {
+      } else if (userMail in positiveNetAmounts) {
         setOwe(true);
         const netAmountToTake = positiveNetAmounts[userMail]?.amount;
         setfinalAmount(netAmountToTake ? netAmountToTake : 0);
@@ -297,12 +268,14 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           // setResult(result2);
         }
       }
+      console.log(result2);
       setResult(result2);
+      setFetchGraph(false);
     };
-    expenseGroupData();
+    userANDexpenseGroupData();
 
     // console.log(result);
-  }, [params.groupId, addingUser, userMail]);
+  }, [params.groupId, addingUser, userMail, settleFlag]);
 
   console.log('param : ', transactions);
 
@@ -350,6 +323,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   };
 
   const handleSubmit = async (event: any) => {
+    setSubmitLoader(true);
     event.preventDefault();
     const users: {
       [key: string]: {
@@ -402,6 +376,8 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
 
     const response = await fetch(endpoint, options);
     await response.json();
+
+    setSubmitLoader(false);
     setSettleFlag((prev) => !prev);
   };
 
@@ -471,8 +447,13 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           </Text>
         )}
 
-        <Chart expenseData={userPayments} title={'USER ANALYSIS'} />
-        <Chart expenseData={groupPayments} title={'GROUP ANALYSIS'} />
+        {!fetchGraph && (
+          <>
+            <UserChart expenseData={userPayments} title={'USER ANALYSIS'} />
+
+            <Chart expenseData={groupPayments} title={'GROUP ANALYSIS'} />
+          </>
+        )}
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>
@@ -605,16 +586,31 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
                 >
                   Close
                 </Button>
-                <Button
-                  icon={BanknotesIcon}
-                  size="xl"
-                  onClick={handleSubmit}
-                  style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
-                  color="emerald"
-                  disabled={!finalAmount}
-                >
-                  Settle Group
-                </Button>
+                <Box sx={{ m: 1, position: 'relative' }}>
+                  <Button
+                    icon={BanknotesIcon}
+                    size="xl"
+                    onClick={handleSubmit}
+                    style={{ marginTop: '1.5rem', marginLeft: '1rem' }}
+                    color="emerald"
+                    disabled={!finalAmount || submitLoader}
+                  >
+                    Settle Group
+                  </Button>
+                  {submitLoader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        color: 'emerald',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-4px',
+                        marginLeft: '-4px'
+                      }}
+                    />
+                  )}
+                </Box>
               </Flex>
             </form>
           </Box>

@@ -25,6 +25,7 @@ async function handler(req, res) {
       console.log('group', usersData);
 
       const date = new Date();
+
       const querySql =
         'INSERT INTO payments (title,type, totalAmount, currency, groupId,createdAt,updatedAt) VALUES (?, ?, ?,?, ?, ?,?)';
       const valueParams = [

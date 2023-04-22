@@ -82,79 +82,6 @@ const myLoader = () => {
   return `./food.jpg`;
 };
 
-const categories: {
-  title: string;
-  metric: string;
-  metricPrev: string;
-}[] = [
-  {
-    title: 'Sales',
-    metric: '$ 12,699',
-    metricPrev: '$ 9,456'
-  },
-  {
-    title: 'Profit',
-    metric: '$ 40,598',
-    metricPrev: '$ 45,564'
-  },
-  {
-    title: 'Customers',
-    metric: '1,072',
-    metricPrev: '856'
-  },
-  {
-    title: 'Profit',
-    metric: '$ 40,598',
-    metricPrev: '$ 45,564'
-  },
-  {
-    title: 'Customers',
-    metric: '1,072',
-    metricPrev: '856'
-  },
-  {
-    title: 'Profit',
-    metric: '$ 40,598',
-    metricPrev: '$ 45,564'
-  },
-  {
-    title: 'Customers',
-    metric: '1,072',
-    metricPrev: '856'
-  },
-  {
-    title: 'Customers',
-    metric: '1,072',
-    metricPrev: '856'
-  }
-];
-
-// paymentDetails
-// :
-// createdAt
-// :
-// "2023-04-17T19:11:12.000Z"
-// currency
-// :
-// "US dollar (USD)"
-// groupId
-// :
-// 1
-// paymentId
-// :
-// 2
-// title
-// :
-// "hi"
-// totalAmount
-// :
-// "100.00"
-// type
-// :
-// "Food"
-// updatedAt
-// :
-// "2023-04-18T16:56:59.000Z"
 export default function TransactionId({
   params
 }: {
@@ -174,8 +101,15 @@ export default function TransactionId({
   const [paymentDetails, setPaymentDetails] = React.useState<any>({});
   const [paymentList, setPaymentList] = React.useState<any>([]);
   const [fetchingList, setfetchingList] = React.useState<any>(false);
+  const [user, setUser] = React.useState<any>({});
+  const [userMail, setUserMail] = React.useState<string>('');
 
   React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let user2 = localStorage.getItem('user') || '{}';
+      setUser(JSON.parse(user2));
+      setUserMail(JSON.parse(user2).email);
+    }
     const getData = async () => {
       const resData = await fetch('/api/comments/' + params.transactionId);
       const data: any = await resData.json();
@@ -201,11 +135,9 @@ export default function TransactionId({
   const addtolist = (description: any) => {
     setCommentsArray((prevState: any) => [
       {
-        //TODO: change this to user email
-        email: '20cs01009@iitbbs.ac.in',
-        image:
-          'https://lh3.googleusercontent.com/a/AGNmyxZ3wGdjsI-9N8G4fFZzTApyood-npkmt6W5KVxU=s96-c',
-        name: 'ANKIT JAGDISHBHAI PATEL',
+        email: userMail,
+        image: user.image,
+        name: user.name,
         description: description
       },
       ...prevState
@@ -223,8 +155,7 @@ export default function TransactionId({
       body: JSON.stringify({
         description: description,
         paymentId: params.transactionId,
-        //TODO: change this to user email
-        email: '20cs01009@iitbbs.ac.in'
+        email: userMail
       })
     });
     const resData = await response.json();
@@ -466,7 +397,6 @@ export default function TransactionId({
                             onChange={onChangeHandler}
                             className="mt-2 mb-3"
                             fullWidth
-                            label="fullWidth"
                             id="fullWidth"
                           />
                           <Button onClick={addCommentHandler}>Add</Button>

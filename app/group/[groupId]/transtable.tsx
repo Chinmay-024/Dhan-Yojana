@@ -93,15 +93,9 @@ export default function TransTable({ paymentData }: Props) {
 
   // const { data: session } = useSession()
   const handleClick = async (event: any) => {
-    // console.log(session)
-    // const session = await getServerSession();
-    // console.log(session?.user)
     console.log(event.currentTarget.getAttribute('data-id'));
     const id = event.currentTarget.getAttribute('data-id');
-    // const href = `/newexpensegroup?${new URLSearchParams(query).toString()}`;
-    router.push(window.location.href + '/' + id);
-    // Redirect to new page with query parameters
-    // window.location.href = href;
+    router.push(window.location.href.split('?')[0] + '/' + id);
   };
 
   const start = page * rowsPerPage;
