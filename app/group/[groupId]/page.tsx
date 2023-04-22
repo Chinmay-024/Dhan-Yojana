@@ -148,18 +148,18 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     const userANDexpenseGroupData = async () => {
       const resData1 = await fetch('/api/user/getAllUser');
       const data: any = await resData1.json();
-      console.log('all users', data.users);
+      // console.log('all users', data.users);
       intial_user = [...data.users];
       const resData2 = await fetch(`/api/groups/findFriends/${params.groupId}`);
       const data2: any = await resData2.json();
       intial_friends = [...data2.users];
       setFriends([...intial_friends]);
-      console.log('unfiltered', intial_user);
+      // console.log('unfiltered', intial_user);
       intial_user = intial_user.filter(
         (itema: any) =>
           !intial_friends.some((itemb: any) => itemb.email === itema.email)
       );
-      console.log('filtered', intial_user);
+      // console.log('filtered', intial_user);
       setAllUser([...intial_user]);
       setFetchingUsers(false);
 
@@ -175,6 +175,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           amount: number;
           owned: boolean;
           paymentId: number;
+          totalAmount: number;
           type: string;
           title: string;
           createdAt: string;
@@ -192,12 +193,17 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           createdAt: string;
         }) => obj.email == userMail
       );
+      const uniqueArray = Array.from(
+        new Set(resData.payments.map((obj: any) => obj.paymentId))
+      ).map((paymentId) => {
+        return resData.payments.find((obj: any) => obj.paymentId === paymentId);
+      });
 
-      const selectedColumnsArray = resData.payments.map(
-        (obj: { createdAt: any; amount: any }) => {
+      const selectedColumnsArray = uniqueArray.map(
+        (obj: { createdAt: any; totalAmount: any }) => {
           return {
             Date: obj.createdAt,
-            Expense: obj.amount
+            Expense: obj.totalAmount
           };
         }
       );
@@ -366,7 +372,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       };
     } = {};
     const usersData: UserD[] = [];
-    console.log(result);
+    // console.log(result);
     let user;
     for (const usermail in result) {
       user = {
@@ -411,6 +417,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
 
     setSubmitLoader(false);
     setSettleFlag((prev) => !prev);
+    setOpen2(false);
   };
 
   return (
@@ -511,21 +518,21 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
               className="mt-1"
             >
               <Tab value="1" text="Group Analysis" />
-              <Tab value="2" text="Individual Analysis"/>
+              <Tab value="2" text="Individual Analysis" />
             </TabList>
           </>
 
           {showCard === true ? (
             <div className="mt-6">
-              {!fetchGraph && (
-                <Chart expenseData={groupPayments} />)}
+              {!fetchGraph && <Chart expenseData={groupPayments} />}
             </div>
           ) : (
             <div className="mt-6">
               {!fetchGraph && (
-              <>
-                <UserChart expenseData={userPayments}  />{' '}
-              </>)}
+                <>
+                  <UserChart expenseData={userPayments} />{' '}
+                </>
+              )}
             </div>
           )}
         </Card>
