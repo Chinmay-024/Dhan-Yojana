@@ -103,7 +103,7 @@ export default function PlaygroundPage() {
         </Button>
         <UserChart expenseData={payments} />
         <Flex justifyContent="center" alignItems="baseline">
-          <Card className="mt-6 overflow-y-auto h-80 ">
+          <Card className="mt-6">
             <Title className="mb-4">Expense List</Title>
             {tableData && (
               <TransTable
