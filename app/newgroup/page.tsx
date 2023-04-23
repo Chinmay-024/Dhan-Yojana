@@ -69,12 +69,12 @@ const NewGroup = () => {
   const createGroup = async () => {
     setIsCreatingGroup(true);
     //console.log(
-      JSON.stringify({
-        title: title,
-        description: description,
-        image: image
-      })
-    );
+    //   JSON.stringify({
+    //     title: title,
+    //     description: description,
+    //     image: image
+    //   })
+    // );
     const response = await fetch('/api/groups/addNewGroup', {
       method: 'POST',
       headers: {

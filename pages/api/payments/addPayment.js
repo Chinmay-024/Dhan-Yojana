@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 async function handler(req, res) {
   //console.log(
-    'arrived-----------------------------------------------------------------------'
-  );
+  //   'arrived-----------------------------------------------------------------------'
+  // );
   if (req.method === 'POST') {
     try {
       // const session = await getServerSession(req, res, authOptions);
