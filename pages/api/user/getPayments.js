@@ -7,10 +7,13 @@ async function handler(req, res) {
     //TODO check if the current session user is part of the group
     try {
       const session = await getServerSession(req, res, authOptions);
+      if (session == null || session == undefined) {
+        res.status(200).json({ payments: [] });
+      }
       const userId = session.user.id;
 
       const querySql =
-        'SELECT users.name,users.email,share.amount,share.owned,payments.paymentId,payments.title,payments.totalAmount,payments.type,payments.updatedAt FROM users JOIN share ON users.id = share.userId JOIN payments ON payments.paymentId = share.paymentId WHERE share.userId=?';
+        'SELECT users.name,users.email,share.amount,share.owned,payments.paymentId,payments.title,payments.totalAmount,payments.type,payments.createdAt FROM users JOIN share ON users.id = share.userId JOIN payments ON payments.paymentId = share.paymentId WHERE share.userId=?';
       const valueParams = [userId];
       const data = await query({ query: querySql, values: valueParams });
 

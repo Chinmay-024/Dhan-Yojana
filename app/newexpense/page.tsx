@@ -2,6 +2,7 @@
 
 import { SetStateAction, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import NotAuthenticated from '../notAuth';
 import { Box, CircularProgress } from '@mui/material';
 import {
   InputLabel,
@@ -45,8 +46,20 @@ const ExpenseForm = () => {
   const [errorP, setErrorP] = useState('');
   const [errorO, setErrorO] = useState('');
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [userId, setUserId] = useState('');
+  const [user, setUser] = useState({});
 
   useEffect(() => {
+    const a = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        let user2 =
+          localStorage.getItem('user') ||
+          '{"id":"none","name":"none","email":"none"}';
+        setUser(JSON.parse(user2));
+        setUserId(JSON.parse(user2).id);
+        console.log(user2);
+      }
+    }, 2000);
     // Initialize state only on the client-side
     setTitle('');
     setType('');
@@ -64,7 +77,24 @@ const ExpenseForm = () => {
       setFriends(resData.users);
     };
     getData();
-  }, []);
+    return () => {
+      clearTimeout(a);
+    };
+  }, [user]);
+  if (userId == '') {
+    return (
+      <>
+        <div></div>
+      </>
+    );
+  }
+  if (userId == undefined || userId == 'none') {
+    return (
+      <>
+        <NotAuthenticated></NotAuthenticated>
+      </>
+    );
+  }
   const handlePayerSelect = (event: SelectChangeEvent) => {
     const friendId = event.target.value as string;
     const friend = friends.find((f) => f.email === friendId);

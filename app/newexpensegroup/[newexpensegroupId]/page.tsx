@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import NotAuthenticated from '../../notAuth';
 import { CircularProgress } from '@mui/material';
 import {
   InputLabel,
@@ -57,8 +58,20 @@ const ExpenseFormGroup = ({
   const [errorP, setErrorP] = useState('');
   const [errorO, setErrorO] = useState('');
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [userId, setUserId] = useState('');
+  const [user, setUser] = useState({});
 
   useEffect(() => {
+    const a = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        let user2 =
+          localStorage.getItem('user') ||
+          '{"id":"none","name":"none","email":"none"}';
+        setUser(JSON.parse(user2));
+        setUserId(JSON.parse(user2).id);
+        console.log(user2);
+      }
+    }, 2000);
     // Initialize state only on the client-side
     setTitle('');
     setType('');
@@ -85,6 +98,9 @@ const ExpenseFormGroup = ({
       setFriends(result.users);
     };
     getData();
+    return () => {
+      clearTimeout(a);
+    };
   }, [params.newexpensegroupId]);
 
   const handlePayerSelect = (event: SelectChangeEvent) => {
@@ -216,7 +232,20 @@ const ExpenseFormGroup = ({
     setSubmitLoader(false);
     router.replace(`/group/${params.newexpensegroupId}`);
   };
-
+  if (userId == '') {
+    return (
+      <>
+        <div></div>
+      </>
+    );
+  }
+  if (userId == undefined || userId == 'none') {
+    return (
+      <>
+        <NotAuthenticated></NotAuthenticated>
+      </>
+    );
+  }
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl" style={{ margin: 'auto' }}>
       <Card

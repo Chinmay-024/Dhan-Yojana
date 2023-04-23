@@ -13,6 +13,7 @@ import {
   Icon
 } from '@tremor/react';
 import { useRouter } from 'next/navigation';
+import NotAuthenticated from '../../../notAuth';
 import Chart from './chart';
 import styles from './page.module.css';
 import * as React from 'react';
@@ -105,11 +106,16 @@ export default function TransactionId({
   const [userMail, setUserMail] = React.useState<string>('');
 
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      let user2 = localStorage.getItem('user') || '{}';
-      setUser(JSON.parse(user2));
-      setUserMail(JSON.parse(user2).email);
-    }
+    const a = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        let user2 =
+          localStorage.getItem('user') ||
+          '{"id":"none","name":"none","email":"none"}';
+        setUser(JSON.parse(user2));
+        setUserMail(JSON.parse(user2).email);
+        console.log(user2);
+      }
+    }, 2000);
     const getData = async () => {
       const resData = await fetch('/api/comments/' + params.transactionId);
       const data: any = await resData.json();
@@ -130,6 +136,9 @@ export default function TransactionId({
 
     getData();
     getpaymentslist();
+    return () => {
+      clearTimeout(a);
+    };
   }, [params.transactionId]);
 
   const addtolist = (description: any) => {
@@ -166,8 +175,21 @@ export default function TransactionId({
       addtolist(description);
     }
   };
-
-  console.log('param : ', params);
+  if (userMail == '') {
+    return (
+      <>
+        <div></div>
+      </>
+    );
+  }
+  if (userMail == undefined || userMail == 'none') {
+    return (
+      <>
+        <NotAuthenticated></NotAuthenticated>
+      </>
+    );
+  }
+  // console.log('param : ', params);
 
   const valueFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
@@ -441,6 +463,7 @@ export default function TransactionId({
               )}
               <List>
                 {!fetchingComm &&
+                  commentsArray &&
                   commentsArray.length > 0 &&
                   commentsArray.map((item: any, i: any) => (
                     <Card key={i} className="p-0 m-3" style={{ width: '97%' }}>
@@ -463,11 +486,13 @@ export default function TransactionId({
                       </CardContent>
                     </Card>
                   ))}
-                {!fetchingComm && commentsArray.length === 0 && (
-                  <>
-                    <Text className="mt-2"> No Comments Yet!!!</Text>
-                  </>
-                )}
+                {!fetchingComm &&
+                  commentsArray &&
+                  commentsArray.length === 0 && (
+                    <>
+                      <Text className="mt-2"> No Comments Yet!!!</Text>
+                    </>
+                  )}
                 {fetchingComm && (
                   <>
                     <Box sx={{ display: 'flex' }}>

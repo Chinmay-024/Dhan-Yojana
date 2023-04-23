@@ -19,13 +19,11 @@ import { CircularProgress } from '@mui/material';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
 import NotAuthenticated from '../notAuth';
 
-
-
 const NewGroup = () => {
   // const router = useRouter();
   const [title, setTitle] = useState('');
-  const [userId,setUserId] = useState('');
-  const [user,setUser] = useState({});
+  const [userId, setUserId] = useState('');
+  const [user, setUser] = useState({});
   const [description, setdescription] = useState<string>('');
   const [image, setImage] = useState<string>('');
   const [error1, setError1] = useState<boolean>(false);
@@ -39,16 +37,33 @@ const NewGroup = () => {
   >([]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      let user2 = localStorage.getItem('user') || '{"id":"none","name":"none","email":"none"}';
-      setUser(JSON.parse(user2))
-      setUserId(JSON.parse(user2).id);
-      console.log(user2)
-    }
-  },[]);
-
-  if(userId!=='none'){
-      return <><NotAuthenticated></NotAuthenticated></>;
+    const a = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        let user2 =
+          localStorage.getItem('user') ||
+          '{"id":"none","name":"none","email":"none"}';
+        setUser(JSON.parse(user2));
+        setUserId(JSON.parse(user2).id);
+        console.log(user2);
+      }
+    }, 2000);
+    return () => {
+      clearTimeout(a);
+    };
+  }, []);
+  if (userId == '') {
+    return (
+      <>
+        <div></div>
+      </>
+    );
+  }
+  if (userId == undefined || userId == 'none') {
+    return (
+      <>
+        <NotAuthenticated></NotAuthenticated>
+      </>
+    );
   }
   const createGroup = async () => {
     setIsCreatingGroup(true);
@@ -81,8 +96,8 @@ const NewGroup = () => {
     setIsCreatingGroup(false);
   };
 
-    const titleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setTitle(event.target.value);
+  const titleHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
   };
   const descHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setdescription(event.target.value);
@@ -90,22 +105,21 @@ const NewGroup = () => {
   const imageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setImage(event.target.value);
   };
-  
+
   const clickHandler = (e: any) => {
     e.preventDefault();
     if (
       title.trim().length !== 0 &&
       description.trim().length !== 0 &&
       image.trim().length !== 0
-      ) {
-        // addedUser.length !== 0
-        console.log('called the post request');
-        createGroup();
-        if (status === 1) {
-          setTitle('');
+    ) {
+      // addedUser.length !== 0
+      console.log('called the post request');
+      createGroup();
+      if (status === 1) {
+        setTitle('');
         setdescription('');
         setImage('');
-        
       }
       return;
     }
@@ -210,4 +224,3 @@ const NewGroup = () => {
 };
 
 export default NewGroup;
-

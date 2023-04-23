@@ -5,6 +5,16 @@ async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const session = await getServerSession(req, res, authOptions);
+
+      if (session == null || session == undefined) {
+        return res.status(200).json({
+          groups: null,
+          paymentDetails: [],
+          totalAmountForGroups: [],
+          totalAmount: 0,
+          totalAmountForMonth: 0
+        });
+      }
       const userId = session.user.id;
       // const userId = 'a23e67ba-5fdb-4565-9f5d-be4ca9e39e7d';
 

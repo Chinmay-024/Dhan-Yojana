@@ -7,6 +7,11 @@ async function handler(req, res) {
     try {
       const { paymentId } = req.query;
       const session = await getServerSession(req, res, authOptions);
+
+      if (session == null || session == undefined) {
+        return res.status(200).json({ users: [], paymentDetails: [] });
+      }
+
       const userId = session.user.id;
 
       const querySql =

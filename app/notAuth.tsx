@@ -31,7 +31,7 @@ const NotAuthenticated: React.FC = () => {
           <h1 style={titleStyle}>You are not authorized</h1>
         </div>
         <div>
-          <h2 style={textStyle}>Please login at Home Page</h2>
+          <h2 style={textStyle}>Please login from Navbar</h2>
         </div>
       </div>
     </NoSsr>

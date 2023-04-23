@@ -16,10 +16,12 @@ import {
 } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import { useRouter, usePathname } from 'next/navigation';
-import UsersTable from '../table';
+// import UsersTable from '../table';
+import TransTable from '../group/[groupId]/transtable';
 import { NoSsr } from '@mui/material';
 import { useEffect, useState } from 'react';
 import UserChart from './userChart';
+import NotAuthenticated from '../notAuth';
 
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
@@ -27,17 +29,35 @@ const dataFormatter = (number: number) =>
 export default function PlaygroundPage() {
   const router = useRouter();
   const [payments, setPayments] = useState<any>([]);
+  const [userId, setUserId] = useState('');
+  const [user, setUser] = useState({});
+  const [userName, setUserName] = useState('');
+  const [tableData, setTableData] = useState([]);
+  const [userMail, setUserMail] = useState('');
 
   useEffect(() => {
+    const a = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        let user2 =
+          localStorage.getItem('user') ||
+          '{"id":"none","name":"none","email":"none"}';
+        setUser(JSON.parse(user2));
+        setUserMail(JSON.parse(user2).email);
+        setUserName(JSON.parse(user2).name);
+        setUserId(JSON.parse(user2).id);
+        // console.log(user2);
+      }
+    }, 2000);
+
     const expenseData = async () => {
       const res = await fetch('/api/user/getPayments');
-      const resData = await res.json();
-      console.log('sadada', resData.payments);
-
+      const resData: any = await res.json();
+      // console.log('sadada', resData.payments);user
+      setTableData(resData.payments);
       const selectedColumnsArray = resData.payments.map(
-        (obj: { owned: any; updatedAt: any; amount: any }) => {
+        (obj: { owned: any; createdAt: any; amount: any }) => {
           return {
-            Date: obj.updatedAt,
+            Date: obj.createdAt,
             Paid: !obj.owned ? 0 : obj.amount,
             Owed: !obj.owned ? obj.amount : 0
           };
@@ -46,50 +66,28 @@ export default function PlaygroundPage() {
       setPayments(selectedColumnsArray);
     };
     expenseData();
+    return () => {
+      clearTimeout(a);
+    };
   }, []);
-
+  if (userMail == '') {
+    return (
+      <>
+        <div></div>
+      </>
+    );
+  }
+  if (userId == undefined || userId == 'none') {
+    return (
+      <>
+        <NotAuthenticated></NotAuthenticated>
+      </>
+    );
+  }
   const handleClick = () => {
     router.push('/newexpense');
   };
 
-  const users = [
-    {
-      id: 1,
-      email: 'john.doe@example.com',
-      name: 'John Doe',
-      username: 'johndoe'
-    },
-    {
-      id: 2,
-      email: 'jane.doe@example.com',
-      name: 'Jane Doe',
-      username: 'janedoe'
-    },
-    {
-      id: 3,
-      email: 'bob.smith@example.com',
-      name: 'Bob Smith',
-      username: 'bobsmith'
-    },
-    {
-      id: 1,
-      email: 'john.doe@example.com',
-      name: 'John Doe',
-      username: 'johndoe'
-    },
-    {
-      id: 2,
-      email: 'jane.doe@example.com',
-      name: 'Jane Doe',
-      username: 'janedoe'
-    },
-    {
-      id: 3,
-      email: 'bob.smith@example.com',
-      name: 'Bob Smith',
-      username: 'bobsmith'
-    }
-  ];
   return (
     <NoSsr>
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
@@ -107,7 +105,13 @@ export default function PlaygroundPage() {
         <Flex justifyContent="center" alignItems="baseline">
           <Card className="mt-6 overflow-y-auto h-80 ">
             <Title className="mb-4">Expense List</Title>
-            <UsersTable users={users} />
+            {tableData && (
+              <TransTable
+                paymentData={tableData}
+                userName={userName}
+                userMail={userMail}
+              />
+            )}
           </Card>
         </Flex>
       </main>

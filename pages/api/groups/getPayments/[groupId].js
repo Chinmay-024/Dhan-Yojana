@@ -8,6 +8,9 @@ async function handler(req, res) {
       const { groupId } = req.query;
       //Find userId from session
       const session = await getServerSession(req, res, authOptions);
+      if (session == null || session == undefined) {
+        return res.status(200).json({ payments: [] });
+      }
       const userId = session.user.id;
       //check if the current session user is part of the group
       const querySql1 =

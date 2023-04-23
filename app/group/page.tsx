@@ -10,7 +10,7 @@ import {
   Bold,
   DonutChart,
   Button,
-  Subtitle,
+  Subtitle
 } from '@tremor/react';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { useRouter } from 'next/navigation';
@@ -21,11 +21,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { groupDataSliceActions } from '../store';
 import { useDispatch } from 'react-redux';
+import NotAuthenticated from '../notAuth';
 
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
-
-
 
 interface Group {
   groupId: number;
@@ -54,6 +53,9 @@ export default function Groups() {
   const router = useRouter();
   // const dispatch = useDispatch();
   const [fetchData, setFetchData] = useState<MyObject>();
+  const [userId, setUserId] = useState('');
+  const [user, setUser] = useState({});
+
   const [datafetching, setDataFetching] = useState<boolean>(false);
   const valueFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
@@ -61,14 +63,23 @@ export default function Groups() {
   const clickHandler = () => {
     router.replace('/newgroup');
   };
-
   useEffect(() => {
+    const a = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        let user2 =
+          localStorage.getItem('user') ||
+          '{"id":"none","name":"none","email":"none"}';
+        setUser(JSON.parse(user2));
+        setUserId(JSON.parse(user2).id);
+        console.log(user2);
+      }
+    }, 2000);
     const getData = async () => {
       setDataFetching(true);
       const res = await fetch('/api/user/getAllGroupDetails');
       const resData = await res.json();
       console.log('sadada', resData);
-      // dispatch(groupDataSliceActions.updateGroups(resData))
+
       const newData = resData!!.paymentDetails.map((item: Payment1[]) => {
         return item.map((payment) => {
           return {
@@ -94,12 +105,31 @@ export default function Groups() {
         totalAmountForMonth: resData.totalAmountForMonth
       });
     };
-    getData();
-  }, []);
 
+    getData();
+    return () => {
+      clearTimeout(a);
+    };
+  }, []);
+  // console.log(userId);
+  if (userId == '') {
+    return (
+      <>
+        <div></div>
+      </>
+    );
+  }
+
+  if (userId == undefined || userId == 'none') {
+    return (
+      <>
+        <NotAuthenticated></NotAuthenticated>
+      </>
+    );
+  }
   return (
     <>
-    {/* <Provider store={store}> */}
+      {/* <Provider store={store}> */}
       <main className="p-4 md:p-10 mx-auto max-w-7xl">
         <Flex
           alignItems="end"
@@ -208,12 +238,15 @@ export default function Groups() {
         )}
         <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={3}>
           {fetchData &&
+            fetchData.groups &&
             fetchData.groups.map((item, i) => (
               <Card
                 key={item.groupId}
                 className={styles.card}
                 onClick={() => {
-                  router.push(`/group/${item.groupId}?name=${item.title}&description=${item.description}`);
+                  router.push(
+                    `/group/${item.groupId}?name=${item.title}&description=${item.description}`
+                  );
                 }}
               >
                 <Metric>{item.title}</Metric>
@@ -240,7 +273,6 @@ export default function Groups() {
                   className="mt-6 border-none"
                   category="total"
                   index="type"
-                  
                   // colors={["slate", "violet", "indigo", "rose", "cyan", "amber"]}
                   data={
                     fetchData.paymentDetails[i].length > 0
@@ -249,8 +281,19 @@ export default function Groups() {
                   }
                   colors={
                     fetchData.paymentDetails[i].length > 0
-                      ? ["amber", "yellow", "lime", "green", "emerald", "teal","cyan","sky","blue"]
-                      : ['gray']}
+                      ? [
+                          'amber',
+                          'yellow',
+                          'lime',
+                          'green',
+                          'emerald',
+                          'teal',
+                          'cyan',
+                          'sky',
+                          'blue'
+                        ]
+                      : ['gray']
+                  }
                   valueFormatter={dataFormatter}
                 />
               </Card>
