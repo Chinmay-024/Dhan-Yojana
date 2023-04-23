@@ -46,14 +46,14 @@ export default function PlaygroundPage() {
         setUserMail(JSON.parse(user2).email);
         setUserName(JSON.parse(user2).name);
         setUserId(JSON.parse(user2).id);
-        // console.log(user2);
+        // //console.log(user2);
       }
     }, 2000);
 
     const expenseData = async () => {
       const res = await fetch('/api/user/getPayments');
       const resData: any = await res.json();
-      // console.log('sadada', resData.payments);user
+      // //console.log('sadada', resData.payments);user
       setTableData(resData.payments);
       const selectedColumnsArray = resData.payments.map(
         (obj: { owned: any; createdAt: any; amount: any }) => {

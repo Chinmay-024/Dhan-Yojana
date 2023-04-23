@@ -2,7 +2,7 @@ import { query } from '../../../lib/db';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 async function handler(req, res) {
-  console.log(
+  //console.log(
     'arrived-----------------------------------------------------------------------'
   );
   if (req.method === 'POST') {
@@ -22,7 +22,7 @@ async function handler(req, res) {
       if (data1.length === 0) {
         res.status(500).json({ error: "Group Don't exist" });
       }
-      console.log('group', usersData);
+      //console.log('group', usersData);
 
       const date = new Date();
 
@@ -38,11 +38,11 @@ async function handler(req, res) {
         date
       ];
       const data = await query({ query: querySql, values: valueParams });
-      console.log('payment success');
+      //console.log('payment success');
 
       const paymentId = data.insertId;
       for (const user of usersData) {
-        // console.log('obj', user);
+        // //console.log('obj', user);
         const querySql2 = 'SELECT * FROM users WHERE email=?';
         const valueParams2 = [user.email];
         const userObtained = await query({

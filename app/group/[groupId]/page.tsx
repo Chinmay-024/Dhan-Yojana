@@ -127,7 +127,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           '{"id":"none","name":"none","email":"none"}';
         setUser(JSON.parse(user2));
         setUserMail(JSON.parse(user2).email);
-        console.log(user2);
+        //console.log(user2);
       }
     }, 2000);
     let intial_user: any = [];
@@ -136,25 +136,25 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     const userANDexpenseGroupData = async () => {
       const resData1 = await fetch('/api/user/getAllUser');
       const data: any = await resData1.json();
-      // console.log('all users', data.users);
+      // //console.log('all users', data.users);
       intial_user = [...data.users];
       const resData2 = await fetch(`/api/groups/findFriends/${params.groupId}`);
       const data2: any = await resData2.json();
       intial_friends = [...data2.users];
       setFriends([...intial_friends]);
-      // console.log('unfiltered', intial_user);
+      // //console.log('unfiltered', intial_user);
       intial_user = intial_user.filter(
         (itema: any) =>
           !intial_friends.some((itemb: any) => itemb.email === itema.email)
       );
-      // console.log('filtered', intial_user);
+      // //console.log('filtered', intial_user);
       setAllUser([...intial_user]);
       setFetchingUsers(false);
 
       const res = await fetch(`/api/groups/getPayments/${params.groupId}`);
       const resData = await res.json();
       setAllPayments(resData.payments);
-      // console.log('boi', resData.payments);
+      // //console.log('boi', resData.payments);
       setFetchedPayments(true);
       const filteredArray = resData.payments.filter(
         (obj: {
@@ -294,7 +294,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           // setResult(result2);
         }
       }
-      // console.log(result2);
+      // //console.log(result2);
       setResult(result2);
       setFetchGraph(false);
       return () => {
@@ -306,12 +306,12 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       clearTimeout(a);
     };
 
-    // console.log(result);
+    // //console.log(result);
   }, [params.groupId, addingUser, userMail, settleFlag]);
   if (userMail == '') {
     return (
       <>
-        <Loading/>
+        <Loading />
       </>
     );
   }
@@ -323,14 +323,14 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
     );
   }
 
-  // console.log('param : ', transactions);
+  // //console.log('param : ', transactions);
 
   const addUserToSql = async (addedUser: any) => {
     if (addedUser.length === 0) {
       return;
     }
     setAddingUser(true);
-    // console.log('added req :', addedUser);
+    // //console.log('added req :', addedUser);
     const response = await fetch('/api/groups/addUserToGroup', {
       method: 'POST',
       headers: {
@@ -342,7 +342,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       })
     });
     const resData = await response.json();
-    // console.log(resData);
+    // //console.log(resData);
     if (response.ok) {
       setFirstAdd(1);
       setAddingUser(false);
@@ -355,12 +355,12 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   const addCommentHandler = (addedUser: any) => {
     // event.preventDefault();
     addUserToSql(addedUser);
-    // console.log('add user array ', addedUser);
+    // //console.log('add user array ', addedUser);
     setOpen(false);
   };
   const addCommentHandler2 = (event: any) => {
     event.preventDefault();
-    // console.log('qwe', 2);
+    // //console.log('qwe', 2);
     setOpen2(false);
   };
 
@@ -380,7 +380,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       };
     } = {};
     const usersData: UserD[] = [];
-    // console.log(result);
+    // //console.log(result);
     let user;
     for (const usermail in result) {
       user = {
@@ -398,7 +398,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       owned: !owe
     };
     usersData.push(user);
-    // console.log(usersData);
+    // //console.log(usersData);
     var submitdata = {
       title: `Settle Up of ${userMail.split('@')[0]}`,
       type: 'Settle',
@@ -407,7 +407,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
       groupId: parseInt(params.groupId),
       users: usersData
     };
-    // console.log(submitdata);
+    // //console.log(submitdata);
 
     const JSONdata = JSON.stringify(submitdata);
     const endpoint = '/api/payments/addPayment';
@@ -444,7 +444,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           {/* {user && <Metric>{user.name}</Metric>} */}
           <Image
             // src={pic}
-            src={' https://source.unsplash.com/1200x1200/?group'}
+            src={'https://source.unsplash.com/1200x1200/?group'}
             style={{
               position: 'absolute',
               top: '0',

@@ -45,7 +45,7 @@ const NewGroup = () => {
           '{"id":"none","name":"none","email":"none"}';
         setUser(JSON.parse(user2));
         setUserId(JSON.parse(user2).id);
-        console.log(user2);
+        //console.log(user2);
       }
     }, 2000);
     return () => {
@@ -68,7 +68,7 @@ const NewGroup = () => {
   }
   const createGroup = async () => {
     setIsCreatingGroup(true);
-    console.log(
+    //console.log(
       JSON.stringify({
         title: title,
         description: description,
@@ -88,7 +88,7 @@ const NewGroup = () => {
       })
     });
     const resData = await response.json();
-    console.log('on createGroup :', response);
+    //console.log('on createGroup :', response);
     if (response.status === 200) {
       setStatus(1);
     } else {
@@ -115,7 +115,7 @@ const NewGroup = () => {
       image.trim().length !== 0
     ) {
       // addedUser.length !== 0
-      console.log('called the post request');
+      //console.log('called the post request');
       createGroup();
       if (status === 1) {
         setTitle('');

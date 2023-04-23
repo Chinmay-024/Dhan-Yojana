@@ -31,18 +31,18 @@ const users = [
   // Add as many objects as you need...
 ];
 
-const Adduser = ({ userData ,addCommentHandler }: any) => {
+const Adduser = ({ userData, addCommentHandler }: any) => {
   const [error4, setError4] = useState<boolean>(false);
   const [addedUser, setAddedUser] = useState<
     Array<{ email: string; name: string }>
   >([]);
-  console.log('in modal', userData);
+  //console.log('in modal', userData);
   const addUserHandler = (value: String) => {
     const val = Number(value);
     const f = addedUser.find((user) => {
       return user.email === userData[val].email;
     });
-    console.log(f, userData[val].name);
+    //console.log(f, userData[val].name);
     if (f === undefined) {
       setAddedUser((prevState) => {
         return [
@@ -62,11 +62,11 @@ const Adduser = ({ userData ,addCommentHandler }: any) => {
     setAddedUser(newstate);
   };
 
-  const submitHandler = (e:any) => {
+  const submitHandler = (e: any) => {
     e.preventDefault();
-    
+
     addCommentHandler(addedUser);
-  }
+  };
   return (
     <Flex className="flex-col">
       <Card className="max-100 mt-2 mb-3">
@@ -89,7 +89,7 @@ const Adduser = ({ userData ,addCommentHandler }: any) => {
             <ListItem key={i + 1} className="block">
               <div className="flex flex-col">
                 <div>
-                  <Flex justifyContent='between'>
+                  <Flex justifyContent="between">
                     <Text color="stone">{user.name}</Text>
                     <span
                       onClick={removeUserHandler}
@@ -121,15 +121,15 @@ const Adduser = ({ userData ,addCommentHandler }: any) => {
           ))}
         </List>
         <form>
-        <Flex justifyContent='center'>
-          <Button
-            size="xl"
-            onClick={submitHandler}
-            style={{ marginTop: '1.5rem' }}
-            color="emerald"
-          >
-            Add
-          </Button>
+          <Flex justifyContent="center">
+            <Button
+              size="xl"
+              onClick={submitHandler}
+              style={{ marginTop: '1.5rem' }}
+              color="emerald"
+            >
+              Add
+            </Button>
           </Flex>
         </form>
       </Card>

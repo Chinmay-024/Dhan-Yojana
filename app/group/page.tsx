@@ -72,14 +72,14 @@ export default function Groups() {
           '{"id":"none","name":"none","email":"none"}';
         setUser(JSON.parse(user2));
         setUserId(JSON.parse(user2).id);
-        console.log(user2);
+        //console.log(user2);
       }
     }, 2000);
     const getData = async () => {
       setDataFetching(true);
       const res = await fetch('/api/user/getAllGroupDetails');
       const resData = await res.json();
-      console.log('sadada', resData);
+      //console.log('sadada', resData);
 
       const newData = resData!!.paymentDetails.map((item: Payment1[]) => {
         return item.map((payment) => {
@@ -90,7 +90,7 @@ export default function Groups() {
         });
       });
       const data12 = Array.from(newData);
-      // console.log('123', {
+      // //console.log('123', {
       //   groups: resData.groups,
       //   paymentDetails: newData,
       //   totalAmount: resData.totalAmount,
@@ -112,7 +112,7 @@ export default function Groups() {
       clearTimeout(a);
     };
   }, []);
-  // console.log(userId);
+  // //console.log(userId);
   if (userId == '') {
     return (
       <>

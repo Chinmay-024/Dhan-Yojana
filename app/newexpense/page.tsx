@@ -58,7 +58,7 @@ const ExpenseForm = () => {
           '{"id":"none","name":"none","email":"none"}';
         setUser(JSON.parse(user2));
         setUserId(JSON.parse(user2).id);
-        console.log(user2);
+        //console.log(user2);
       }
     }, 2000);
     // Initialize state only on the client-side
@@ -73,7 +73,7 @@ const ExpenseForm = () => {
     const getData = async () => {
       const test_url = `/api/user/getAllUser`;
       const res = await fetch(test_url);
-      console.log(test_url);
+      //console.log(test_url);
       const resData = await res.json();
       setFriends(resData.users);
     };
@@ -85,7 +85,7 @@ const ExpenseForm = () => {
   if (userId == '') {
     return (
       <>
-        <Loading/>
+        <Loading />
       </>
     );
   }
@@ -139,12 +139,12 @@ const ExpenseForm = () => {
     selectedOwers.forEach((o) => {
       totalOwe += amountsO[o.email];
     });
-    console.log(totalOwe);
+    //console.log(totalOwe);
     var totalPay = 0;
     selectedPayers.forEach((o) => {
       totalPay += amountsP[o.email];
     });
-    console.log(totalPay);
+    //console.log(totalPay);
 
     // check if the sum of all amounts is equal to the total amount
     if (totalOwe !== parseFloat(totalAmount.toString())) {
@@ -203,7 +203,7 @@ const ExpenseForm = () => {
       const user = users[key];
       usersData.push(user);
     }
-    console.log(usersData);
+    //console.log(usersData);
     var data = {
       title,
       type,
@@ -212,7 +212,7 @@ const ExpenseForm = () => {
       groupId: null,
       users: usersData
     };
-    // console.log(data);
+    // //console.log(data);
 
     const JSONdata = JSON.stringify(data);
     const endpoint = '/api/payments/addPayment';

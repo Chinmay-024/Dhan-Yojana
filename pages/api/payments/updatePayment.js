@@ -15,7 +15,7 @@ async function handler(req, res) {
       }
 
       for (const user of usersData) {
-        // console.log('obj', user);
+        // //console.log('obj', user);
         //TODO check if user exists in group and if not add him to group
         const querySql2 = 'SELECT * FROM users WHERE email=?';
         const valueParams2 = [user.email];

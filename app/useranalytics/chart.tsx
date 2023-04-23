@@ -47,7 +47,7 @@ export default function Chart({ expenseData }: any) {
     Month: `${selectedYear2}-${month}`,
     Expense: monthwiseData[month]
   }));
-  console.log(monthwiseData);
+  //console.log(monthwiseData);
   return (
     <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
       <Card>

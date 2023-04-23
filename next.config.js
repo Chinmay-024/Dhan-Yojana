@@ -19,6 +19,7 @@ const nextConfig = {
       'avatar.vercel.sh',
       'googleusercontent.com',
       'source.unsplash.com',
+      'images.unsplash.com',
       'lh3.googleusercontent.com'
     ]
   },

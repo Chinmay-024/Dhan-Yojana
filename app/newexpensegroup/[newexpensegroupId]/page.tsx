@@ -70,7 +70,7 @@ const ExpenseFormGroup = ({
           '{"id":"none","name":"none","email":"none"}';
         setUser(JSON.parse(user2));
         setUserId(JSON.parse(user2).id);
-        console.log(user2);
+        //console.log(user2);
       }
     }, 2000);
     // Initialize state only on the client-side
@@ -84,7 +84,7 @@ const ExpenseFormGroup = ({
     setErrorO('');
 
     const getData = async () => {
-      console.log('Hu' + params.newexpensegroupId);
+      //console.log('Hu' + params.newexpensegroupId);
       var data = {
         groupId: params.newexpensegroupId
       };
@@ -147,12 +147,12 @@ const ExpenseFormGroup = ({
     selectedOwers.forEach((o) => {
       totalOwe += amountsO[o.email];
     });
-    console.log(totalOwe);
+    //console.log(totalOwe);
     var totalPay = 0;
     selectedPayers.forEach((o) => {
       totalPay += amountsP[o.email];
     });
-    console.log(totalPay);
+    //console.log(totalPay);
 
     // check if the sum of all amounts is equal to the total amount
     if (totalOwe !== parseFloat(totalAmount.toString())) {
@@ -197,7 +197,7 @@ const ExpenseFormGroup = ({
       usersData.push(user);
     });
 
-    console.log(usersData);
+    //console.log(usersData);
     var data = {
       title,
       type,
@@ -206,7 +206,7 @@ const ExpenseFormGroup = ({
       groupId: parseInt(params.newexpensegroupId),
       users: usersData
     };
-    console.log(data);
+    //console.log(data);
 
     const JSONdata = JSON.stringify(data);
     const endpoint = '/api/payments/addPayment';
@@ -236,7 +236,7 @@ const ExpenseFormGroup = ({
   if (userId == '') {
     return (
       <>
-       <Loading/>
+        <Loading />
       </>
     );
   }

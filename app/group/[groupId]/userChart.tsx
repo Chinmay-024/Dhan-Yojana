@@ -21,7 +21,7 @@ const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
 export default function UserChart({ expenseData, title }: any) {
-  // console.log(expenseData);
+  // //console.log(expenseData);
   const [selectedYear, setSelectedYear] = useState<string>(
     new Date().getFullYear().toString()
   );
@@ -71,7 +71,7 @@ export default function UserChart({ expenseData, title }: any) {
     Paid: monthwiseData[month].Paid,
     Owed: monthwiseData[month].Owed
   }));
-  // console.log(monthwiseData);
+  // //console.log(monthwiseData);
   return (
     <Grid className="mt-5 gap-6" numColsSm={2} numColsLg={2}>
       <Card>

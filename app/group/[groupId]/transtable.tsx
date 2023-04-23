@@ -29,7 +29,7 @@ interface Props {
 }
 
 interface combinedData {
-  [key: string]:paymentData1
+  [key: string]: paymentData1;
 }
 
 import { useEffect, useState } from 'react';
@@ -48,7 +48,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
-import { Text,Title   } from '@tremor/react';
+import { Text, Title } from '@tremor/react';
 import { Margin } from '@mui/icons-material';
 // import { useSession } from "next-auth/react"
 
@@ -65,56 +65,62 @@ export default function TransTable({ paymentData, userName, userMail }: Props) {
 
   const theme = useTheme();
 
-  const combinedData:combinedData  = {};
-  // console.log('users', paymentData);
+  const combinedData: combinedData = {};
+  // //console.log('users', paymentData);
   if (paymentData === undefined) {
     return <></>;
   }
-  console.log("payment data",paymentData)
+  //console.log("payment data",paymentData)
   paymentData.forEach((item: any) => {
-    const key:string = `${item.paymentId}`;
+    const key: string = `${item.paymentId}`;
     if (!combinedData[key]) {
       let userAmount = 0;
       let one_payment = false;
       paymentData.forEach((data: any) => {
-        if (data.owned === 1 && data.paymentId===item.paymentId && data.email===userMail) {
-          // console.log(data.paymentId,item.paymentId , data.email,userMail)
-          one_payment = true
-          userAmount = userAmount + parseFloat(data.amount)
-          // console.log(item.amount)
-        } else if (data.owned === 0 && data.paymentId===item.paymentId && data.email===userMail) {
-          // console.log(data)
-          one_payment = true
-          userAmount = userAmount - parseFloat(data.amount)
-          // console.log(item.amount)
+        if (
+          data.owned === 1 &&
+          data.paymentId === item.paymentId &&
+          data.email === userMail
+        ) {
+          // //console.log(data.paymentId,item.paymentId , data.email,userMail)
+          one_payment = true;
+          userAmount = userAmount + parseFloat(data.amount);
+          // //console.log(item.amount)
+        } else if (
+          data.owned === 0 &&
+          data.paymentId === item.paymentId &&
+          data.email === userMail
+        ) {
+          // //console.log(data)
+          one_payment = true;
+          userAmount = userAmount - parseFloat(data.amount);
+          // //console.log(item.amount)
         }
       });
-      if(one_payment){
+      if (one_payment) {
         combinedData[key] = { ...item };
-        combinedData[key].amount =userAmount;
-        if(userAmount>0){
-          combinedData[key].owned =1;
+        combinedData[key].amount = userAmount;
+        if (userAmount > 0) {
+          combinedData[key].owned = 1;
+        } else {
+          combinedData[key].owned = 0;
         }
-        else{
-          combinedData[key].owned =0;
-        } 
+      } else {
+        combinedData[key] = { ...item };
+        combinedData[key].amount = userAmount;
+        combinedData[key].owned = -1;
       }
-      else{
-         combinedData[key] = {...item}; 
-         combinedData[key].amount =userAmount;
-         combinedData[key].owned =-1;
-      } 
-    } 
+    }
   });
 
-  const finalData:paymentData1[] = Object.values(combinedData);
-  console.log("Combined Daga",combinedData)
-  finalData.sort((a, b)=>{
-    const k :any= new Date(b.createdAt)
-    const z :any= new Date(a.createdAt)
-    return k-z
-  })
-  console.log("Final data",finalData)
+  const finalData: paymentData1[] = Object.values(combinedData);
+  //console.log("Combined Daga",combinedData)
+  finalData.sort((a, b) => {
+    const k: any = new Date(b.createdAt);
+    const z: any = new Date(a.createdAt);
+    return k - z;
+  });
+  //console.log("Final data",finalData)
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -131,7 +137,7 @@ export default function TransTable({ paymentData, userName, userMail }: Props) {
 
   // const { data: session } = useSession()
   const handleClick = async (event: any) => {
-    console.log(event.currentTarget.getAttribute('data-id'));
+    //console.log(event.currentTarget.getAttribute('data-id'));
     const id = event.currentTarget.getAttribute('data-id');
     router.push(window.location.href.split('?')[0] + '/' + id);
   };
@@ -173,7 +179,10 @@ export default function TransTable({ paymentData, userName, userMail }: Props) {
                       flex: '0 1 180px'
                     }}
                   >
-                    <CardContent sx={{ flex: '0 1 auto' }} className="text-center">
+                    <CardContent
+                      sx={{ flex: '0 1 auto' }}
+                      className="text-center"
+                    >
                       {/* <Typography variant="h6">Category</Typography> */}
                       <Title>Category</Title>
                       <Text
@@ -191,7 +200,6 @@ export default function TransTable({ paymentData, userName, userMail }: Props) {
                       flexDirection: 'column',
                       alignItems: 'center',
                       flex: '0 1 auto'
-
                     }}
                   >
                     <CardContent sx={{ flex: '1 0 auto' }}>
@@ -200,12 +208,13 @@ export default function TransTable({ paymentData, userName, userMail }: Props) {
                         color="text.secondary"
                         className="text-center ml-6"
                       >
-                        
-                          <Text>{new Date(payment.createdAt)
-                            .toLocaleString()
-                            .split(',')[0]}
-                            </Text>
-                        
+                        <Text>
+                          {
+                            new Date(payment.createdAt)
+                              .toLocaleString()
+                              .split(',')[0]
+                          }
+                        </Text>
                       </Typography>
                     </CardContent>
                   </Box>
@@ -219,8 +228,18 @@ export default function TransTable({ paymentData, userName, userMail }: Props) {
                     }}
                   >
                     <CardContent sx={{ flex: '1 0 auto' }}>
-                      <Text style={{whiteSpace: "initial",textAlign:"center"}}>{payment.title.slice(0,15 )}</Text>
-                      {payment.title.length>15 && <Text style={{whiteSpace: "initial",textAlign:"center"}}>{payment.title.slice(15)}</Text>}
+                      <Text
+                        style={{ whiteSpace: 'initial', textAlign: 'center' }}
+                      >
+                        {payment.title.slice(0, 15)}
+                      </Text>
+                      {payment.title.length > 15 && (
+                        <Text
+                          style={{ whiteSpace: 'initial', textAlign: 'center' }}
+                        >
+                          {payment.title.slice(15)}
+                        </Text>
+                      )}
                     </CardContent>
                   </Box>
                   <Box
@@ -228,25 +247,39 @@ export default function TransTable({ paymentData, userName, userMail }: Props) {
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
-                      backgroundColor: `${payment.owned>=0?(payment.owned>0?'rgba(132, 204, 22, 0.3)':'rgba(244, 63, 94, 0.3)'):'rgba(0, 0, 0, 0.5)'}`,
+                      backgroundColor: `${
+                        payment.owned >= 0
+                          ? payment.owned > 0
+                            ? 'rgba(132, 204, 22, 0.3)'
+                            : 'rgba(244, 63, 94, 0.3)'
+                          : 'rgba(0, 0, 0, 0.5)'
+                      }`,
                       flex: '0 1 180px',
-                      Margin:"0px"
+                      Margin: '0px'
                     }}
                   >
-                    <CardContent sx={{ flex: '1 0 auto' }} className="text-center ml-6 mr-6">
+                    <CardContent
+                      sx={{ flex: '1 0 auto' }}
+                      className="text-center ml-6 mr-6"
+                    >
                       <Text>You Owe</Text>
                       {/* <Typography
                         variant="subtitle1"
                         color="text.secondary"
                         className="text-center"
                       > */}
-                        {/* {payment.amount} (INR) */}
-                        {payment.owned>0 && <Title color='emerald'>{payment.amount} INR</Title>}
-                        {payment.owned===0 && <Title color='red'>{-1*payment.amount} INR</Title>}
-                        {payment.owned<0 && <Title color='gray'>{payment.amount} INR</Title>}
+                      {/* {payment.amount} (INR) */}
+                      {payment.owned > 0 && (
+                        <Title color="emerald">{payment.amount} INR</Title>
+                      )}
+                      {payment.owned === 0 && (
+                        <Title color="red">{-1 * payment.amount} INR</Title>
+                      )}
+                      {payment.owned < 0 && (
+                        <Title color="gray">{payment.amount} INR</Title>
+                      )}
                       {/* </Typography> */}
                       {/* <Text color></Text> */}
-
                     </CardContent>
                   </Box>
                 </Card>

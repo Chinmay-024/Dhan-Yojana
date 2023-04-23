@@ -40,7 +40,7 @@ async function handler(req, res) {
         const data2 = await query({ query: querySql2, values: valueParams2 });
         let totalAmountForGroup = 0.0;
         for (let j = 0; j < data2.length; j++) {
-          // console.log(data2[j].owned, parseFloat(amount));
+          // //console.log(data2[j].owned, parseFloat(amount));
           let amount = parseFloat(data2[j].amount);
           if (data2[j].owned) {
             // totalAmount += amount;

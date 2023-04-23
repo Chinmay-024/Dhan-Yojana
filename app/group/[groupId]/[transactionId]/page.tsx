@@ -114,13 +114,13 @@ export default function TransactionId({
           '{"id":"none","name":"none","email":"none"}';
         setUser(JSON.parse(user2));
         setUserMail(JSON.parse(user2).email);
-        console.log(user2);
+        //console.log(user2);
       }
     }, 2000);
     const getData = async () => {
       const resData = await fetch('/api/comments/' + params.transactionId);
       const data: any = await resData.json();
-      console.log('comments', data.comments);
+      //console.log('comments', data.comments);
       setCommentsArray(data.comments);
       setFetchingComm(false);
       // setAllUser([...data.users]);
@@ -129,7 +129,7 @@ export default function TransactionId({
       setfetchingList(true);
       const resData = await fetch('/api/payments/' + params.transactionId);
       const data: any = await resData.json();
-      console.log('payments involment', data);
+      //console.log('payments involment', data);
       setfetchingList(false);
       setPaymentDetails(data.paymentDetails);
       setPaymentList(data.users);
@@ -169,7 +169,7 @@ export default function TransactionId({
       })
     });
     const resData = await response.json();
-    console.log('added ', resData);
+    //console.log('added ', resData);
     setsubmittingComm(false);
     if (response.ok) {
       setSucess(true);
@@ -179,7 +179,7 @@ export default function TransactionId({
   if (userMail == '') {
     return (
       <>
-        <Loading/>
+        <Loading />
       </>
     );
   }
@@ -190,7 +190,7 @@ export default function TransactionId({
       </>
     );
   }
-  // console.log('param : ', params);
+  // //console.log('param : ', params);
 
   const valueFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
@@ -205,7 +205,7 @@ export default function TransactionId({
 
   const addCommentHandler = (event: any) => {
     event.preventDefault();
-    console.log(comment);
+    //console.log(comment);
     uploadComment(comment);
     setOpen(false);
   };
@@ -261,7 +261,7 @@ export default function TransactionId({
                   <Image
                     // src={pic}
                     src={
-                      ' https://source.unsplash.com/600x600/?' +
+                      'https://source.unsplash.com/600x600/?' +
                       paymentDetails.type
                     }
                     style={{
