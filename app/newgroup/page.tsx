@@ -18,6 +18,7 @@ import { Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
 import NotAuthenticated from '../notAuth';
+import Loading from '../loading';
 
 const NewGroup = () => {
   // const router = useRouter();
@@ -54,7 +55,7 @@ const NewGroup = () => {
   if (userId == '') {
     return (
       <>
-        <div></div>
+        <Loading />
       </>
     );
   }

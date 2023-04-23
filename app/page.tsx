@@ -12,11 +12,7 @@ import { NoSsr } from '@mui/material';
 export default async function IndexPage() {
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000); // introduce a 3-second delay
-  }, []);
+  
   return (
     <NoSsr>
       {/* <style>

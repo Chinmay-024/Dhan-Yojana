@@ -40,6 +40,7 @@ import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import UserChart from './userChart';
 import Image from 'next/image';
 import NotAuthenticated from '../../notAuth';
+import Loading from '../../loading';
 interface Transaction {
   owned: boolean;
   amount: number;
@@ -310,7 +311,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
   if (userMail == '') {
     return (
       <>
-        <div></div>
+        <Loading/>
       </>
     );
   }

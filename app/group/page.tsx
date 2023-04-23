@@ -22,6 +22,7 @@ import Box from '@mui/material/Box';
 import { groupDataSliceActions } from '../store';
 import { useDispatch } from 'react-redux';
 import NotAuthenticated from '../notAuth';
+import Loading from '../loading';
 
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
@@ -89,13 +90,13 @@ export default function Groups() {
         });
       });
       const data12 = Array.from(newData);
-      console.log('123', {
-        groups: resData.groups,
-        paymentDetails: newData,
-        totalAmount: resData.totalAmount,
-        totalAmountForGroups: resData.totalAmountForGroups,
-        totalAmountForMonth: resData.totalAmountForMonth
-      });
+      // console.log('123', {
+      //   groups: resData.groups,
+      //   paymentDetails: newData,
+      //   totalAmount: resData.totalAmount,
+      //   totalAmountForGroups: resData.totalAmountForGroups,
+      //   totalAmountForMonth: resData.totalAmountForMonth
+      // });
       setDataFetching(false);
       setFetchData({
         groups: resData.groups,
@@ -115,7 +116,7 @@ export default function Groups() {
   if (userId == '') {
     return (
       <>
-        <div></div>
+        <Loading />
       </>
     );
   }

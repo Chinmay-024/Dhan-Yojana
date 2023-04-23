@@ -22,6 +22,7 @@ import { NoSsr } from '@mui/material';
 import { useEffect, useState } from 'react';
 import UserChart from './userChart';
 import NotAuthenticated from '../notAuth';
+import Loading from '../loading';
 
 const dataFormatter = (number: number) =>
   Intl.NumberFormat('us').format(number).toString();
@@ -73,7 +74,7 @@ export default function PlaygroundPage() {
   if (userMail == '') {
     return (
       <>
-        <div></div>
+        <Loading />
       </>
     );
   }

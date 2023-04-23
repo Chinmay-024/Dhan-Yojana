@@ -34,6 +34,7 @@ import Image from 'next/image';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { MinusIcon } from '@heroicons/react/24/outline';
 import { CircularProgress } from '@mui/material';
+import Loading from '../../../loading';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -178,7 +179,7 @@ export default function TransactionId({
   if (userMail == '') {
     return (
       <>
-        <div></div>
+        <Loading/>
       </>
     );
   }

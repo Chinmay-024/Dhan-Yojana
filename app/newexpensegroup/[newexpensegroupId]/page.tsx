@@ -18,6 +18,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import Card from '@mui/material/Card';
 import { Button } from '@tremor/react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
+import Loading from '../../loading';
 
 interface Friend {
   email: string;
@@ -235,7 +236,7 @@ const ExpenseFormGroup = ({
   if (userId == '') {
     return (
       <>
-        <div></div>
+       <Loading/>
       </>
     );
   }
