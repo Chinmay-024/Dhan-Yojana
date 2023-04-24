@@ -55,22 +55,37 @@ export default function PlaygroundPage() {
       const resData: any = await res.json();
       // //console.log('sadada', resData.payments);user
       setTableData(resData.payments);
-      const selectedColumnsArray = resData.payments.map(
-        (obj: { owned: any; createdAt: any; amount: any }) => {
-          return {
-            Date: obj.createdAt,
-            Paid: !obj.owned ? 0 : obj.amount,
-            Owed: !obj.owned ? obj.amount : 0
-          };
-        }
+      const selectedColumnsArray = resData.payments.reduce(
+        (acc: any, payment: any) => {
+          const existingPayment = acc.find(
+            (p: any) => p.Date.toString() === payment.createdAt.toString()
+          );
+          if (existingPayment) {
+            if (payment.owned) {
+              existingPayment.Owed += parseFloat(payment.amount);
+            } else {
+              existingPayment.Paid += parseFloat(payment.amount);
+            }
+          } else {
+            acc.push({
+              Date: payment.createdAt,
+              Paid: payment.owned ? 0 : parseFloat(payment.amount),
+              Owed: payment.owned ? parseFloat(payment.amount) : 0
+            });
+          }
+          return acc;
+        },
+        []
       );
       setPayments(selectedColumnsArray);
+      console.log(selectedColumnsArray);
     };
     expenseData();
     return () => {
       clearTimeout(a);
     };
   }, []);
+
   if (userMail == '') {
     return (
       <>

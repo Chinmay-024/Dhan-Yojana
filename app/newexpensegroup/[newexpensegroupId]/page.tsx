@@ -197,7 +197,7 @@ const ExpenseFormGroup = ({
       usersData.push(user);
     });
 
-    //console.log(usersData);
+    // console.log(usersData);
     var data = {
       title,
       type,
@@ -206,7 +206,7 @@ const ExpenseFormGroup = ({
       groupId: parseInt(params.newexpensegroupId),
       users: usersData
     };
-    //console.log(data);
+    // console.log(data);
 
     const JSONdata = JSON.stringify(data);
     const endpoint = '/api/payments/addPayment';

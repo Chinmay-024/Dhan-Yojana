@@ -181,11 +181,36 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           createdAt: string;
         }) => obj.email == userMail
       );
+      // console.log('filteredArrayForUser', filteredArrayForUser);
       const uniqueArray = Array.from(
         new Set(resData.payments.map((obj: any) => obj.paymentId))
       ).map((paymentId) => {
         return resData.payments.find((obj: any) => obj.paymentId === paymentId);
       });
+
+      const selectedColumnsArrayonUser = filteredArrayForUser.reduce(
+        (acc: any, payment: any) => {
+          const existingPayment = acc.find(
+            (p: any) => p.Date.toString() === payment.createdAt.toString()
+          );
+          if (existingPayment) {
+            if (payment.owned) {
+              existingPayment.Owed += parseFloat(payment.amount);
+            } else {
+              existingPayment.Paid += parseFloat(payment.amount);
+            }
+          } else {
+            acc.push({
+              Date: payment.createdAt,
+              Paid: payment.owned ? 0 : parseFloat(payment.amount),
+              Owed: payment.owned ? parseFloat(payment.amount) : 0
+            });
+          }
+          return acc;
+        },
+        []
+      );
+      // console.log(selectedColumnsArrayonUser);
 
       const selectedColumnsArray = uniqueArray.map(
         (obj: { createdAt: any; totalAmount: any }) => {
@@ -195,6 +220,7 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           };
         }
       );
+
       const selectedColumnsArrayForTransaction = resData.payments.map(
         (obj: { email: any; amount: any; owned: any; name: any }) => {
           return {
@@ -205,15 +231,16 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
           };
         }
       );
-      const selectedColumnsArrayonUser = filteredArrayForUser.map(
-        (obj: { createdAt: any; owned: any; amount: any }) => {
-          return {
-            Date: obj.createdAt,
-            Paid: !obj.owned ? 0 : obj.amount,
-            Owed: !obj.owned ? obj.amount : 0
-          };
-        }
-      );
+
+      // const selectedColumnsArrayonUser = filteredArrayForUser.map(
+      //   (obj: { createdAt: any; owned: any; amount: any }) => {
+      //     return {
+      //       Date: obj.createdAt,
+      //       Paid: !obj.owned ? 0 : obj.amount,
+      //       Owed: !obj.owned ? obj.amount : 0
+      //     };
+      //   }
+      // );
       setGroupPayments(selectedColumnsArray);
       setUserPayments(selectedColumnsArrayonUser);
 
@@ -665,7 +692,9 @@ export default function GroupPage({ params }: { params: { groupId: string } }) {
                       className="mt-4"
                       style={{ color: owe == true ? 'green' : 'red' }}
                     >
-                      {result[user.email] ? result[user.email].amount : 0}
+                      {result[user.email]
+                        ? result[user.email].amount.toFixed(2)
+                        : 0}
                     </Title>
                   </div>
                 ))}
