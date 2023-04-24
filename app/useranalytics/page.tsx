@@ -78,7 +78,7 @@ export default function PlaygroundPage() {
         []
       );
       setPayments(selectedColumnsArray);
-      console.log(selectedColumnsArray);
+      // console.log(selectedColumnsArray);
     };
     expenseData();
     return () => {
