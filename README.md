@@ -3,6 +3,12 @@
 
 The Dhan Yojana is a powerful and user-friendly web application designed to help users manage their expenses and split costs with friends, roommates, and colleagues. The web app allows users to keep track of shared expenses, settle debts, and maintain a fair and transparent financial record among groups or individuals. The following specification outlines the key features and functionalities of the Dhan Yojana web app.
 
+## Video Demonstration
+
+https://user-images.githubusercontent.com/84613561/236017893-7725ed42-bfc2-4702-97c1-135eaf476ff8.mp4
+
+
+
 ## How to run
 
 Clone the repo in your local and run
