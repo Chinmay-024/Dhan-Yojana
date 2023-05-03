@@ -5,10 +5,16 @@ The Dhan Yojana is a powerful and user-friendly web application designed to help
 
 ## How to run
 
+Clone the repo in your local and run
+
+```bash
+  npm install
+```
+
 To run development 
 
 ```bash
-  npm start
+  npm run dev
 ```
 
 To build
